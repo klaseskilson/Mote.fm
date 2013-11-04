@@ -1,0 +1,12 @@
+{
+	"AppName": {
+		"en": "Hathor the app",
+	},
+	"BundleIdentfier": "Hathor-app"
+	"BundleType": "Application",
+	"BundleVersion": "0.0.1",
+	"Dependencies": {
+		"api": "1.0.0",
+		"views": "1.10.0"
+	}
+}
