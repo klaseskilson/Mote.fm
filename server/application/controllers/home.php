@@ -19,14 +19,24 @@ class Home extends CI_Controller {
 	 */
 	public function index()
 	{
-		if($this->login->is_logged_in())
-			$view = 'dashboard';
-		else
-			$view = 'landing';
+		// prepare data to send to views
+		$data = array();
 
-		$this->load->view('templates/header');
-		$this->load->view($view);
-		$this->load->view('templates/footer');
+		// what main view should we use?
+		// depends on user status. logged in or not?
+		if($this->login->is_logged_in())
+		{
+			$view = 'dashboard'; // show the logged in user the dashboard
+		}
+		else
+		{
+			$data['title'] = 'Democratize the play queue';
+			$view = 'landing'; // show the potential new user the cool awesome landing page
+		}
+
+		$this->load->view('templates/header', $data);
+		$this->load->view($view, $data);
+		$this->load->view('templates/footer', $data);
 	}
 }
 

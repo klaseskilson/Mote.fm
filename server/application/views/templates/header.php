@@ -6,7 +6,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<title>Hathor - <?php echo isset($title) ? $title : ''; ?></title>
+		<title>Hathor<?php echo isset($title) ? ' &mdash; '.$title : ''; ?></title>
 		<meta name="description" content="">
 		<meta name="HandheldFriendly" content="True">
 		<meta name="MobileOptimized" content="320">
