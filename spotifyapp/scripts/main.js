@@ -1,5 +1,5 @@
 require([
-  '$api/models'
+  '$api/models',
   'scripts/button'
 ], function(models, button) {
   'use strict';
