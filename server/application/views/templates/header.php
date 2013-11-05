@@ -36,7 +36,6 @@
 
 		<!-- CSS files -->
 		<link rel="stylesheet" href="css/bootstrap.min.css">
-		<link rel="stylesheet" href="css/bootstrap.responsive.min.css">
 	</head>
 	<body>
 		<!--[if lt IE 7]>
