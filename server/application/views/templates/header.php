@@ -35,7 +35,7 @@
 		-->
 
 		<!-- CSS files -->
-		<link rel="stylesheet" href="web/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" />
 	</head>
 	<body>
 		<!--[if lt IE 7]>
