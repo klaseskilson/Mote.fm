@@ -1,3 +1,6 @@
-<div class="container">
+<main id="main">
+	<div class="container">
 
-</div>
+	</div>
+</main><!-- end #main -->
+

@@ -1,4 +1,11 @@
 
+
+			<footer id="footer">
+				<div class="container">
+
+				</div>
+			</footer><!-- end #footer -->
+		</div><!-- end .container -->
 		<!-- JavaScript libraries -->
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
