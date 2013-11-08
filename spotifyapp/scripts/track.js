@@ -3,11 +3,13 @@ require([
 ], function(models, Image) {
 	'use strict';
 
-	var insertSongInfo = function(trackURI) {
+	var insertSongInfo = function(trackURI, index) {
 		models.Track.fromURI(trackURI).load('name', 'artists').done(function(track) {
-			document.getElementById('songName').innerHTML = track.name.decodeForHtml();
+			var id = 'songName' + index;
+			document.getElementById(id).innerHTML = track.name.decodeForHtml();
 			var artist = models.Artist.fromURI(track.artists).load('name').done(function(artist) {
-				document.getElementById('songArtist').innerHTML = artist.name.decodeForHtml();
+				var id = 'songArtist' + index;
+				document.getElementById(id).innerHTML = artist.name.decodeForHtml();
 			});
 		});
 	};
