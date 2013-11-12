@@ -86,7 +86,7 @@ class User_model extends CI_model
 	/**
 	 * create a new user
 	 */
-	function create_user($email, $fname, $sname, $password, $privil = 2)
+	function create_user($email, $fname, $sname, $password)
 	{
 		if(!empty($email) && !empty($fname) && !empty($fname) && strlen($password) > 6
 			&& !$this->email_exists($email))
@@ -97,7 +97,7 @@ class User_model extends CI_model
 						'password'	=> $this->passwordhash->HashPassword($password),
 						'email'		=> $email
 					);
-			return $this->db->insert('users', $data) && $this->change_privil($this->get_id($email), $privil);
+			return $this->db->insert('users', $data);
 		}
 		return false;
 	}
