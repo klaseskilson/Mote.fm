@@ -1,0 +1,21 @@
+html {
+  overflow: auto;
+  background-image: url("kim.jpg");
+  background-position: 0px -200px;
+  background-size: cover;
+}
+h1
+{
+	color: red;
+	font-size: 100px;
+}
+h2
+{
+	margin-top: -80px;
+	color: red;
+}
+#songName, #songArtist
+{
+	font-size: 40px;
+	color: blue;
+}
