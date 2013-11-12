@@ -1,0 +1,19 @@
+# ci-link!
+RewriteEngine on
+RewriteCond $1 !^(index\.php|user_guide|web|2011|2012|robots\.txt)
+RewriteRule ^(.*)$ /index.php/$1 [L]
+
+# gzip!
+AddOutputFilterByType DEFLATE text/text text/html text/javascript text/plain text/xml application/xml text/css application/x-javascript application/javascript
+
+# cache!
+<ifmodule mod_expires.c>
+	<Filesmatch "\.(jpg|jpeg|png|gif|swf|ico|woff|otf|svg|ttf)$">
+		ExpiresActive on
+		ExpiresDefault "access plus 1 months"
+	</Filesmatch>
+	<Filesmatch "\.(js|css)$">
+		ExpiresActive on
+		ExpiresDefault "access plus 3 days"
+	</Filesmatch>
+</ifmodule>
