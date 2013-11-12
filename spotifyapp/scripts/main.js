@@ -1,33 +1,135 @@
 require([
   '$api/models',
   'scripts/cover',
-  'scripts/track'
-], function(models, cover, track) {
+  'scripts/trackInfo'
+], function(models, cover, trackInfo) {
   'use strict';
 
+  // Struct for the object track. Used for dealing
+  // with info about tracks. URI, votes and timestamp.
+  function track(URI)
+  {
+    if(URI.length == 36 &&
+       URI.substr(0,14) == 'spotify:track:') // If the whole link is pasted
+      this.URI = URI;
+    else if(URI.length == 22) //if only the id is pasted
+      this.URI = "spotify:track:" + URI;
+    else
+      this.URI = "spotify:track:6JEK0CvvjDjjMUBFoXShNZ"; // RICK ROLL
+    this.votes = 1;
+    this.timestamp = new Date().getTime();
+    this.section = createSection(URI.substr(15,36));
+  }
+
+  // Funktion som skapar en html-sektion för en track
+  var createSection = function(index) {
+    var section = '<div id="' + index + '" class="track">';
+    section += '<div class="cover"></div>';
+    section += '<div class="delete"></div>';
+    section += '<div class="vote"></div>';
+    section += '<div class="songName"></div>';
+    section += '<div class="songArtist"></div>';
+    section += '</div>';
+    return section;
+  };
+
+  // Funktion som avnänds vid sortering av tracks beroende
+  // på votes i första hand, sedan timestamp.
+  function compare(a, b) {
+    var votesA = a.votes; var votesB = b.votes;
+    var timeA = a.timestamp; var timeB = b.timestamp;
+    if(votesA < votesB)
+    {
+      return 1;
+    }
+    else if(votesA > votesB)
+    {
+      return -1;
+    }
+    else
+    {
+      if(timeA < timeB)
+      {
+        return -1;
+      }
+      else if(timeA > timeB)
+      {
+        return 1;
+      }
+      else
+      {
+        return 0;
+      }
+    }
+  }
+
   var tracks = new Array();
-  tracks[0] = 'spotify:track:0Rynk2V7LyLgBUjTMxvbEJ';
-  tracks[1] = 'spotify:track:4qw6yAygswKYFsO5GMybWu';
-  tracks[2] = 'spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z';
+  tracks[0] = new track('spotify:track:0Rynk2V7LyLgBUjTMxvbEJ');
+  tracks[1] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
+  tracks[2] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
+  tracks[3] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
+  tracks[4] = new track('spotify:track:1r9mGafUiSgumJoRqyLrSt');
+  tracks[5] = new track('spotify:track:3YXUMVKfRy4mwPEAslWg1p');
+  tracks[6] = new track('spotify:track:2xaNOCsGBhFJ3bp6mvSqXz'); 
 
   var size  = tracks.length;
-
-  for(var i = size-1; i >= 0; i--)
+  tracks.sort(compare);
+  // Loop som skriver ut de låtar som finns i tracks
+  // från början.
+  // Att göra:
+  // * Skriva ut låtarna sorterat på antal röster.
+  for(var i = 0; i < size; i++)
   {
-    var section = '<div class="track">';
-    section += '<div id="coverContainer';
-    section += i.toString();
-    section += '"></div>';
-    section += '<div id="songName';
-    section += i.toString(); 
-    section += '"></div>';
-    section += '<div id="songArtist';
-    section += i.toString();
-    section += '"></div>';
-    section += '</div>';
-    document.getElementById('queue').innerHTML += section;
-    track.insertSongInfo(tracks[i], i);
-    cover.insertImage(tracks[i], i);
+    document.getElementById('queue').innerHTML += tracks[i].section;
+    trackInfo.insertSongInfo(tracks[i].URI);
+    cover.insertImage(tracks[i].URI);
   }
+
+  // Funktion för att ta bort ett "Track"-elemnent
+  // Att göra:
+  // * Funktion som endast ska vara tillgänglig för
+  //   feststartaren.
+  $(document).on('click', '.delete', function() {
+    $(this).parent().fadeOut(200);
+    // $(this).parent().delay(1600).remove();
+  });
+
+  // Funktion för att lägga en röst på en låt
+  // Att göra:
+  // * Skicka rösten till databasen
+  // * Uppdatera listan vid röstning
+  // * Man ska endast kunna rösta en gång,
+  //   nu kan man rösta oändligt många gånger
+  // * Spara ID på personen som lade en röst
+  $(document).on('click', '.vote', function() {
+    var voteIndex = $('.vote').index(this);
+    tracks[voteIndex].votes++;
+    tracks[voteIndex].timestamp = new Date().getTime();
+    console.log("#" + voteIndex + " has " + tracks[voteIndex].votes + " number of votes");
+  });
+
+  // Funktion som lägger till Spotify URI i tracks
+  // samt nytt element i votes
+  // Att göra:r
+  // * Se till så den placeras på rätt plats i listan
+  //   beroende på antalet röster
+  // * Bytas ut/justeras så att man söker efter en
+  //   låttitel eller artist istället. Endast låtar
+  //   ska visas i resultaten
+  $(document).on('click', '.addTrack', function() {
+    if($('#trackSearch').val() != "" &&
+       $('#trackSearch').val().substr(0,14) == 'spotify:track:' &&
+       $('#trackSearch').val().length == 36)
+    {
+      tracks[size] = new track($('#trackSearch').val());
+      tracks.sort(compare);
+      document.getElementById('queue').innerHTML += tracks[size].section;
+      $('#trackSearch').val("");
+      trackInfo.insertSongInfo(tracks[size].URI);
+      cover.insertImage(tracks[size].URI);
+      size++;
+    }
+    
+  });
 
 });
