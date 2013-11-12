@@ -1,5 +1,5 @@
 -- database.sql
--- använd denna för att installera om sidan
+-- use this to install the page's database
 
 CREATE DATABASE IF NOT EXISTS `hathor`;
 
