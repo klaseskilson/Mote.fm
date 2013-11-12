@@ -1,7 +1,7 @@
 # ci-link!
 RewriteEngine on
 RewriteCond $1 !^(index\.php|user_guide|web|2011|2012|robots\.txt)
-RewriteRule ^(.*)$ /index.php/$1 [L]
+RewriteRule ^(.*)$ /server/index.php/$1 [L]
 
 # gzip!
 AddOutputFilterByType DEFLATE text/text text/html text/javascript text/plain text/xml application/xml text/css application/x-javascript application/javascript
