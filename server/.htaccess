@@ -1,6 +1,6 @@
 # ci-link!
 RewriteEngine on
-RewriteCond $1 !^(index\.php|user_guide|web|2011|2012|robots\.txt)
+RewriteCond $1 !^(index\.php|web|robots\.txt)
 RewriteRule ^(.*)$ index.php/$1 [L]
 
 # gzip!
