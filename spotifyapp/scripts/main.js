@@ -5,6 +5,24 @@ require([
 ], function(models, cover, trackInfo) {
   'use strict';
 
+  // Each track has ha vote. Here the id of the voter and
+  // timestamp is stored in arrays.
+  function vote()
+  {
+    this.amount = 1;
+    this.timestamp = new Array();
+    this.timestamp[0] = new Date().getTime();
+    this.voter = new Array();
+    this.voter[0] = "Contributer";
+    this.addVoter = function(id)
+    {
+      var numVotes = this.voter.length;
+      this.voter[numVotes] = id;
+      this.timestamp[numVotes] = new Date().getTime();
+      this.amount++;
+    }
+  }
+
   // Struct for the object track. Used for dealing
   // with info about tracks. URI, votes and timestamp.
   function track(URI)
@@ -16,9 +34,9 @@ require([
       this.URI = "spotify:track:" + URI;
     else
       this.URI = "spotify:track:6JEK0CvvjDjjMUBFoXShNZ"; // RICK ROLL
-    this.votes = 1;
-    this.timestamp = new Date().getTime();
-    this.section = createSection(URI.substr(15,36));
+    // Creates new object vote 
+    this.votes = new vote();
+    this.section = createSection(this.URI.substr(15,36));
   }
 
   // Funktion som skapar en html-sektion för en track
@@ -36,8 +54,8 @@ require([
   // Funktion som avnänds vid sortering av tracks beroende
   // på votes i första hand, sedan timestamp.
   function compare(a, b) {
-    var votesA = a.votes; var votesB = b.votes;
-    var timeA = a.timestamp; var timeB = b.timestamp;
+    var votesA = a.votes.amount; var votesB = b.votes.amount;
+    var timeA = a.votes.timestamp; var timeB = b.votes.timestamp;
     if(votesA < votesB)
     {
       return 1;
@@ -85,6 +103,10 @@ require([
     cover.insertImage(tracks[i].URI);
   }
 
+  models.player.setShuffle(false);
+  models.player.setRepeat(false);
+  models.player.playTrack(models.Track.fromURI(tracks[0].URI));
+
   // Funktion för att ta bort ett "Track"-elemnent
   // Att göra:
   // * Funktion som endast ska vara tillgänglig för
@@ -103,9 +125,10 @@ require([
   // * Spara ID på personen som lade en röst
   $(document).on('click', '.vote', function() {
     var voteIndex = $('.vote').index(this);
-    tracks[voteIndex].votes++;
-    tracks[voteIndex].timestamp = new Date().getTime();
-    console.log("#" + voteIndex + " has " + tracks[voteIndex].votes + " number of votes");
+    tracks[voteIndex].votes.addVoter("Daniel");
+    console.log("#" + voteIndex + " has " + tracks[voteIndex].votes.amount +
+     " number of votes. Voted by " + tracks[voteIndex].votes.voter[tracks[voteIndex].votes.voter.length-1]
+     + ". Voted on time: " + tracks[voteIndex].votes.timestamp[tracks[voteIndex].votes.voter.length-1]);
   });
 
   // Funktion som lägger till Spotify URI i tracks
