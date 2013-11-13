@@ -2,7 +2,6 @@ require([
 	'$api/models',
 	'scripts/jquery.min'
 	], function(models, jquery){
-		'use strict';
 
 		var musicTrack = {
 			"partyID" : 0,
@@ -10,7 +9,8 @@ require([
 		}
 
 		jQuery(document).ready(function() {
-			models.player.addEventListener('change', function(){
+			models.player.addEventListener('change:index', function(stuff){
+				console.log(stuff);
 				models.player.load('track').done(function(){
 					var track = models.player.track;
 					musicTrack.partyID = 123456;

@@ -9,7 +9,7 @@ class Party_model extends CI_model
 	}
 
 
-	function crate_party($uid, $name = 'The best party ever', $locale = 'sv')
+	function create_party($uid, $name = 'The best party ever', $locale = 'sv')
 	{
 		// load user model for user check
 		$this->load->model('User_model');
@@ -55,5 +55,20 @@ class Party_model extends CI_model
 
 		// if we got this far, something went wrong
 		return false;
+	}
+
+	function get_current_track_at_party($partyid)
+	{
+		$this->db->select('trackuri');
+		$this->db->where('partyid', $partyid);
+		$this->db->limit(1);
+		$query = $this->db->get('nowplaying');
+		if($query)
+		{
+			$result = $query->result_array();
+			return $result[0];
+		}
+
+		return false; 
 	}
 }

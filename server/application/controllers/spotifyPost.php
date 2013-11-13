@@ -7,14 +7,13 @@
 	class SpotifyPost extends CI_Controller{
 		public function index()
 		{		
-				$partyID = $_POST['partyID'];
-				$trackURI = $_POST['trackURI'];
+				$partyID = $this->input->post('partyID');
+				$trackURI = $this->input->post('trackURI');
 
-				$data = array('playingid' => ,'festid' => $partyID, 'trackuri' => $trackURI);
+				$data = array('festid' => $partyID, 'trackuri' => $trackURI);
 
-				$str = $this->db->insert_string('nowplaying', $data);
-				$query = $this->db->query($str);
-				echo $query;
+				$query = $this->db->insert('nowplaying', $data);
+				
 		}
 	}
 ?>

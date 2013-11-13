@@ -9,11 +9,8 @@
 			<div class="row">
 				<div class="col-sm-6 screamer">
 					<p>
-						<div id="songdata">
+						<div id="songdata"></div>
 					</p>
-				</div>
-				<div class="col-sm-6">
-					<button type="button" class="btn btn-lg btn-block">Sign up lol</button>
 				</div>
 			</div> <!-- end .row -->
 			<div class="bottom">
