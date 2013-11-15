@@ -8,8 +8,12 @@ class GetSong extends CI_Controller
 		
 		$model = $this->load->model('party_model');
 		$data['title'] = 'Democratize the play queue';
+		$data['ajax'] = true;
 
 		$view = "getsong";
+		$this->load->helper('external_spotify');
+		$track = get_track_name("spotify:track:0Rynk2V7LyLgBUjTMxvbEJ");
+		$data['track'] = $track;
 		$this->load->view('templates/header', $data);
 		$this->load->view($view);
 		$this->load->view('templates/footer', $data);

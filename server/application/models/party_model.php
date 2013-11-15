@@ -59,10 +59,13 @@ class Party_model extends CI_model
 
 	function get_current_track_at_party($partyid)
 	{
-		$this->db->select('trackuri');
+		$this->db->select('*');
 		$this->db->where('partyid', $partyid);
+		$this->db->order_by('playid','desc');
 		$this->db->limit(1);
+
 		$query = $this->db->get('nowplaying');
+
 		if($query)
 		{
 			$result = $query->result_array();

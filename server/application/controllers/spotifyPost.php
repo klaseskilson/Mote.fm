@@ -10,7 +10,7 @@
 				$partyID = $this->input->post('partyID');
 				$trackURI = $this->input->post('trackURI');
 
-				$data = array('festid' => $partyID, 'trackuri' => $trackURI);
+				$data = array('partyid' => $partyID, 'trackuri' => $trackURI);
 
 				$query = $this->db->insert('nowplaying', $data);
 				
