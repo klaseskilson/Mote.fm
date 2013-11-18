@@ -86,14 +86,13 @@ class User_model extends CI_model
 	/**
 	 * create a new user
 	 */
-	function create_user($email, $fname, $sname, $password)
+	function create_user($email, $name, $password)
 	{
-		if(!empty($email) && !empty($fname) && !empty($fname) && strlen($password) > 6
+		if(!empty($email) && !empty($name) && strlen($password) > 6
 			&& !$this->email_exists($email))
 		{
 			$data = array(
-						'fname'		=> $fname,
-						'sname'		=> $sname,
+						'name'		=> $name,
 						'password'	=> $this->passwordhash->HashPassword($password),
 						'email'		=> $email
 					);
@@ -165,9 +164,17 @@ class User_model extends CI_model
 		$this->db->where('email', $email);
 		$this->db->limit('1');
 		$query = $this->db->get('users');
-		$result = $query->result();
+		//echo $query->num_rows();
+		if($query && $query->num_rows() > 0)
+		{
+			
+			$result = $query->result();
 
-		return $result[0]->uid;
+			var_dump($result);
+			return $result[0]->uid;
+		}
+
+		return false;
 	}
 
 	function user_exist($id)
@@ -175,9 +182,10 @@ class User_model extends CI_model
 		$this->db->select('uid');
 		$this->db->where('uid', $id);
 		$query = $this->db->get('users');
-
+		
 		if($query) return $query->num_rows();
 
+		
 		return false;
 	}
 

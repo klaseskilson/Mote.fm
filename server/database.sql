@@ -12,7 +12,7 @@ DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE IF NOT EXISTS `users` (
 	`uid` INT(6) NOT NULL AUTO_INCREMENT,
-	`email` CHAR(8) NOT NULL,
+	`email` CHAR(254) NOT NULL,
 	`name` CHAR(60) NOT NULL,
 	`password` CHAR(130) NOT NULL,
 	PRIMARY KEY (`uid`)

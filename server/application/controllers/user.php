@@ -6,30 +6,57 @@ class User extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->model("user_model");
+
+		// load password hash library
+		$this->load->library('PasswordHash', array(8, false));
 	}
 	
 	public function index()
 	{
-		$this->bajs();
+		$this->getUsers();
 	}
 
-	public function bajs($kebab="hejhej")
-	{
-		$this->user_model->create_user("einars92@gmail.com", "Einar", "Bajsson", "hejhejhej");
-
-	}
 	public function signUp()
 	{
-		$name = $this->input->post('Einis');
-
-		if ($name == 'Einis')
+		$name = $this->input->post('name');
+		$email = $this->input->post('email');
+		$password = $this->input->post('password');
+		
+		if (!($this->user_model->create_user($email, $name, $password)))
 		{
-			echo "GULLEEEEEE";
+			echo "Something went wrong. Kiss och bajs.";
 		}
 		else
 		{
-			echo "OGULLEEEE";
-		}
+			echo "Well done my kuk. Anal. penis";
 
+		}
 	}
+		
+	public function getUsers()
+	{
+		$allUsers = $this->user_model->get_all();
+		echo $allUsers;
+	}
+
+	public function thisId()
+	{
+		$email = 'ballesson@gmail.com';
+		$myId = $this->user_model->get_id($email);
+		echo $myId;
+
+		
+	}
+
+	public function checkUser()
+	{
+		$id = 2;
+
+		$balle = $this->user_model->user_exist($id);
+		echo $balle;
+	}
+
+
+
+	
 }

@@ -55,7 +55,7 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-4 col-sm-offset-3">
-					<form action="user/signup" method="post">
+					<form action="user/signUp" method="post">
 						<p>
 							<input type="text" name="name" id="name" class="form-control input-lg square-bottom" placeholder="Full name" required>
 							<input type="email" name="email" id="email" class="form-control input-lg square-bottom square-top" placeholder="Email" required>
