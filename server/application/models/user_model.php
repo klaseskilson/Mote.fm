@@ -17,7 +17,7 @@ class User_model extends CI_model
 	 */
 	function validate($email, $pwd)
 	{
-		$this->db->select("uid, password, email");
+		$this->db->select("uid, password, email, name");
 		$this->db->where('email', $email);
 		// password query
 		$pwq = $this->db->get("users");

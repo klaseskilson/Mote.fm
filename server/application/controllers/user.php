@@ -35,30 +35,36 @@ class User extends CI_Controller {
 		}
 	}
 
-	public function getUsers()
+	public function signin()
 	{
-		$allUsers = $this->user_model->get_all();
-		echo $allUsers;
+		// prepare data array for view
+		$data = array();
+
+		// have the user submited anything?
+		if($this->input->post('submit'))
+		{
+			$email = $this->input->post('email');
+			$password = $this->input->post('password');
+
+			$this->login->validate($email, $password);
+
+			if($this->login->validate($email, $password))
+			{
+				redirect('/?loggedin', 'location');
+			}
+			else
+			{
+				echo 'No fun';
+			}
+		}
+		else
+		{
+			$data['title'] = 'Sign in!';
+
+			$this->load->view('templates/header', $data);
+			$this->load->view('login', $data);
+			$this->load->view('templates/footer', $data);
+		}
+
 	}
-
-	public function thisId()
-	{
-		$email = 'ballesson@gmail.com';
-		$myId = $this->user_model->get_id($email);
-		echo $myId;
-
-
-	}
-
-	public function checkUser()
-	{
-		$id = 2;
-
-		$balle = $this->user_model->user_exist($id);
-		echo $balle;
-	}
-
-
-
-
 }
