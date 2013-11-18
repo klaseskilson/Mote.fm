@@ -23,7 +23,7 @@ class Party_model extends CI_model
 					'uid' => $uid,
 					'name' => $name,
 					'locale' => $locale,
-					'hash' => hashgen(5)
+					'hash' => hashgen(5, true, false, true) // generate a 5 char long hash, ALPHAnumeric
 				);
 
 		// insert data!
@@ -34,7 +34,9 @@ class Party_model extends CI_model
 		// if we got this far, something went wrong
 		return false;
 	}
-
+	/**
+	 * return meta info about party
+	 */
 	function get_party_from_id($partyid)
 	{
 		// select all columns from parties where partyid=$partyid
@@ -72,6 +74,38 @@ class Party_model extends CI_model
 			return $result[0];
 		}
 
-		return false; 
+		return false;
+	} 
+
+	function get_party_que($partyid)
+	{
+		if(!$this->party_exists($partyid))
+			return false;
+
+		$this->db->select('quesong.*, COUNT(vote_id) AS vote_count');
+		$this->db->from('quesong');
+		$this->db->where('partyid', $partyid);
+		$this->db->join('quevote', 'quesong.songid = quevote.songid', 'left');
+		$this->db->group_by('quesong.songid');
+		$this->db->order_by('vote_count desc, quesong.time');
+
+		$result = $this->db->get();
+
+		return $result->result_array();
+	}
+
+	function party_exists($partyid)
+	{
+		$this->db->select('partyid');
+		$this->db->where('partyid', $partyid);
+		$this->db->limit(1);
+		$query = $this->db->get('parties');
+
+		// in php, everything !== 0 is true
+		if($query)
+			return $query->num_rows();
+
+		// if we got this far, something went wrong
+		return false;
 	}
 }

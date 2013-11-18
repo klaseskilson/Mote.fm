@@ -45,9 +45,51 @@ class api extends CI_Controller {
 			$partyid = $this->party_model->create_party($uid, $name, $locale);
 			if($partyid)
 			{
-				$data['status'] = 'ok';
+				$data['status'] = 'success';
 				$data['result'] = $this->party_model->get_party_from_id($partyid);
 			}
+		}
+
+		// write array json encoded
+		echo json_encode($data);
+	}
+
+	/**
+	 * get the playlist for the party
+	 */
+	public function get_party_list()
+	{
+		$this->load->model('Party_model');
+
+		$partyid = $this->input->post('partyid');
+		$data = array();
+
+		if(!$partyid)
+		{
+			$data['status'] = 'error';
+			$data['respons'] = 'Missing post data. Not all needed fields were sent.';
+		}
+		elseif(!$this->Party_model->party_exists($partyid))
+		{
+			$data['status'] = 'error';
+			$data['respons'] = 'Party not found.';
+		}
+		else
+		{
+			$first = $this->Party_model->get_party_que($partyid);
+
+			while(true)
+			{
+				$second = $this->Party_model->get_party_que($partyid);
+
+				if($second == $first)
+					sleep(3);
+				else
+					break;
+			}
+
+			$data['status'] = 'success';
+			$data['result'] = $second;
 		}
 
 		// write array json encoded
