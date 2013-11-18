@@ -45,13 +45,15 @@
 		<!--[if lt IE 7]>
 			<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
 		<![endif]-->
-	<!--<div id="container">-->
-		<!--<header id="head">
+	<div id="container">
+		<header id="head">
 			<div class="container">
 				<div class="row">
-					<div class="col-sm-4"></div>
-					<div class="col-sm-4"></div>
-					<div class="col-sm-4"></div>
+					<div class="col-sm-4">
+						Hathor
+					</div>
+					<div class="col-sm-4">hej</div>
+					<div class="col-sm-4">hej</div>
 				</div>
 			</div>
 		</header><!-- end #head -->

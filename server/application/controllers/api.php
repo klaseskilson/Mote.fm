@@ -69,6 +69,11 @@ class api extends CI_Controller {
 			$data['status'] = 'error';
 			$data['respons'] = 'Missing post data. Not all needed fields were sent.';
 		}
+		elseif(!$this->Party_model->party_exists($partyid))
+		{
+			$data['status'] = 'error';
+			$data['respons'] = 'Party not found.';
+		}
 		else
 		{
 			$first = $this->Party_model->get_party_que($partyid);
