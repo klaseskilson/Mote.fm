@@ -67,4 +67,34 @@ class User extends CI_Controller {
 		}
 
 	}
+	public function reset()
+	{
+		$email = $this->input->post('email');
+		$id = $this->user_model->get_id($email);
+
+		if ($this->user_model->user_exist($id))
+		{
+			$hash = $this->user_model->reset($email);
+			$this->load->library('email');
+			$this->email->from('noreply@taketkvg.se', 'Einis');
+			$this->email->to($email);
+			$this->email->subject('Password reset');
+			$this->email->message('Fuck you. hathor.se/user/forgotPassword/'.$email.'/'.$hash);
+		}
+	}
+	public function forgotPassword($email, $hash)
+	{
+		$newPassword = $this->input->post('newPassword');
+		$confirm = $this->input->post('confirm');
+		$id = $this->user_model->get_id($email);
+
+		if(!($this->user_model->update_password($id, $newPassword, $confirm)))
+		{
+			echo "Something went wrong.";
+		}
+		else
+		{
+			echo "Your pasword has been reset.";
+		}
+
 }

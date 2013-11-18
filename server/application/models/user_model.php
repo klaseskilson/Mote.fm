@@ -220,4 +220,16 @@ class User_model extends CI_model
 
 		return false;
 	}
+
+	function reset($email)
+	{
+		$data = array('hashkey' => strgen(20));
+		if($this->db->update('users', $data, array('email' => $email))
+		{
+			return $data['hashkey'];
+		}
+		return false;
+
+
+	}
 }
