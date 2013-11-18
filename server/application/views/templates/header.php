@@ -36,7 +36,7 @@
 
 		<!-- CSS files -->
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" />
-		<link rel="stylesheet/less" rel="stylesheet" href="web/css/style.less" />
+		<link rel="stylesheet/less" rel="stylesheet" href="../web/css/style.less" />
 
 		<!-- LESS YO -->
 		<script src="web/js/less.js"></script>

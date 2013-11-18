@@ -35,6 +35,12 @@ class User extends CI_Controller {
 		}
 	}
 
+	public function signout()
+	{
+		$this->login->logout();
+		redirect('/?loggedout', 'location');
+	}
+
 	public function signin()
 	{
 		// prepare data array for view
@@ -45,8 +51,6 @@ class User extends CI_Controller {
 		{
 			$email = $this->input->post('email');
 			$password = $this->input->post('password');
-
-			$this->login->validate($email, $password);
 
 			if($this->login->validate($email, $password))
 			{
@@ -96,5 +100,5 @@ class User extends CI_Controller {
 		{
 			echo "Your pasword has been reset.";
 		}
-
+	}
 }

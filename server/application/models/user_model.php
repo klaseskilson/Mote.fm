@@ -224,12 +224,11 @@ class User_model extends CI_model
 	function reset($email)
 	{
 		$data = array('hashkey' => strgen(20));
-		if($this->db->update('users', $data, array('email' => $email))
+		if($this->db->update('users', $data, array('email' => $email)))
 		{
 			return $data['hashkey'];
 		}
+
 		return false;
-
-
 	}
 }
