@@ -6,6 +6,9 @@ class User_model extends CI_model
 	{
 		// call model constructor
 		parent::__construct();
+
+		// load CI to use some helper functions
+		$CI =& get_instance();
 	}
 
 
@@ -24,43 +27,6 @@ class User_model extends CI_model
 		{
 			return $pwr[0];
 		}
-		return false;
-	}
-
-
-	/**
-	 * check if user has given privil
-	 */
-	function has_privilege($id, $what)
-	{
-		$this->db->where('uid', $id);
-		$this->db->where('privil <=', $what);
-		$query = $this->db->get('admin');
-
-		if($query->num_rows() > 0)
-		{
-			return $query;
-		}
-
-		return false;
-	}
-
-	/**
-	 * collect privil for user
-	 */
-	function get_privil($id)
-	{
-		$this->db->select("*");
-		$this->db->where('uid', $id);
-
-		$query = $this->db->get('admin');
-		$result = $query->result();
-
-		if($query)
-		{
-			return $result[0]->privil;
-		}
-
 		return false;
 	}
 
@@ -94,7 +60,8 @@ class User_model extends CI_model
 			$data = array(
 						'name'		=> $name,
 						'password'	=> $this->passwordhash->HashPassword($password),
-						'email'		=> $email
+						'email'		=> $email,
+						'hashkey'	=> strgen(20)
 					);
 			return $this->db->insert('users', $data);
 		}
@@ -167,7 +134,7 @@ class User_model extends CI_model
 		//echo $query->num_rows();
 		if($query && $query->num_rows() > 0)
 		{
-			
+
 			$result = $query->result();
 
 			var_dump($result);
@@ -182,10 +149,10 @@ class User_model extends CI_model
 		$this->db->select('uid');
 		$this->db->where('uid', $id);
 		$query = $this->db->get('users');
-		
+
 		if($query) return $query->num_rows();
 
-		
+
 		return false;
 	}
 
