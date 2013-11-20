@@ -12,7 +12,7 @@
 		<script>
 		window.jQuery || document.write('<script src=\"<?php echo base_url(); ?>web/js/jquery.min.js\">\x3C/script>');
 		</script>
-
+		<?php echo isset($ajax) ? '<script src="web/js/hathorajax.js"></script>': ''; ?>
 		<!-- Javascripts -->
 		<script src="<?php echo base_url(); ?>web/js/main.js"></script>
 	</body>
