@@ -5,6 +5,13 @@ class User extends CI_Controller {
 	function __construct()
 	{
 		parent::__construct();
+
+		// make sure that the user is logged in. Redirect to login page if not.
+		if(!$this->login->is_logged_in() && $this->uri->segment(2) == 'profile')
+		{
+			redirect('/user/signin?redir='.urlencode(uri_string()));
+		}
+
 		$this->load->model("user_model");
 
 		// load password hash library
@@ -15,10 +22,25 @@ class User extends CI_Controller {
 
 	public function index()
 	{
-		$this->getUsers();
+		if($this->login->is_logged_in())
+			$this->profile();
+		else
+			$this->signUp();
 	}
 
-	public function signUp()
+	public function profile()
+	{
+		$data = array();
+		$data['user'] = $this->login->get_all_info();
+
+		$data['title'] = 'Edit profile';
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('profile', $data);
+		$this->load->view('templates/footer', $data);
+	}
+
+	public function signUp($method = 'web')
 	{
 		$name = $this->input->post('name');
 		$email = $this->input->post('email');
@@ -27,7 +49,18 @@ class User extends CI_Controller {
 		// validate email using CI magic && try signup
 		if (valid_email($email) && $this->user_model->create_user($email, $name, $password))
 		{
-			echo "Well done my kuk. Anal. penis";
+			// how do we want the response?
+			if($method == 'web')
+			{
+				echo "Well done my kuk.";
+			}
+			elseif($method == 'json')
+			{
+				$response = array(
+								'status' => 'success'
+						   );
+				echo json_encode($response);
+			}
 		}
 		else
 		{
@@ -38,13 +71,16 @@ class User extends CI_Controller {
 	public function signout()
 	{
 		$this->login->logout();
-		redirect('/?loggedout', 'location');
+		redirect('/home/start', 'location');
 	}
 
 	public function signin()
 	{
 		// prepare data array for view
 		$data = array();
+
+		// redir get query sent?
+		$data['redir'] = isset($_GET['redir']) ? urlencode($_GET['redir']) : '/home/';
 
 		// have the user submited anything?
 		if($this->input->post('submit'))
@@ -54,11 +90,16 @@ class User extends CI_Controller {
 
 			if($this->login->validate($email, $password))
 			{
-				redirect('/?loggedin', 'location');
+				redirect(urldecode($data['redir']), 'location');
 			}
 			else
 			{
-				echo 'No fun';
+				$data['title'] = 'Sign in!';
+				$data['email'] = $email;
+
+				$this->load->view('templates/header', $data);
+				$this->load->view('login', $data);
+				$this->load->view('templates/footer', $data);
 			}
 		}
 		else
