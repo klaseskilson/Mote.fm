@@ -14,3 +14,44 @@ h2
 	margin-top: -80px;
 	color: red;
 }
+#songName, #songArtist
+{
+	font-size: 40px;
+	color: blue;
+}
+.delete
+{
+	position: absolute;
+	float: left;
+	width: 20px;
+	height: 20px;
+	background-color: red;
+	margin-left: 40%;
+	cursor: pointer;
+}
+.vote
+{
+	position: absolute;
+	float: left;
+	width: 20px;
+	height: 20px;
+	background-color: blue;
+	margin-left: 40%;
+	cursor: pointer;
+	margin-top: -25px;
+}
+.addTrack
+{
+	float: right;
+	margin-right: 40%;
+	margin-left: -80%;
+	width: 20px;
+	height: 20px;
+	background-color: pink;
+	cursor: pointer;
+}
+div.cover>div
+{
+	width: 60px;
+	height: 60px;
+}

@@ -48,9 +48,9 @@ class Login
 		{
 			$data = array(
 				'id' => $result->uid,
-				'liuid' => $result->liuid,
-				'is_logged_in' => true,
-				'privil' => $this->CI->User_model->get_privil($result->uid),
+				'email' => $result->email,
+				'name' => $result->name,
+				'is_logged_in' => true
 			);
 			$this->CI->session->set_userdata($data);
 			return true;
