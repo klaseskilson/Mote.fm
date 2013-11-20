@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS `quevote`;
 DROP TABLE IF EXISTS `quesong`;
 DROP TABLE IF EXISTS `parties`;
 DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `nowplaying`;
 
 CREATE TABLE IF NOT EXISTS `users` (
 	`uid` INT(6) NOT NULL AUTO_INCREMENT,
@@ -60,3 +61,14 @@ ALTER TABLE `quevote`
 	ADD CONSTRAINT `quevote_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
 ALTER TABLE `quevote`
 	ADD CONSTRAINT `quevote_ibfk_2` FOREIGN KEY (`songid`) REFERENCES `quesong` (`songid`);
+
+
+CREATE TABLE IF NOT EXISTS `nowplaying` (
+	`playid` INT(16) NOT NULL AUTO_INCREMENT,
+	`partyid` INT(6) NOT NULL,
+	'trackuri' char(64) NOT NULL,
+	PRIMARY KEY (`playid`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+ALTER TABLE `nowplaying`
+	ADD CONSTRAINT `nowplaying_ibfk_1` FOREIGN KEY (`partyid`) REFERENCES `parties` (`partiyd`);

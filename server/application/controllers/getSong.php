@@ -4,18 +4,32 @@ class GetSong extends CI_Controller
 {
 	public function index()
 	{
+		//set view
+		$view = "getsong";
+
+		//load models and helper
+		$model = $this->load->model('party_model');
+		$this->load->helper('external_spotify');
+
+		//FIXME: get session user data
 		if(!$this->session->userdata('partyID'))
 		{
+			//FIXME: hardcoded partyID
 			$this->session->set_userdata('partyID',123456);	
 		}
-		
-		$data = array();
-		
-		$model = $this->load->model('party_model');
-		$data['title'] = 'Democratize the play queue';
-		$data['ajax'] = true;
+		if(!$this->session->userdata('track'))
+		{
+			$this->session->set_userdata('track',$this->party_model->get_current_track_at_party($this->session->userdata('partyID'))['trackuri']);		
+		}
 
-		$view = "getsong";
+
+		$data = array();
+		$data['title'] = 'Democratize the play queue';
+		//flag to say if we should import ajax stuff
+		$data['ajax'] = true;
+		$data['track'] = get_track_name($this->session->userdata('track'));
+
+		
 		$this->load->view('templates/header', $data);
 		$this->load->view($view);
 		$this->load->view('templates/footer', $data);

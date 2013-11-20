@@ -2,29 +2,39 @@ require([
 	'$api/models',
 	'scripts/jquery.min'
 	], function(models, jquery){
-
-			
-		var musicTrack = {
-			"partyID" : 0,
-			"trackURI" : ""
-		}
-
-		jQuery(document).ready(function() {
-			console.log("HEJ!");
-
+		/**
+		 * RegisterHathorCallback() creates an listener that reports current 
+		 * played track to Hathor
+		 *
+		 */
+		var registerHathorCallback = function(partyID) {
 			models.player.addEventListener('change:index', function(stuff){
 				models.player.load('track').done(function(){
-					console.log(stuff.target);
-					console.log(stuff.target.track.uri);
-					var track = models.player.track;
-					console.log(track.uri)
-					musicTrack.partyID = 123456;
-					musicTrack.trackURI = track.uri;
-				});
 
-				$.post("http://127.0.0.1/hathor/index.php/spotifyPost/",musicTrack,function(resp){
-					console.log(resp);
+					//Spotify is a retard, we have to wait one second to get
+					//correct song
+					setTimeout(function() { 
+
+						var musicTrack = {
+							'partyID' : 0,
+							'uri' : ''
+						}
+
+						var track = models.player.track;
+
+						musicTrack.partyID = partyID;
+						musicTrack.trackURI = track.uri;
+						
+						//FIXME: Hardcoded adress
+						$.post("http://127.0.0.1/hathor/index.php/spotifyPost/",musicTrack,function(resp){
+							console.log(resp);
+						});
+
+					}, 1000);
 				});
 			});
-		});
+		};
+
+		exports.registerHathorCallback = registerHathorCallback;
+
 	});

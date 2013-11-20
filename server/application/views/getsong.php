@@ -13,7 +13,6 @@
 					</p>
 				</div>
 			</div> <!-- end .row -->
-			<script type="text/javascript">
 			<div class="bottom">
 				<p class="pull-right">
 					<span class="miniinfo"><a href="http://www.flickr.com/photos/31355686@N00/4701196608" target="_blank">Photo</a></span>
