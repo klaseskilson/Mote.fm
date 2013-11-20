@@ -7,14 +7,23 @@
 	class HathorPost extends CI_Controller{
 
 		public function index()
-		{		
+		{
+			
+			$partyID = $this->session->userdata('partyID'); 
+			$expectedTrack = $this->session->userdata('trackURI');
 
-
-			$partyID = $this->input->post('partyID');
-			$trackURI = $this->input->post('trackuri');
-
+			$this->load->helper('external_spotify');
 			$this->load->model('party_model');
-			echo $this->party_model->get_current_track_at_party($partyID)['trackuri'];
+			$track = $this->party_model->get_current_track_at_party($partyID)['trackuri'];
+			$expectedTrack = $this->session->userdata('trackURI');
+			while($track == $expectedTrack)
+			{
+				$track = $this->party_model->get_current_track_at_party($partyID)['trackuri'];
+				sleep(5);
+			}
+			$this->session->set_userdata('trackURI', $track);
+			$status = "Hathor says: ". get_track_name($expectedTrack) . " <br /> Spotify says: " . get_track_name($track);
+			echo $status;
 		}
 	}
 ?>
