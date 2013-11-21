@@ -5,11 +5,11 @@ CREATE DATABASE IF NOT EXISTS `hathor`;
 
 USE `hathor`;
 
+DROP TABLE IF EXISTS `nowplaying`;
 DROP TABLE IF EXISTS `quevote`;
 DROP TABLE IF EXISTS `quesong`;
 DROP TABLE IF EXISTS `parties`;
 DROP TABLE IF EXISTS `users`;
-DROP TABLE IF EXISTS `nowplaying`;
 
 CREATE TABLE IF NOT EXISTS `users` (
 	`uid` INT(6) NOT NULL AUTO_INCREMENT,
@@ -66,9 +66,9 @@ ALTER TABLE `quevote`
 CREATE TABLE IF NOT EXISTS `nowplaying` (
 	`playid` INT(16) NOT NULL AUTO_INCREMENT,
 	`partyid` INT(6) NOT NULL,
-	'trackuri' char(64) NOT NULL,
+	`trackuri` char(64) NOT NULL,
 	PRIMARY KEY (`playid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
 ALTER TABLE `nowplaying`
-	ADD CONSTRAINT `nowplaying_ibfk_1` FOREIGN KEY (`partyid`) REFERENCES `parties` (`partiyd`);
+	ADD CONSTRAINT `nowplaying_ibfk_1` FOREIGN KEY (`partyid`) REFERENCES `parties` (`partyid`);
