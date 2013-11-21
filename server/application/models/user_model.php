@@ -50,6 +50,24 @@ class User_model extends CI_model
 	}
 
 	/**
+	 * get all user info, such as name or other
+	 */
+	function get_all_info($uid)
+	{
+		$this->db->select('uid, email, name');
+		$this->db->where('uid', $uid);
+		$query = $this->db->get('users');
+
+		$result = $query->result_array();
+
+		if($query->num_rows() == 1)
+		{
+			return $result[0];
+		}
+
+		return false;
+	}
+	/**
 	 * create a new user
 	 */
 	function create_user($email, $name, $password)
