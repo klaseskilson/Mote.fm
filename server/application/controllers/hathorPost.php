@@ -1,7 +1,7 @@
 <?php
 /**
 	Author: Erik Larsson
-	Info: Controller for Ajaj requests from Hathor to find what song currently is playing.
+	Info: Controller for requests from Hathor to find what song currently is playing.
 */
 
 	class HathorPost extends CI_Controller{

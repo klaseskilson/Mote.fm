@@ -13,9 +13,10 @@ class Party_model extends CI_model
 	{
 		// load user model for user check
 		$this->load->model('User_model');
+		$this->load->helper('common');
 
 		// check if user exists & locale is set, exit function if not
-		if(!$this->user_model->user_exists($uid) && strlen($locale) !== 2)
+		if(!$this->user_model->user_exist($uid) && strlen($locale) !== 2)
 			return false;
 
 		// save data into array
@@ -23,7 +24,7 @@ class Party_model extends CI_model
 					'uid' => $uid,
 					'name' => $name,
 					'locale' => $locale,
-					'hash' => hashgen(5, true, false, true) // generate a 5 char long hash, ALPHAnumeric
+					'hash' => strgen(5, true, false, true) // generate a 5 char long hash, ALPHAnumeric
 				);
 
 		// insert data!

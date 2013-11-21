@@ -2,6 +2,7 @@ require([
 	'$api/models',
 	'scripts/jquery.min'
 	], function(models, jquery){
+		
 		/**
 		 * RegisterHathorCallback() creates an listener that reports current 
 		 * played track to Hathor

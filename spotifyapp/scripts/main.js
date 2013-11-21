@@ -2,12 +2,16 @@ require([
   '$api/models',
   'scripts/cover',
   'scripts/postPlayingSong',
+  'scripts/registerParty',
   'scripts/trackInfo'
-], function(models, cover, postPlayingSong, trackInfo) {
+], function(models, cover, postPlayingSong, registerParty,trackInfo) {
   'use strict';
 
   //FIXME: partyID is hardcoded
   postPlayingSong.registerHathorCallback(123456); 
+
+  //this will register a party for username with id 1
+  //registerParty.RegisterParty(1);
   
   // Each track has ha vote. Here the id of the voter and
   // timestamp is stored in arrays.
