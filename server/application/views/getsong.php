@@ -9,8 +9,9 @@
 			<div class="row">
 				<div class="col-sm-6 screamer">
 					<p>
-						<div id="songdata"><h3><?php echo isset($track) ? $track : 'Nope!'?></h3></div>
-						<div id="songInfo"><?php echo isset($trackdata) ? $trackdata : 'Nope!' ?></h3></div>
+						<div id="trackName"><h3><?php echo isset($trackname) ? $trackname : 'Nopes!'?></h3></div>
+						<div id="artistName"><h3><?php echo isset($artistname) ? $artistname : 'Nopes!'?></h3></div>
+						<div id="songInfo"><?php echo isset($trackdata) ? $trackdata : 'Nopes!' ?></h3></div>
 					</p>
 				</div>
 			</div> <!-- end .row -->

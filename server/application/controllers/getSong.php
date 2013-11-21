@@ -19,7 +19,7 @@ class GetSong extends CI_Controller
 		}
 		if(!$this->session->userdata('track'))
 		{
-			$this->session->set_userdata('track',$this->party_model->get_current_track_at_party($this->session->userdata('partyID'))['trackuri']);		
+			$this->session->set_userdata('track',$this->party_model->get_current_track_at_party($this->session->userdata('partyID'))['trackuri']);
 		}
 
 
@@ -28,7 +28,9 @@ class GetSong extends CI_Controller
 		//flag to say if we should import ajax stuff
 		$data['ajax'] = true;
 		$data['track'] = get_track_name($this->session->userdata('track'));
-
+		$data['trackname'] = get_track_name('spotify:track:5TdfbhLfSqSgtTIAEL4i3Y');
+		$data['artistname'] = get_artist_name('spotify:track:5TdfbhLfSqSgtTIAEL4i3Y');
+		$data['trackdata']	= get_album_art('spotify:track:5TdfbhLfSqSgtTIAEL4i3Y');
 		
 		$this->load->view('templates/header', $data);
 		$this->load->view($view);
