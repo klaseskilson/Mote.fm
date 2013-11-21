@@ -56,7 +56,7 @@
 			<div class="row">
 				<div class="col-sm-4 col-sm-offset-3">
 					<div id="signuparea">
-						<form action="<?php echo base_url(); ?>user/signup/json" method="post" id="signupform">
+						<form action="<?php echo base_url(); ?>user/signup/" method="post" id="signupform">
 							<p>
 								<input type="text" name="name" id="name" class="form-control input-lg square-bottom" placeholder="Full name" required>
 								<input type="email" name="email" id="email" class="form-control input-lg square-bottom square-top" placeholder="Email" required>

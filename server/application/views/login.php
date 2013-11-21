@@ -24,7 +24,7 @@
 						<input type="submit" name="submit" id="submit" value="Go!" class="btn btn-default btn-lg btn-block">
 					</p>
 					<p>
-						Forgot your password?
+						<a href="">Forgot your password?
 					</p>
 				</form>
 			</div>
