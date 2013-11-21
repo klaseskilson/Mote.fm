@@ -3,6 +3,24 @@
 	Helper for external querying against spotify api
 	simple helpful stuff
 	*/
+	function get_artist_name($trackURI)
+	{
+
+	}
+
+	function get_album_art($trackURI)
+	{
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, "https://embed.spotify.com/oembed/?url=".$trackURI);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+		$data = curl_exec($ch);
+		curl_close($ch);
+
+		$xml = simplexml_load_string($data);
+
+		return var_dump($xml);
+	}
 
 	function get_track_name($trackURI)
 	{
@@ -14,8 +32,8 @@
 		curl_close($ch);
 
 		$xml = simplexml_load_string($data);
-
-		return "Artist: " . $xml->artist->name . " Track: " . $xml->name;
+		return false;
+		return $xml->name;
 	}
 
 ?>
