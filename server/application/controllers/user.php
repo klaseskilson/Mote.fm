@@ -49,6 +49,7 @@ class User extends CI_Controller {
 		// validate email using CI magic && try signup
 		if (valid_email($email) && $this->user_model->create_user($email, $name, $password))
 		{
+			$this->login->validate($email, $password);
 			// how do we want the response?
 			if($method == 'web')
 			{
@@ -62,9 +63,26 @@ class User extends CI_Controller {
 				echo json_encode($response);
 			}
 		}
-		else
+		else // something wrong!
 		{
-			echo "Something went wrong. Kiss och bajs.";
+			// how do we want the response?
+			if($method == 'web')
+			{
+				echo "ajaj";
+			}
+			elseif($method == 'json')
+			{
+				// return response using json! prepare data
+				$response = array(
+								'status' => 'error',
+								'errors' => array(
+												'name'	 => (strlen($name) > 2),
+												'email'	 => valid_email($email) && !$this->user_model->email_exists($email),
+												'password' => !(strlen($password) <= 6)
+											)
+						    );
+				echo json_encode($response);
+			}
 		}
 	}
 
@@ -88,12 +106,14 @@ class User extends CI_Controller {
 			$email = $this->input->post('email');
 			$password = $this->input->post('password');
 
+			// kolla inloggning mot login lib
 			if($this->login->validate($email, $password))
 			{
 				redirect(urldecode($data['redir']), 'location');
 			}
 			else
 			{
+				// ajaj, fel!
 				$data['title'] = 'Sign in!';
 				$data['email'] = $email;
 
