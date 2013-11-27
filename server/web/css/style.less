@@ -4,6 +4,8 @@ Hathor style, written in LESS.
 Don't go deeper than three levels, man. Follow http://css-tricks.com/sass-style-guide/
 */
 
+// some variables
+@headbackground: #333;
 
 /************************************************
  * FONTS
@@ -29,6 +31,14 @@ Don't go deeper than three levels, man. Follow http://css-tricks.com/sass-style-
 		 url("../fonts/lato/svg/Lato-Regular.svg") format("svg"),
 		 url("../fonts/lato/ttf/Lato-Reg.ttf") format("truetype");
 }
+@font-face {
+	font-family: 'latoreg';
+	font-style: normal;
+	font-weight: 700;
+    src: local("Lato Bold"),
+		 url("../fonts/lato/svg/Lato-Bold.svg") format("svg"),
+		 url("../fonts/lato/ttf/Lato-Bol.ttf") format("truetype");
+}
 
 /************************************************
  * MAIN/BODY STUFF
@@ -45,10 +55,41 @@ html, body, #container {
 	height: 100%;
 }
 
+#head {
+	width: 100%;
+
+	.container {
+		background: inherit;
+		color: #fff;
+	}
+	&.color .container {
+		background: @headbackground;
+	}
+
+	.navbar-hathor {
+		background: inherit;
+		border: 0;
+		border-radius: 0;
+		margin-top: 20px;
+
+		.navbar-brand {
+			font-size: 22px;
+		}
+		a {
+			color:;
+		}
+	}
+}
+// body.fancypane #head {
+// 	position: fixed;
+// 	top: 0;
+// 	z-index: 3;
+// }
+
 /*
  * Typography!
  */
-h1, h2, h3, h4, p {
+h1, h2, h3, h4, p, body {
 	font-family: 'latoreg', 'Helvetica', sans-serif;
 }
 /************************************************
@@ -72,7 +113,7 @@ h1, h2, h3, h4, p {
 
 
 	a {
-		color: rgba(255, 255, 255, 0.7);
+		color: rgba(0, 255, 255, 0.7);
 	}
 	a:hover {
 		color: #fff;
@@ -95,6 +136,13 @@ h1, h2, h3, h4, p {
 	&#second {
 		background: url('../img/landing/party_4.jpg');
 		text-shadow: rgba(0, 0, 0, 0.8) 0 0 10px;
+
+		.alert{
+			text-shadow: none;
+			a {
+				color: rgba(0, 0, 0, 0.7);
+			}
+		}
 	}
 }
 
@@ -108,7 +156,7 @@ h1, h2, h3, h4, p {
 }
 
 .between {
-	background: #333;
+	background: @headbackground;
 	color: #fff;
 	padding: 4em 0;
 

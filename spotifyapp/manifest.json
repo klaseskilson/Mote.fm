@@ -11,5 +11,10 @@
   },
   "SupportedDeviceClasses": [
   	"Desktop"
-  ]
+  ],
+  "RequiredPermissions": [
+    "http://*.spotify.com",
+    "http://spotify.com",
+    "http://127.0.0.1/*"
+    ]
 }

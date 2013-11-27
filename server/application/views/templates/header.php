@@ -23,7 +23,7 @@
 
 		<!-- Tile icon for Win8 (144x144 + tile color) -->
 		<meta name="msapplication-TileImage" content="web/img/touch/apple-touch-icon-144x144-precomposed.png">
-		<meta name="msapplication-TileColor" content="#222222">
+		<meta name="msapplication-TileColor" content="#333333">
 
 		<!-- Browser favicon -->
 		<link rel="shortcut icon" href="web/img/favicon.png">
@@ -36,23 +36,51 @@
 
 		<!-- CSS files -->
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" />
-		<link rel="stylesheet/less" rel="stylesheet" href="web/css/style.less" />
+		<link rel="stylesheet/less" rel="stylesheet" href="<?php echo base_url(); ?>web/css/style.less" />
 
 		<!-- LESS YO -->
-		<script src="web/js/less.js"></script>
+		<script src="<?php echo base_url(); ?>web/js/less.js"></script>
 	</head>
-	<body>
+	<body<?php echo isset($bodystyle) ? ' class="'.$bodystyle.'"' : ''; ?>>
 		<!--[if lt IE 7]>
 			<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
 		<![endif]-->
-	<!--<div id="container">-->
-		<!--<header id="head">
+	<div id="container">
+		<header id="head">
 			<div class="container">
-				<div class="row">
-					<div class="col-sm-4"></div>
-					<div class="col-sm-4"></div>
-					<div class="col-sm-4"></div>
-				</div>
+				<nav class="navbar navbar-hathor navbar-default" role="navigation">
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="<?php echo base_url(); ?>">
+							Hathor
+						</a>
+					</div>
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav navbar-right">
+							<?php if(isset($user['uid']) && $user['uid'])
+							{
+								?>
+								<li><a href="<?php echo base_url(); ?>user/profile"><?php echo $user['name'];?></a></li>
+								<li><a href="<?php echo base_url(); ?>about">About</a></li>
+								<li><a href="<?php echo base_url(); ?>user/signout">Sign out</a></li>
+								<?php
+							}
+							else
+							{
+								?>
+								<li><a href="<?php echo base_url(); ?>about">About</a></li>
+								<li><a href="<?php echo base_url(); ?>user/signin">Sign in</a></li>
+								<?php
+							}
+							?>
+						</ul>
+					</div><!-- /.navbar-collapse -->
+				</nav>
 			</div>
 		</header><!-- end #head -->
 

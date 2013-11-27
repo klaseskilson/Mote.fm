@@ -50,24 +50,26 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-6 col-sm-offset-3 screamer">
-					<h2>Sign up today</h2>
+					<h2 id="signuptitle">Sign up today</h2>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-4 col-sm-offset-3">
-					<form action="user/signup" method="post">
-						<p>
-							<input type="text" name="name" id="name" class="form-control input-lg square-bottom" placeholder="Full name" required>
-							<input type="email" name="email" id="email" class="form-control input-lg square-bottom square-top" placeholder="Email" required>
-							<input type="password" name="password" id="password" class="form-control input-lg square-top" placeholder="Password" required>
-						</p>
-						<p>
-							<input type="submit" name="submit" id="submit" value="Go!" class="btn btn-default btn-lg btn-block">
-						</p>
-						<p>
-							By creating a account you accept our <a href="#">terms of service</a>. We never share your information with anybody.
-						</p>
-					</form>
+					<div id="signuparea">
+						<form action="<?php echo base_url(); ?>user/signup/json" method="post" id="signupform">
+							<p>
+								<input type="text" name="name" id="name" class="form-control input-lg square-bottom" placeholder="Full name" required>
+								<input type="email" name="email" id="email" class="form-control input-lg square-bottom square-top" placeholder="Email" required>
+								<input type="password" name="password" id="password" class="form-control input-lg square-top" placeholder="Password" required>
+							</p>
+							<p>
+								<input type="submit" name="submit" id="submit" value="Go!" class="btn btn-default btn-lg btn-block">
+							</p>
+							<p>
+								By creating a account you accept our <a href="#">terms of service</a>. We never share your information with anybody.
+							</p>
+						</form>
+					</div><!-- /#signuparea -->
 				</div>
 			</div> <!-- end .row -->
 			<div class="bottom">

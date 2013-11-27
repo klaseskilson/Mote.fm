@@ -6,6 +6,9 @@ class User_model extends CI_model
 	{
 		// call model constructor
 		parent::__construct();
+
+		// load CI to use some helper functions
+		$CI =& get_instance();
 	}
 
 
@@ -14,7 +17,7 @@ class User_model extends CI_model
 	 */
 	function validate($email, $pwd)
 	{
-		$this->db->select("uid, password, email");
+		$this->db->select("uid, password, email, name");
 		$this->db->where('email', $email);
 		// password query
 		$pwq = $this->db->get("users");
@@ -24,43 +27,6 @@ class User_model extends CI_model
 		{
 			return $pwr[0];
 		}
-		return false;
-	}
-
-
-	/**
-	 * check if user has given privil
-	 */
-	function has_privilege($id, $what)
-	{
-		$this->db->where('uid', $id);
-		$this->db->where('privil <=', $what);
-		$query = $this->db->get('admin');
-
-		if($query->num_rows() > 0)
-		{
-			return $query;
-		}
-
-		return false;
-	}
-
-	/**
-	 * collect privil for user
-	 */
-	function get_privil($id)
-	{
-		$this->db->select("*");
-		$this->db->where('uid', $id);
-
-		$query = $this->db->get('admin');
-		$result = $query->result();
-
-		if($query)
-		{
-			return $result[0]->privil;
-		}
-
 		return false;
 	}
 
@@ -84,18 +50,36 @@ class User_model extends CI_model
 	}
 
 	/**
+	 * get all user info, such as name or other
+	 */
+	function get_all_info($uid)
+	{
+		$this->db->select('uid, email, name');
+		$this->db->where('uid', $uid);
+		$query = $this->db->get('users');
+
+		$result = $query->result_array();
+
+		if($query->num_rows() == 1)
+		{
+			return $result[0];
+		}
+
+		return false;
+	}
+	/**
 	 * create a new user
 	 */
-	function create_user($email, $fname, $sname, $password)
+	function create_user($email, $name, $password)
 	{
-		if(!empty($email) && !empty($fname) && !empty($fname) && strlen($password) > 6
+		if(!empty($email) && !empty($name) && strlen($password) > 6
 			&& !$this->email_exists($email))
 		{
 			$data = array(
-						'fname'		=> $fname,
-						'sname'		=> $sname,
+						'name'		=> $name,
 						'password'	=> $this->passwordhash->HashPassword($password),
-						'email'		=> $email
+						'email'		=> $email,
+						'hashkey'	=> strgen(20)
 					);
 			return $this->db->insert('users', $data);
 		}
@@ -165,9 +149,17 @@ class User_model extends CI_model
 		$this->db->where('email', $email);
 		$this->db->limit('1');
 		$query = $this->db->get('users');
-		$result = $query->result();
+		//echo $query->num_rows();
+		if($query && $query->num_rows() > 0)
+		{
 
-		return $result[0]->uid;
+			$result = $query->result();
+
+			var_dump($result);
+			return $result[0]->uid;
+		}
+
+		return false;
 	}
 
 	function user_exist($id)
@@ -177,6 +169,7 @@ class User_model extends CI_model
 		$query = $this->db->get('users');
 
 		if($query) return $query->num_rows();
+
 
 		return false;
 	}
@@ -242,6 +235,17 @@ class User_model extends CI_model
 		$result = $query->result_array();
 
 		if($query) return $result[0];
+
+		return false;
+	}
+
+	function reset($email)
+	{
+		$data = array('hashkey' => strgen(20));
+		if($this->db->update('users', $data, array('email' => $email)))
+		{
+			return $data['hashkey'];
+		}
 
 		return false;
 	}

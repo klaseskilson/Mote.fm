@@ -5,16 +5,16 @@
 	simple helpful stuff
 */
 
-function hashgen($length = 10, $large = true, $small = true, $numeric = true)
+function strgen($length = 10, $large = true, $small = true, $numeric = true)
 {
 	$chars = '';
 
 	if($large)
-		$chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$chars .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	if($small)
-		$chars += 'abcdefghijklmnopqrstuvwxyz';
+		$chars .= 'abcdefghijklmnopqrstuvwxyz';
 	if($numeric)
-		$chars += '0123456789';
+		$chars .= '0123456789';
 
 	$str = '';
 

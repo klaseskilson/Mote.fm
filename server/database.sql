@@ -5,6 +5,7 @@ CREATE DATABASE IF NOT EXISTS `hathor`;
 
 USE `hathor`;
 
+DROP TABLE IF EXISTS `nowplaying`;
 DROP TABLE IF EXISTS `quevote`;
 DROP TABLE IF EXISTS `quesong`;
 DROP TABLE IF EXISTS `parties`;
@@ -12,9 +13,12 @@ DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE IF NOT EXISTS `users` (
 	`uid` INT(6) NOT NULL AUTO_INCREMENT,
-	`email` CHAR(8) NOT NULL,
+	`email` CHAR(254) NOT NULL,
 	`name` CHAR(60) NOT NULL,
 	`password` CHAR(130) NOT NULL,
+	`hashkey` CHAR(20) NOT NULL,
+	`time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`activated` BOOL DEFAULT 0,
 	PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
@@ -58,3 +62,14 @@ ALTER TABLE `quevote`
 	ADD CONSTRAINT `quevote_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `users` (`uid`);
 ALTER TABLE `quevote`
 	ADD CONSTRAINT `quevote_ibfk_2` FOREIGN KEY (`songid`) REFERENCES `quesong` (`songid`);
+
+
+CREATE TABLE IF NOT EXISTS `nowplaying` (
+	`playid` INT(16) NOT NULL AUTO_INCREMENT,
+	`partyid` INT(6) NOT NULL,
+	`trackuri` char(64) NOT NULL,
+	PRIMARY KEY (`playid`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+ALTER TABLE `nowplaying`
+	ADD CONSTRAINT `nowplaying_ibfk_1` FOREIGN KEY (`partyid`) REFERENCES `parties` (`partyid`);

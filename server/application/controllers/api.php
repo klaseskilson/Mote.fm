@@ -35,16 +35,21 @@ class api extends CI_Controller {
 		$uid = $this->input->post('uid');
 		$locale = $this->input->post('locale');
 
-		if(!$name || !$uid || !$locale)
+		// test what was sent using post
+		if(!$name || !$uid || !$locale) // somethings is missing!
 		{
+			// set fail data!
 			$data['status'] = 'error';
 			$data['respons'] = 'Missing post data. Not all needed fields were sent.';
 		}
-		else
+		else // everyting is as it should
 		{
+			// create party
 			$partyid = $this->party_model->create_party($uid, $name, $locale);
+			// success?
 			if($partyid)
 			{
+				// set success data
 				$data['status'] = 'success';
 				$data['result'] = $this->party_model->get_party_from_id($partyid);
 			}
@@ -68,6 +73,11 @@ class api extends CI_Controller {
 		{
 			$data['status'] = 'error';
 			$data['respons'] = 'Missing post data. Not all needed fields were sent.';
+		}
+		elseif(!$this->Party_model->party_exists($partyid))
+		{
+			$data['status'] = 'error';
+			$data['respons'] = 'Party not found.';
 		}
 		else
 		{

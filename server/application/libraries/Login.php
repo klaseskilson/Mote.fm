@@ -48,9 +48,9 @@ class Login
 		{
 			$data = array(
 				'id' => $result->uid,
-				'liuid' => $result->liuid,
-				'is_logged_in' => true,
-				'privil' => $this->CI->User_model->get_privil($result->uid),
+				'email' => $result->email,
+				'name' => $result->name,
+				'is_logged_in' => true
 			);
 			$this->CI->session->set_userdata($data);
 			return true;
@@ -64,10 +64,6 @@ class Login
 		return $this->CI->session->userdata('id');
 	}
 
-	public function get_liuid() {
-		return $this->CI->session->userdata('liuid');
-	}
-
 	public function get_info($what)
 	{
 		// inloggad?
@@ -78,6 +74,18 @@ class Login
 		$this->CI->load->model('User_model');
 
 		return $this->CI->User_model->get_info($this->get_id(), $what);
+	}
+
+	public function get_all_info()
+	{
+		// inloggad?
+		if(!$this->is_logged_in())
+			return false;
+
+		// ladda usermodel
+		$this->CI->load->model('User_model');
+
+		return $this->CI->User_model->get_all_info($this->get_id());
 	}
 
 	public function logout() {
