@@ -4,7 +4,7 @@ RewriteCond $1 !^(index\.php|web|robots\.txt)
 RewriteRule ^(.*)$ index.php/$1 [L]
 
 # gzip!
-AddOutputFilterByType DEFLATE text/text text/html text/javascript text/plain text/xml application/xml text/css application/x-javascript application/javascript
+# AddOutputFilterByType DEFLATE text/text text/html text/javascript text/plain text/xml application/xml text/css application/x-javascript application/javascript
 
 # cache!
 <ifmodule mod_expires.c>
