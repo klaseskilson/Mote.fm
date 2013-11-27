@@ -17,7 +17,7 @@ class User_model extends CI_model
 	 */
 	function validate($email, $pwd)
 	{
-		$this->load->library('PasswordHash', array(8, false));
+		
 		$this->db->select("uid, password, email, name");
 		$this->db->where('email', $email);
 		// password query

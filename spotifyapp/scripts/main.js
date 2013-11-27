@@ -136,23 +136,7 @@ require([
   }
 
   var tracks = new Array();
-<<<<<<< HEAD
-  // tracks[0] = new track('spotify:track:0Rynk2V7LyLgBUjTMxvbEJ');
-  // tracks[1] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
-  // tracks[2] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
-  // tracks[3] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
-  // tracks[4] = new track('spotify:track:1r9mGafUiSgumJoRqyLrSt');
-  // tracks[5] = new track('spotify:track:3YXUMVKfRy4mwPEAslWg1p');
-  // tracks[6] = new track('spotify:track:2xaNOCsGBhFJ3bp6mvSqXz'); 
 
-  var size  = tracks.length;
-  tracks.sort(compare);
-  // Loop som skriver ut de låtar som finns i tracks
-  // från början.
-  // Att göra:
-  // * Skriva ut låtarna sorterat på antal röster.
-  for(var i = 0; i < size; i++)
-=======
   tracks[0] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
   tracks[1] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
   tracks[2] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
@@ -173,7 +157,6 @@ require([
   console.log('bajs');
 
   for(var i = 0; i < tracks.length; i++)
->>>>>>> 6b9c6aad7aaae7120ffa583a4c7fd41bca79107b
   {
     console.log('kuk');
     tracks[i].image = document.getElementsByClassName('cover')[i].innerHTML.toString();
@@ -182,13 +165,6 @@ require([
     console.log(tracks[i].image);
   }
 
-<<<<<<< HEAD
-  models.player.setShuffle(false);
-  models.player.setRepeat(false);
-  // models.player.playTrack(models.Track.fromURI(tracks[0].URI));
-
-=======
->>>>>>> 6b9c6aad7aaae7120ffa583a4c7fd41bca79107b
   // Funktion för att ta bort ett "Track"-elemnent
   // Att göra:
   // * Funktion som endast ska vara tillgänglig för
