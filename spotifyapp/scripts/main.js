@@ -3,15 +3,20 @@ require([
   'scripts/cover',
   'scripts/postPlayingSong',
   'scripts/registerParty',
-  'scripts/trackInfo'
+  'scripts/trackInfo',
 ], function(models, cover, postPlayingSong, registerParty,trackInfo) {
   'use strict';
 
   //FIXME: partyID is hardcoded
-  postPlayingSong.registerHathorCallback(123456); 
+  registerParty.RegisterParty(localStorage.user);
 
+  if(typeof(Storage) !== "undefined")
+  {
+    setUser(1);
+    getUserName(getUser(), '#user');
+  }
   //this will register a party for username with id 1
-  //registerParty.RegisterParty(1);
+  //registerParty.RegisterParty(localStorage.user);
   
   // Each track has ha vote. Here the id of the voter and
   // timestamp is stored in arrays.
@@ -90,13 +95,13 @@ require([
   }
 
   var tracks = new Array();
-  tracks[0] = new track('spotify:track:0Rynk2V7LyLgBUjTMxvbEJ');
-  tracks[1] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
-  tracks[2] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
-  tracks[3] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
-  tracks[4] = new track('spotify:track:1r9mGafUiSgumJoRqyLrSt');
-  tracks[5] = new track('spotify:track:3YXUMVKfRy4mwPEAslWg1p');
-  tracks[6] = new track('spotify:track:2xaNOCsGBhFJ3bp6mvSqXz'); 
+  // tracks[0] = new track('spotify:track:0Rynk2V7LyLgBUjTMxvbEJ');
+  // tracks[1] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
+  // tracks[2] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
+  // tracks[3] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
+  // tracks[4] = new track('spotify:track:1r9mGafUiSgumJoRqyLrSt');
+  // tracks[5] = new track('spotify:track:3YXUMVKfRy4mwPEAslWg1p');
+  // tracks[6] = new track('spotify:track:2xaNOCsGBhFJ3bp6mvSqXz'); 
 
   var size  = tracks.length;
   tracks.sort(compare);
@@ -113,7 +118,7 @@ require([
 
   models.player.setShuffle(false);
   models.player.setRepeat(false);
-  models.player.playTrack(models.Track.fromURI(tracks[0].URI));
+  // models.player.playTrack(models.Track.fromURI(tracks[0].URI));
 
   // Funktion för att ta bort ett "Track"-elemnent
   // Att göra:

@@ -14,14 +14,59 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<center><h1>Hathor</h1>
+
+	<center>
+		<h1>Hathor</h1>
 		<h2 id="subheading">The Great successor approves</h2>
 		<textarea id="trackSearch"></textarea>
 		<div class="addTrack"></div>
 		<div id="queue"></div>
+		<div id="logindiv">
+			<form name="login" id="logintest">
+				<ul>
+					<li><label for="email">Email:</label>
+						<input type="email" name="email" placeholder="email" required>
+					</li>
+					<li><label for="password">Password:</label>
+						<input type="password" name="password" placeholder="password" required>
+					</li>
+					<li>
+						<input type="submit" value="Login">
+					</li>
+				</ul>
+			</form>
+		</div>
+		<div id="loginstatus"></div>
 	</center>
 	<div id="buttonContainer"></div>
 	<script src="scripts/main.js"></script>
 	<script src="scripts/postPLayingSong.js"></script>
+	<script src="scripts/userpartyhelper.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+	 	$("#logintest").submit(function(event) {
+	 		event.preventDefault();
+	 		var $inputs = $('#logintest :input');
+		    var values = {};
+    		$inputs.each(function() {
+        		values[this.name] = $(this).val();
+    		});
+
+    		$.post('http://127.0.0.1/hathor/index.php/spotifyloginuser',values, function(data, textstatus){
+    			if(data =="success")
+    			{
+    				$('#logindiv').html("");
+    				$('#loginstatus').html("Logged in!");
+    			}
+    			else
+    			{
+    				$('#loginstatus').html("Error Logging in");
+    			}
+    			console.log(data);
+    		});
+
+	 	});
+	});
+	</script>
 </body>
 </html>

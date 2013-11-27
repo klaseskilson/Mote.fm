@@ -18,18 +18,16 @@ require([
 
 						var musicTrack = {
 							'partyID' : 0,
-							'uri' : ''
+							'trackURI' : ''
 						}
 
 						var track = models.player.track;
 
 						musicTrack.partyID = partyID;
 						musicTrack.trackURI = track.uri;
-						
+						console.log(musicTrack);
 						//FIXME: Hardcoded adress
-						$.post("http://127.0.0.1/hathor/index.php/spotifyPost/",musicTrack,function(resp){
-							console.log(resp);
-						});
+						$.post("http://127.0.0.1/hathor/index.php/spotifyPost/",musicTrack);
 
 					}, 1000);
 				});
