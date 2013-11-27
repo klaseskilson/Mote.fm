@@ -249,4 +249,18 @@ class User_model extends CI_model
 
 		return false;
 	}
+
+	function activate($email, $hashkey)
+	{
+		$this->db->select("activated");
+		$this->db->where('email', $email);
+		$this->db->where('hashkey', $hashkey);
+
+		$query = $this->db->get('users');
+		if ($query)
+		{
+			return $this->db->update('users', $password, array('uid' => $uid));
+		}
+		return false;
+	}
 }

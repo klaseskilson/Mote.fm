@@ -65,16 +65,16 @@
 							<?php if(isset($user['uid']) && $user['uid'])
 							{
 								?>
-								<li><a href="/user/profile"><?php echo $user['name'];?></a></li>
-								<li><a href="/about">About</a></li>
-								<li><a href="/user/signout">Sign out</a></li>
+								<li><a href="<?php echo base_url(); ?>user/profile"><?php echo $user['name'];?></a></li>
+								<li><a href="<?php echo base_url(); ?>about">About</a></li>
+								<li><a href="<?php echo base_url(); ?>user/signout">Sign out</a></li>
 								<?php
 							}
 							else
 							{
 								?>
-								<li><a href="/about">About</a></li>
-								<li><a href="/user/signin">Sign in</a></li>
+								<li><a href="<?php echo base_url(); ?>about">About</a></li>
+								<li><a href="<?php echo base_url(); ?>user/signin">Sign in</a></li>
 								<?php
 							}
 							?>

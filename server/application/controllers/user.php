@@ -49,10 +49,12 @@ class User extends CI_Controller {
 		// validate email using CI magic && try signup
 		if (valid_email($email) && $this->user_model->create_user($email, $name, $password))
 		{
+			$this->login->validate($email, $password);
 			// how do we want the response?
 			if($method == 'web')
 			{
 				echo "Well done my kuk.";
+
 			}
 			elseif($method == 'json')
 			{
@@ -62,9 +64,26 @@ class User extends CI_Controller {
 				echo json_encode($response);
 			}
 		}
-		else
+		else // something wrong!
 		{
-			echo "Something went wrong. Kiss och bajs.";
+			// how do we want the response?
+			if($method == 'web')
+			{
+				echo "ajaj";
+			}
+			elseif($method == 'json')
+			{
+				// return response using json! prepare data
+				$response = array(
+								'status' => 'error',
+								'errors' => array(
+												'name'	 => (strlen($name) > 2),
+												'email'	 => valid_email($email) && !$this->user_model->email_exists($email),
+												'password' => !(strlen($password) <= 6)
+											)
+						    );
+				echo json_encode($response);
+			}
 		}
 	}
 
@@ -88,12 +107,14 @@ class User extends CI_Controller {
 			$email = $this->input->post('email');
 			$password = $this->input->post('password');
 
+			// kolla inloggning mot login lib
 			if($this->login->validate($email, $password))
 			{
 				redirect(urldecode($data['redir']), 'location');
 			}
 			else
 			{
+				// ajaj, fel!
 				$data['title'] = 'Sign in!';
 				$data['email'] = $email;
 
@@ -139,7 +160,20 @@ class User extends CI_Controller {
 		}
 		else
 		{
-			echo "Your pasword has been reset.";
+			echo "Your password has been reset.";
 		}
+	}
+
+	public function activate($email, $hashkey)
+	{
+		if (!($this->user_model->activate($email, $hashkey)))
+		{
+			echo "Error";
+		}
+		else
+		{
+			echo "User activated";
+		}
+
 	}
 }
