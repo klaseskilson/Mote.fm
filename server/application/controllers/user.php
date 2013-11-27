@@ -54,6 +54,7 @@ class User extends CI_Controller {
 			if($method == 'web')
 			{
 				echo "Well done my kuk.";
+
 			}
 			elseif($method == 'json')
 			{
@@ -159,7 +160,20 @@ class User extends CI_Controller {
 		}
 		else
 		{
-			echo "Your pasword has been reset.";
+			echo "Your password has been reset.";
 		}
+	}
+
+	public function activate($email, $hashkey)
+	{
+		if (!($this->user_model->activate($email, $hashkey)))
+		{
+			echo "Error";
+		}
+		else
+		{
+			echo "User activated";
+		}
+
 	}
 }
