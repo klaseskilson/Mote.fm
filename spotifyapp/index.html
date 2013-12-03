@@ -6,22 +6,32 @@
 	<title>Hathor</title>
 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
 	<link rel="stylesheet" href="$views/css/image.css">
 	<link rel="stylesheet" href="$views/css/list.css">
     <link rel="stylesheet" href="$views/css/buttons.css">
 
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom -->
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<center><h1>Hathor</h1>
-		<h2 id="subheading">The Great successor approves</h2>
-		<textarea id="trackSearch"></textarea>
-		<div class="addTrack"></div>
-		<div id="queue"></div>
-	</center>
-	<div id="buttonContainer"></div>
+    <div class="container">
+        <div class="row title">
+            <div class="col-md-6">
+                <h1 class="partyTitle">Hathor</h1>
+            </div>
+            <div class="col-md-6">
+                <div class="partylinks glyphicon glyphicon-link"></div>
+            </div>
+        </div>
+    </div>
+	<div id="queue" class="container"></div>
+
 	<script src="scripts/main.js"></script>
-	<script src="scripts/postPLayingSong.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
 </body>
 </html>
