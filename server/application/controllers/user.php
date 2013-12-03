@@ -98,7 +98,7 @@ class User extends CI_Controller {
 		$data = array();
 
 		// redir get query sent?
-		$data['redir'] = isset($_GET['redir']) ? urlencode($_GET['redir']) : '/home/';
+		$data['redir'] = isset($_GET['redir']) ? urlencode($_GET['redir']) : base_url();
 
 		// have the user submited anything?
 		if($this->input->post('submit'))
