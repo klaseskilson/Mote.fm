@@ -21,26 +21,32 @@ class GetSong extends CI_Controller
 	{
 		//set view
 		$view = "getsong";
-		
+		$data = array();		
 		$partyhash = $this->input->get('hash');
+		if($partyhash)
+		{
+			$party = $this->party_model->get_party_from_hash($partyhash);
+			if($party)
+			{
+			
+				$getTrack = $this->party_model->get_current_track_at_party($party['partyid']);
+				$this->session->set_userdata('trackuri',$getTrack['trackuri']);	
+				$this->session->set_userdata('partyid',$party['partyid']);	
 
-		$party = $this->party_model->get_party_from_hash($partyhash);
-		$getTrack = $this->party_model->get_current_track_at_party($party['partyid']);
-		$this->session->set_userdata('trackuri',$getTrack['trackuri']);	
-		$this->session->set_userdata('partyid',$party['partyid']);	
+				$data['title'] = 'Song at ' . $party['name'];
+				$data['titletext'] = $party['name'] . " is now playing:";
+				$data['user'] = $this->login->get_all_info();
+				$data['ajax'] = true;
+				$data['track'] = $this->session->userdata('trackuri');
+				$data['artistname'] = get_artist_name($data['track']);
+				$data['trackname'] = get_track_name($data['track']);
+				$data['trackdata']	= get_album_art($data['track']);
+				$data['partyname'] = $party['name'];
+			}
+		}
 
-		$data = array();
-		$data['title'] = 'Get song demo';
-		$data['user'] = $this->login->get_all_info();
-		$data['ajax'] = true;
-		$data['track'] = $this->session->userdata('trackuri');
-		$data['artistname'] = get_artist_name($data['track']);
-		$data['trackname'] = get_track_name($data['track']);
-		$data['trackdata']	= get_album_art($data['track']);
-		$data['partyname'] = $party['name'];
-		
 		$this->load->view('templates/header', $data);
-		$this->load->view($view);
+		$this->load->view($view);	
 		$this->load->view('templates/footer', $data);
 	}
 

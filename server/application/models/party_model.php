@@ -78,7 +78,10 @@ class Party_model extends CI_model
 		{
 			// return an array with the first row from the results
 			$result = $query->result_array();
-			return $result[0];
+			if(sizeof($result) > 0)
+			{
+				return $result[0];
+			}
 		}
 
 		// if we got this far, something went wrong
