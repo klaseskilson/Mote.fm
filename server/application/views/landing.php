@@ -12,8 +12,10 @@
 						Easily let your guest controll what's playing.
 					</p>
 				</div>
-				<div class="col-sm-6">
-					<button type="button" class="btn btn-lg btn-block">Sign up lol</button>
+				<div class="col-sm-6 screamer">
+					<p>
+						<a href="#second">Sign up!</a>
+					</p>
 				</div>
 			</div> <!-- end .row -->
 			<div class="bottom">

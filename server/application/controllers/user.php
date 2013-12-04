@@ -26,7 +26,7 @@ class User extends CI_Controller {
 		if($this->login->is_logged_in())
 			$this->profile();
 		else
-			$this->signUp();
+			$this->signin();
 	}
 
 	public function profile()
@@ -52,6 +52,7 @@ class User extends CI_Controller {
 		{
 			$this->login->validate($email, $password);
 
+<<<<<<< HEAD
 			//send activation email
 			$hash = $this->user_model->createHash($email);
 			$this->email->from('noreply@taketkvg.se', 'The Hathor crew');
@@ -62,13 +63,14 @@ class User extends CI_Controller {
 			$this->email->send();
 			echo $this->email->print_debugger();
 
+=======
+>>>>>>> 6046a9303eb663c022b79971d6a6ea38c8cbb013
 			// how do we want the response?
-			if($method == 'web')
+			if($method == 'web') // WEB!
 			{
 				echo "Well done my kuk.";
-
 			}
-			elseif($method == 'json')
+			elseif($method == 'json') // return with machine encoded json
 			{
 				$response = array(
 								'status' => 'success'

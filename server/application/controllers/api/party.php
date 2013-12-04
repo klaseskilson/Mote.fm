@@ -1,23 +1,17 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class api extends CI_Controller {
+class party extends CI_Controller {
 
-
-	public function index()
+	function __construct()
 	{
-		echo 'derp';
-	}
+		parent::__construct();
+		//Do your magic here
 
-	public function json()
-	{
-		$data = array('status' => 'ok');
+		// all data here should be json formatted
+		header("Content-type: application/json");
 
-		echo json_encode($data);
-	}
-
-	public function plain()
-	{
-		echo 'ok';
+		// load party model
+		$this->load->model('party_model');
 	}
 
 	/**
@@ -25,8 +19,6 @@ class api extends CI_Controller {
 	 */
 	public function create_party()
 	{
-		// load party model
-		$this->load->model('party_model');
 
 		// prepare data for output
 		$data = array();
@@ -40,7 +32,7 @@ class api extends CI_Controller {
 		{
 			// set fail data!
 			$data['status'] = 'error';
-			$data['respons'] = 'Missing post data. Not all needed fields were sent.';
+			$data['response'] = 'Missing post data. Not all needed fields were sent.';
 		}
 		else // everyting is as it should
 		{
@@ -53,6 +45,11 @@ class api extends CI_Controller {
 				$data['status'] = 'success';
 				$data['result'] = $this->party_model->get_party_from_id($partyid);
 			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'Could not create party.';
+			}
 		}
 
 		// write array json encoded
@@ -64,8 +61,6 @@ class api extends CI_Controller {
 	 */
 	public function get_party_list()
 	{
-		$this->load->model('Party_model');
-
 		$partyid = $this->input->post('partyid');
 		$data = array();
 
@@ -98,6 +93,28 @@ class api extends CI_Controller {
 		}
 
 		// write array json encoded
+		echo json_encode($data);
+	}
+
+	public function add_song()
+	{
+		// prepare data array
+		$data = array();
+
+		// get spotify song uri sent via post
+		$uri = $this->input->post("uri");
+
+		if($uri)
+		{
+
+		}
+		else
+		{
+			$data['status'] = 'error';
+			$data['response'] = 'Missing song post data';
+		}
+
+		// output the json from data
 		echo json_encode($data);
 	}
 }
