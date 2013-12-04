@@ -2,9 +2,15 @@ $(document).ready(function(){ // boring needed stuff
 	// change the background color of the header when scrolling
 	$(document).scroll(function(){
 		// $('body.fancypane #head').toggleClass('color', ($(this).scrollTop() > $(window).height()*0.1));
-    });
+	});
 
-    /*$('form#signupform').submit(function(event){
+	$("a[href*=#]").click(function(e) {
+		e.preventDefault();
+		window.history.pushState("string", "Title", this.hash);
+		$("html, body").animate({ scrollTop: $(this.hash).offset().top }, 1000);
+	});
+
+	$('form#signupform').submit(function(event){
     	// prevent form from beeing sent
 		event.preventDefault();
 		console.log("form sent, default prevented");
@@ -53,5 +59,5 @@ $(document).ready(function(){ // boring needed stuff
 				$errordiv.show();
 			}
 		}, 'json');
-    });*/
+	});
 });

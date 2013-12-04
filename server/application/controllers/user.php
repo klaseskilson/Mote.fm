@@ -25,7 +25,7 @@ class User extends CI_Controller {
 		if($this->login->is_logged_in())
 			$this->profile();
 		else
-			$this->signUp();
+			$this->signin();
 	}
 
 	public function profile()
