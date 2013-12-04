@@ -1,23 +1,17 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class api extends CI_Controller {
+class party extends CI_Controller {
 
-
-	public function index()
+	function __construct()
 	{
-		echo 'derp';
-	}
+		parent::__construct();
+		//Do your magic here
 
-	public function json()
-	{
-		$data = array('status' => 'ok');
+		// all data here should be json formatted
+		header("Content-type: application/json");
 
-		echo json_encode($data);
-	}
-
-	public function plain()
-	{
-		echo 'ok';
+		// load party model
+		$this->load->model('party_model');
 	}
 
 	public function get_playing_song()
@@ -81,8 +75,6 @@ class api extends CI_Controller {
 	 */
 	public function create_party()
 	{
-		// load party model
-		$this->load->model('party_model');
 
 		// prepare data for output
 		$data = array();
@@ -96,7 +88,7 @@ class api extends CI_Controller {
 		{
 			// set fail data!
 			$data['status'] = 'error';
-			$data['respons'] = 'Missing post data. Not all needed fields were sent.';
+			$data['response'] = 'Missing post data. Not all needed fields were sent.';
 		}
 		else // everyting is as it should
 		{
@@ -108,6 +100,11 @@ class api extends CI_Controller {
 				// set success data
 				$data['status'] = 'success';
 				$data['result'] = $this->party_model->get_party_from_id($partyid);
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'Could not create party.';
 			}
 		}
 
@@ -153,8 +150,6 @@ class api extends CI_Controller {
 	 */
 	public function get_party_list()
 	{
-		$this->load->model('Party_model');
-
 		$partyid = $this->input->post('partyid');
 		$data = array();
 
@@ -190,36 +185,22 @@ class api extends CI_Controller {
 		echo json_encode($data);
 	}
 
-	public function login_from_spotify()
+	public function add_song()
 	{
-		$this->load->library('PasswordHash', array(8, false));
-		$this->load->model('user_model');
-
-		$email = $this->input->post('email');
-		$password = $this->input->post('password');
+		// prepare data array
 		$data = array();
-		if(!$email || !$password)
+
+		// get spotify song uri sent via post
+		$uri = $this->input->post("uri");
+
+		if($uri)
 		{
-			$data['status'] = 'error';
-			$data['respons'] = 'Missing post data. Not all needed fields were sent.';
-		}
-		elseif(!$this->user_model->email_exists($email))
-		{
-			$data['status'] = 'error';
-			$data['respons'] = 'No account found for ' . $email . ' Please register before using Hathor.';	
-		}
-		elseif($this->user_model->validate($email, $password))
-		{
-			$data['status'] = 'success';
-			$uid = $this->user_model->get_id($email);
-			$data['result'] = $this->user_model->get_all_info($uid);
 		}
 		else
 		{
 			$data['status'] = 'error';
-			$data['respons'] = 'Incorrect password';			
+			$data['response'] = 'Missing song post data';
 		}
-
 		echo json_encode($data);
 	}
 }

@@ -16,7 +16,8 @@ class User extends CI_Controller {
 
 		// load password hash library
 		$this->load->library('PasswordHash', array(8, false));
-		// load email helper for validating, sending & recieving mail
+		// load email helper and library for validating, sending & recieving mail
+		$this->load->library('email');
 		$this->load->helper('email');
 	}
 
@@ -25,7 +26,7 @@ class User extends CI_Controller {
 		if($this->login->is_logged_in())
 			$this->profile();
 		else
-			$this->signUp();
+			$this->signin();
 	}
 
 	public function profile()
@@ -50,13 +51,26 @@ class User extends CI_Controller {
 		if (valid_email($email) && $this->user_model->create_user($email, $name, $password))
 		{
 			$this->login->validate($email, $password);
+
+<<<<<<< HEAD
+			//send activation email
+			$hash = $this->user_model->createHash($email);
+			$this->email->from('noreply@taketkvg.se', 'The Hathor crew');
+			$this->email->to($email);
+			$this->email->subject('Activate your Hathor account');
+			$this->email->message('Hey '.$name.'! Follow this link to activate your Hathor account. '
+			.base_url().'user/activate/'.urlencode($email).'/'.$hash);
+			$this->email->send();
+			echo $this->email->print_debugger();
+
+=======
+>>>>>>> 6046a9303eb663c022b79971d6a6ea38c8cbb013
 			// how do we want the response?
-			if($method == 'web')
+			if($method == 'web') // WEB!
 			{
 				echo "Well done my kuk.";
-
 			}
-			elseif($method == 'json')
+			elseif($method == 'json') // return with machine encoded json
 			{
 				$response = array(
 								'status' => 'success'
@@ -99,7 +113,7 @@ class User extends CI_Controller {
 		$data = array();
 
 		// redir get query sent?
-		$data['redir'] = isset($_GET['redir']) ? urlencode($_GET['redir']) : '/home/';
+		$data['redir'] = isset($_GET['redir']) ? urlencode($_GET['redir']) : base_url();
 
 		// have the user submited anything?
 		if($this->input->post('submit'))
@@ -141,11 +155,12 @@ class User extends CI_Controller {
 		if ($this->user_model->user_exist($id))
 		{
 			$hash = $this->user_model->reset($email);
-			$this->load->library('email');
 			$this->email->from('noreply@taketkvg.se', 'Einis');
 			$this->email->to($email);
 			$this->email->subject('Password reset');
 			$this->email->message('Fuck you. hathor.se/user/forgotPassword/'.$email.'/'.$hash);
+			$this->email->send();
+			echo $this->email->print_debugger();
 		}
 	}
 	public function forgotPassword($email, $hash)
@@ -166,7 +181,7 @@ class User extends CI_Controller {
 
 	public function activate($email, $hashkey)
 	{
-		if (!($this->user_model->activate($email, $hashkey)))
+		if (!($this->user_model->activate(urldecode($email), $hashkey)))
 		{
 			echo "Error";
 		}
@@ -174,6 +189,28 @@ class User extends CI_Controller {
 		{
 			echo "User activated";
 		}
+	}
 
+	public function changePassword()
+	{
+		$email = $this->input->post('email');
+		$id = $this->user_model->get_id($email);
+		$oldPassword = $this->input->post('oldPassword');
+		$newPassword = $this->input->post('newPassword');
+		$confirmPassword = $this->input->post('confirmPassword');
+
+		if(!($this->user_model->update_password($id, $newPassword, $confirmPassword)))
+		{
+			echo "Something went wrong.";
+		}
+		else
+		{
+			echo "Password has been changed."
+			$this->email->from('noreply@taketkvg.se', 'The Hathor crew');
+			$this->email->to($email);
+			$this->email->subject('Change of password');
+			$this->email->message('Hey! Your Hathor password has been changed.'
+			$this->email->send();
+		}
 	}
 }

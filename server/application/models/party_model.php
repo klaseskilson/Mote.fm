@@ -2,10 +2,15 @@
 
 class Party_model extends CI_model
 {
+	private $CI;
+
 	function __construct()
 	{
 		// call model constructor
 		parent::__construct();
+
+		// load CI to use some helper functions
+		$CI =& get_instance();
 	}
 
 
@@ -97,7 +102,7 @@ class Party_model extends CI_model
 			return $result[0];
 		}
 		return false;
-	} 
+	}
 
 	function get_party_que($partyid)
 	{
@@ -128,6 +133,49 @@ class Party_model extends CI_model
 			return $query->num_rows();
 
 		// if we got this far, something went wrong
+		return false;
+	}
+
+	/**
+	 * add song to que
+	 * @param int 		$uid 		the user id
+	 * @param int 		$partyid 	the party id to add the song to
+	 * @param string 	$trackuri 	the spotify track uri
+	 *
+	 * @return  int the inserted que id
+	 */
+	function add_song($uid, $partyid, $trackuri)
+	{
+		$data = array(
+					'uid' => $uid,
+					'partyid' => $partyid,
+					'trackuri' => $trackuri
+				);
+
+		if($this->db->insert('quesong', $data))
+			return $this->db->insert_id();
+
+		return false;
+	}
+
+	/**
+	 * add vote to quevote table
+	 * @param 	int 	$songid the songid that is voted on
+	 * @param 	int 	$uid 	the user who voted
+	 *
+	 * @return  the new vote inserted id
+	 */
+	function add_vote($songid, $uid)
+	{
+		$data = array(
+					'uid' => $uid,
+					'songid' => $songid
+				);
+
+		// if inserting works, return the new vote id
+		if($this->db->insert('quevote', $data))
+			return $this->db->insert_id();
+
 		return false;
 	}
 }
