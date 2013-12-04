@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>Hathor</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Hathor - Login</title>
 
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
-	<link rel="stylesheet" href="$views/css/image.css">
-	<link rel="stylesheet" href="$views/css/list.css">
+    <link rel="stylesheet" href="$views/css/image.css">
+    <link rel="stylesheet" href="$views/css/list.css">
     <link rel="stylesheet" href="$views/css/buttons.css">
 
     <!-- Bootstrap -->
@@ -19,19 +19,31 @@
 </head>
 <body>
     <div class="container">
-        <div class="row title">
-            <div class="col-md-6">
-                <h1 class="partyTitle">Hathor</h1>
-            </div>
-            <div class="col-md-6">
-                <div class="partylinks glyphicon glyphicon-link"></div>
-            </div>
+        <div class="col-md-4 col-md-offset-4 login">
+            <h1 id="xyz" class="loginTitle">Hathor</h1>
+            <form action="?redir=/home/" method="post">
+                <p>
+                    Login to experience Hathor. The ultimate tool to democratize your party.
+                </p>
+                <p>
+                    <input type="text" name="name" id="name" class="form-control input-lg square-bottom loginName" placeholder="Full name" required="" autofocus="">
+                    <input type="email" name="email" id="email" class="form-control input-lg square-bottom" placeholder="Email" required="" autofocus="">
+                    <input type="password" name="password" id="password" class="form-control input-lg square-top" placeholder="Password" required="">
+                </p>
+                <p>
+                    <input type="submit" name="submit" id="submit" value="Go!" class="btn btn-default btn-lg btn-block">
+                </p>
+                <p id="signUp" style="float:left;cursor:pointer;">
+                    Sign up.
+                </p>
+                <p style="float:right;cursor:pointer;">
+                    Forgot your password?
+                </p>
+            </form>
         </div>
     </div>
-	<div id="queue" class="container"></div>
-
-	<script src="scripts/main.js"></script>
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="scripts/login.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
 </body>
 </html>
