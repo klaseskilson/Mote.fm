@@ -4,7 +4,7 @@ $(document).ready(function(){ // boring needed stuff
 		// $('body.fancypane #head').toggleClass('color', ($(this).scrollTop() > $(window).height()*0.1));
     });
 
-    $('form#signupform').submit(function(event){
+    /*$('form#signupform').submit(function(event){
     	// prevent form from beeing sent
 		event.preventDefault();
 		console.log("form sent, default prevented");
@@ -53,5 +53,5 @@ $(document).ready(function(){ // boring needed stuff
 				$errordiv.show();
 			}
 		}, 'json');
-    });
+    });*/
 });

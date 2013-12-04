@@ -50,13 +50,13 @@ class User extends CI_Controller {
 		if (valid_email($email) && $this->user_model->create_user($email, $name, $password))
 		{
 			$this->login->validate($email, $password);
+
 			// how do we want the response?
-			if($method == 'web')
+			if($method == 'web') // WEB!
 			{
 				echo "Well done my kuk.";
-
 			}
-			elseif($method == 'json')
+			elseif($method == 'json') // return with machine encoded json
 			{
 				$response = array(
 								'status' => 'success'
