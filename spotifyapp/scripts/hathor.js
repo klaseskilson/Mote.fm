@@ -1,7 +1,8 @@
 require([
 	'$api/models',
+	'scripts/constants',
 	'scripts/jquery.min'
-	], function(models, jquery){
+	], function(models, constants, jquery){
 		/**
 		 * Register a party on Hathor serverside
 		 * @param {int} uid User unique Id, can be found in sessionStorage.uid after login
@@ -19,8 +20,7 @@ require([
 						
 				postData.uid = uid;
 				postData.locale = locale;
-
-				$.post('http://127.0.0.1/Hathor/api/party/create_party', postData , function (data, textStatus) {
+				$.post(constants.SERVER_URL + '/Hathor/api/party/create_party', postData , function (data, textStatus) {
 					var jsonobj= data;
 					console.log(data);
 					localStorage.partyid = jsonobj.result.partyid;
@@ -38,7 +38,6 @@ require([
 		 */
 		
 		var registerHathorCallback = function(partyID) {
-			console.log("Callback!");
 			models.player.addEventListener('change:index', function(stuff){
 				models.player.load('track').done(function(){
 
@@ -56,7 +55,7 @@ require([
 						musicTrack.partyid = partyID;
 						musicTrack.trackuri = track.uri;
 						console.log("Sending");
-						$.post('http://127.0.0.1/Hathor/api/party/spotify_song', musicTrack , function (data, textStatus) {
+						$.post(constants.SERVER_URL + '/Hathor/api/party/spotify_song', musicTrack , function (data, textStatus) {
 							console.log(data);
 						});
 					}, 1000);
