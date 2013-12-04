@@ -60,6 +60,28 @@ class Party_model extends CI_model
 		return false;
 	}
 
+	function get_party_from_hash($partyhash)
+	{
+		// select all columns from parties where partyid=$partyid
+		$this->db->select('*');
+		$this->db->where('hash', $partyhash);
+		$this->db->limit(1);
+
+		// run query!
+		$query = $this->db->get('parties');
+
+		// query worked?
+		if($query)
+		{
+			// return an array with the first row from the results
+			$result = $query->result_array();
+			return $result[0];
+		}
+
+		// if we got this far, something went wrong
+		return false;
+
+	}
 	function get_current_track_at_party($partyid)
 	{
 		$this->db->select('*');
@@ -69,12 +91,11 @@ class Party_model extends CI_model
 
 		$query = $this->db->get('nowplaying');
 
-		if($query)
+		if($query->num_rows() == 1)
 		{
 			$result = $query->result_array();
 			return $result[0];
 		}
-
 		return false;
 	} 
 

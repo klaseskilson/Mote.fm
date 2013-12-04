@@ -9,15 +9,7 @@ require([
 
   var numReloads = 0;
 
-  //FIXME: partyID is hardcoded
-  registerParty.RegisterParty(localStorage.user);
-
-  if(typeof(Storage) !== "undefined")
-  {
-    setUser(1);
-    getUserName(getUser(), '#user');
-  }
-
+  //registerParty.RegisterParty(localStorage.user);
 
   // Each track has ha vote. Here the id of the voter and
   // timestamp is stored in arrays.
@@ -150,19 +142,15 @@ require([
   // var country = models.session.load('country').done(function(country){
     // document.getElementById('subheading').innerHTML = country.country.decodeForHtml();
   // });
-  console.log("Array initialized");
+
 
   listUpdate();
 
-  console.log('bajs');
-
   for(var i = 0; i < tracks.length; i++)
   {
-    console.log('kuk');
     tracks[i].image = document.getElementsByClassName('cover')[i].innerHTML.toString();
     var aux = tracks[i].section.toString();
     tracks[i].section = [aux.slice(0,aux.indexOf('cover')+7), tracks[i].image, aux.slice(aux.indexOf('cover')+7)].join();
-    console.log(tracks[i].image);
   }
 
   // Funktion för att ta bort ett "Track"-elemnent

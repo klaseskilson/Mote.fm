@@ -16,8 +16,25 @@ jQuery(document).ready(function($) {
 
 		//send ajax post, no need to send anything, its all in the session
 		$.post('./index.php/hathorPost/', "", function(data, textStatus) {
-			$(divID).html(data);
-			console.log(textStatus);
+			console.log(data);
+			try
+			{
+				var music = eval ("(" + data + ")");
+				$("#songdata").html(music.track);
+				$("#trackName").html(music.trackname);
+				$("#artistName").html(music.artistname);
+
+				$("#songInfo").fadeOut(500, function() {
+	        		$("#songInfo").html( '<img src="' + music.trackdata  + '">');
+	        		$('#songInfo').fadeIn(500);
+	    		});
+
+				console.log(textStatus);
+			}
+			catch(err)
+			{
+				console.log("Error parsing data " + err);
+			}
 			ajax_call(divID);
 		});
 	}

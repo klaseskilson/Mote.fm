@@ -155,7 +155,6 @@ class User_model extends CI_model
 
 			$result = $query->result();
 
-			var_dump($result);
 			return $result[0]->uid;
 		}
 

@@ -46,9 +46,8 @@
 	</div>
 	<div id="loginstatus"></div>
 	<script src="scripts/main.js"></script>
-	<script src="scripts/userpartyhelper.js"></script>
     <script src="js/bootstrap.min.js"></script>
-	<script type="text/javascript">
+    <script type="text/javascript">
 	$(document).ready(function(){
 	 	$("#logintest").submit(function(event) {
 	 		event.preventDefault();
@@ -58,22 +57,23 @@
         		values[this.name] = $(this).val();
     		});
 
-    		$.post('http://127.0.0.1/hathor/index.php/spotifyloginuser',values, function(data, textstatus){
-    			if(data =="success")
+    		$.post('http://127.0.0.1/Hathor/api/login_from_spotify',values, function(data, textstatus){
+    			console.log(data);
+    			var json = eval ("(" + data + ")");
+    			if(json.status == "success")
     			{
-    				$('#logindiv').html("");
+					$('#logindiv').html("");
     				$('#loginstatus').html("Logged in!");
+    				sessionStorage.
     			}
     			else
     			{
-    				$('#loginstatus').html("Error Logging in");
+    				$('#loginstatus').html(json.status + ": " + json.respons);
     			}
-    			console.log(data);
     		});
 
 	 	});
 	});
 	</script>
-
 </body>
 </html>

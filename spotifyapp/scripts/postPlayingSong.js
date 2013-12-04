@@ -17,8 +17,8 @@ require([
 					setTimeout(function() { 
 
 						var musicTrack = {
-							'partyID' : 0,
-							'trackURI' : ''
+							'partyid' : 0,
+							'trackuri' : ''
 						}
 
 						var track = models.player.track;

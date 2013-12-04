@@ -10,7 +10,7 @@ require([
 			var postData = {
 					'uid' : 0,
 					'locale' : '',
-					'partyname':'erikscoolafest'
+					'name':'erikscoolafest' //FIXME
 				}
 
 			models.session.load('country').done(function(){
@@ -19,10 +19,14 @@ require([
 				postData.uid = uid;
 				postData.locale = locale;
 
-				$.post('http://127.0.0.1/hathor/index.php/registerParty/', postData , function(data, textStatus) {
-					localStorage.partyId = data;	
+				$.post('http://127.0.0.1/Hathor/api/create_party', postData , function(data, textStatus) {
+					var jsonobj= eval ("(" + data + ")");
+					console.log(jsonobj.result.partyid);
+					localStorage.partyid = jsonobj.result.partyid;
+					localStorage.partyname = jsonobj.result.partyname;
+					localStorage.partyhash = jsonobj.result.hash;
+
 					postPlayingSong.registerHathorCallback(data); 
-					console.log("regist:" + data);
 					$('#party').html(getParty());
 				});
 
