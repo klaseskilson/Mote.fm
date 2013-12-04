@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class party extends CI_Controller {
+class user extends CI_Controller {
 
 	function __construct()
 	{
@@ -10,7 +10,7 @@ class party extends CI_Controller {
 		// all data here should be json formatted
 		header("Content-type: application/json");
 
-		// load party model
+		// load user model
 		$this->load->model('user_model');
 	}
 
@@ -24,14 +24,14 @@ class party extends CI_Controller {
 		if(!$email || !$password)
 		{
 			$data['status'] = 'error';
-			$data['respons'] = 'Missing post data. Not all needed fields were sent.';
+			$data['response'] = 'Missing post data. Not all needed fields were sent.';
 		}
 		elseif(!$this->user_model->email_exists($email))
 		{
 			$data['status'] = 'error';
-			$data['respons'] = 'No account found for ' . $email . ' Please register before using Hathor.';	
+			$data['response'] = 'No account found for ' . $email . ' Please register before using Hathor.';	
 		}
-		elseif($this->user_model->validate($email, $password))
+		elseif($this->login->validate($email, $password))
 		{
 			$data['status'] = 'success';
 			$uid = $this->user_model->get_id($email);
@@ -40,7 +40,7 @@ class party extends CI_Controller {
 		else
 		{
 			$data['status'] = 'error';
-			$data['respons'] = 'Incorrect password';			
+			$data['response'] = 'Incorrect password';			
 		}
 		echo json_encode($data);
 	}

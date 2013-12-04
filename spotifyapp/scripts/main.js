@@ -1,15 +1,15 @@
 require([
   '$api/models',
   'scripts/cover',
-  'scripts/postPlayingSong',
-  'scripts/registerParty',
-  'scripts/trackInfo',
-], function(models, cover, postPlayingSong, registerParty,trackInfo) {
+  'scripts/hathor',
+  'scripts/trackInfo'
+], function(models, cover, hathor,trackInfo) {
   'use strict';
 
   var numReloads = 0;
-
-  //registerParty.RegisterParty(localStorage.user);
+  //FIXME: ett formulär att registrera en fest
+  //för att skicka iväg förfrågan används funktionen nedan!
+  hathor.RegisterParty(sessionStorage.uid, "cool fest");
 
   // Each track has ha vote. Here the id of the voter and
   // timestamp is stored in arrays.

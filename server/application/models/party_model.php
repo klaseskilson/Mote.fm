@@ -70,11 +70,9 @@ class Party_model extends CI_model
 		// select all columns from parties where partyid=$partyid
 		$this->db->select('*');
 		$this->db->where('hash', $partyhash);
-		$this->db->limit(1);
 
 		// run query!
 		$query = $this->db->get('parties');
-
 		// query worked?
 		if($query)
 		{

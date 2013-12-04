@@ -22,16 +22,16 @@ class party extends CI_Controller {
 
 		//FIXME: skall detta hämtas via post istället?
 		//get session data 
-		$partyID = $this->session->userdata('partyID'); 
+		$partyID = $this->session->userdata('partyid'); 
 		//What track do we think spotify is playing?
-		$expectedTrack = $this->session->userdata('trackURI');
+		$expectedTrack = $this->session->userdata('trackuri');
 		
 		$data = array();
 
 		if(!$partyID || !$expectedTrack)
 		{
 			$data['status'] = 'error';
-			$data['respons'] = 'Unable to get partyid or expecte track for party';
+			$data['response'] = 'Unable to get partyid or expected track for party';
 		}
 		else
 		{
@@ -40,7 +40,7 @@ class party extends CI_Controller {
 			if (!$track) 
 			{
 				$data['status'] = 'error';
-				$data['respons'] = 'Unable to get current track at party';
+				$data['response'] = 'Unable to get current track at party';
 			}
 			else
 			{
@@ -55,7 +55,7 @@ class party extends CI_Controller {
 				}
 
 				//store new track in session data and return the answer
-				$this->session->set_userdata('trackURI', $track);
+				$this->session->set_userdata('trackuri', $track);
 				
 				$status = array();
 				$status['track'] = $track;
@@ -75,7 +75,6 @@ class party extends CI_Controller {
 	 */
 	public function create_party()
 	{
-
 		// prepare data for output
 		$data = array();
 
@@ -88,7 +87,7 @@ class party extends CI_Controller {
 		{
 			// set fail data!
 			$data['status'] = 'error';
-			$data['response'] = 'Missing post data. Not all needed fields were sent.';
+			$data['response'] = 'Missing post data, Not all needed fields were sent';
 		}
 		else // everyting is as it should
 		{
@@ -104,7 +103,7 @@ class party extends CI_Controller {
 			else
 			{
 				$data['status'] = 'error';
-				$data['response'] = 'Could not create party.';
+				$data['response'] = 'Could not create party';
 			}
 		}
 
@@ -114,24 +113,24 @@ class party extends CI_Controller {
 	/**
 	 * Post playing song in spotify at the party
 	 */
-	public function post_playing_song()
+	public function spotify_song()
 	{
+		$data = array();
 		// load party model	
 		$this->load->model('party_model');
 
 		$partyid = $this->input->post('partyid');
 		$trackuri = $this->input->post('trackuri');
 		
-		$data = array();
 		if(!$partyid || !$trackuri)
 		{
 			$data['status'] = 'error';
-			$data['respons'] = 'Missing post data. Not all needed fields were sent.';
+			$data['response'] = 'Missing post data, Not all needed fields were sent';
 		}
-		elseif(!$this->Party_model->party_exists($partyid))
+		elseif(!$this->party_model->party_exists($partyid))
 		{
 			$data['status'] = 'error';
-			$data['respons'] = 'Party was not found';	
+			$data['response'] = 'Party was not found';	
 		}
 		else
 		{
@@ -140,9 +139,8 @@ class party extends CI_Controller {
 
 			$data['status'] = 'success';
 			$data['result'] = $query;
-
 		}
-
+		
 		echo json_encode($data);
 	}
 	/**
@@ -156,12 +154,12 @@ class party extends CI_Controller {
 		if(!$partyid)
 		{
 			$data['status'] = 'error';
-			$data['respons'] = 'Missing post data. Not all needed fields were sent.';
+			$data['response'] = 'Missing post data, Not all needed fields were sent';
 		}
 		elseif(!$this->Party_model->party_exists($partyid))
 		{
 			$data['status'] = 'error';
-			$data['respons'] = 'Party not found.';
+			$data['response'] = 'Party not found';
 		}
 		else
 		{

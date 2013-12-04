@@ -21,10 +21,11 @@
     <div class="container">
         <div class="col-md-4 col-md-offset-4 login">
             <h1 id="xyz" class="loginTitle">Hathor</h1>
-            <form action="?redir=/home/" method="post">
+            <form action="?redir=/home/" method="post" id="login">
                 <p>
                     Login to experience Hathor. The ultimate tool to democratize your party.
                 </p>
+                <p id="loginstatus" style="padding-left:10px;"></p>
                 <p>
                     <input type="text" name="name" id="name" class="form-control input-lg square-bottom loginName" placeholder="Full name" required="" autofocus="">
                     <input type="email" name="email" id="email" class="form-control input-lg square-bottom" placeholder="Email" required="" autofocus="">
@@ -42,38 +43,8 @@
             </form>
         </div>
     </div>
-	<script src="scripts/main.js"></script>
     <script src="scripts/login.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
-    <!--- Gammal loginkod
-    <script type="text/javascript">
-	$(document).ready(function(){
-	 	$("#logintest").submit(function(event) {
-	 		event.preventDefault();
-	 		var $inputs = $('#logintest :input');
-		    var values = {};
-    		$inputs.each(function() {
-        		values[this.name] = $(this).val();
-    		});
-
-    		$.post('http://127.0.0.1/Hathor/api/user/signin',values, function(data, textstatus){
-    			console.log(data);
-    			var json = eval ("(" + data + ")");
-    			if(json.status == "success")
-    			{
-					$('#logindiv').html("");
-    				$('#loginstatus').html("Logged in!");
-    				sessionStorage.
-    			}
-    			else
-    			{
-    				$('#loginstatus').html(json.status + ": " + json.respons);
-    			}
-    		});
-
-	 	});
-	});
-	</script>-->
 </body>
 </html>

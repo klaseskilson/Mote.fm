@@ -22,29 +22,22 @@ class GetSong extends CI_Controller
 		//set view
 		$view = "getsong";
 		
-		$partyhash = $this->input->post('hash');
+		$partyhash = $this->input->get('hash');
 
-		$partyid = $this->party_model->get_party_from_hash($partyhash)
-
-		//FIXME: get session user data
-		if(!$this->session->userdata('track'))
-		{
-			$this->session->set_userdata('track',$this->party_model->get_current_track_at_party($this->session->userdata('partyID'))['trackuri']);
-		}
-
+		$party = $this->party_model->get_party_from_hash($partyhash);
+		$getTrack = $this->party_model->get_current_track_at_party($party['partyid']);
+		$this->session->set_userdata('trackuri',$getTrack['trackuri']);	
+		$this->session->set_userdata('partyid',$party['partyid']);	
 
 		$data = array();
 		$data['title'] = 'Get song demo';
 		$data['user'] = $this->login->get_all_info();
-		$data['Partyid'] = $this->session->userdata('partyID');
-		
-		//flag to say if we should import ajax stuff
 		$data['ajax'] = true;
-		
-		$data['track'] = $this->session->userdata('track');
+		$data['track'] = $this->session->userdata('trackuri');
 		$data['artistname'] = get_artist_name($data['track']);
-		$data['trackname'] = get_track_name($this->session->userdata('track'));
+		$data['trackname'] = get_track_name($data['track']);
 		$data['trackdata']	= get_album_art($data['track']);
+		$data['partyname'] = $party['name'];
 		
 		$this->load->view('templates/header', $data);
 		$this->load->view($view);
