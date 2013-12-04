@@ -1,15 +1,15 @@
 require([
   '$api/models',
   'scripts/cover',
-  'scripts/postPlayingSong',
+  'scripts/hathor',
   'scripts/trackInfo'
-], function(models, cover, postPlayingSong, trackInfo) {
+], function(models, cover, hathor,trackInfo) {
   'use strict';
 
   var numReloads = 0;
-
-  //FIXME: partyID is hardcoded
-  postPlayingSong.registerHathorCallback(123456); 
+  //FIXME: ett formulär att registrera en fest
+  //för att skicka iväg förfrågan används funktionen nedan!
+  hathor.RegisterParty(sessionStorage.uid, "cool fest");
 
   // Each track has ha vote. Here the id of the voter and
   // timestamp is stored in arrays.
@@ -143,7 +143,6 @@ require([
   // var country = models.session.load('country').done(function(country){
     // document.getElementById('subheading').innerHTML = country.country.decodeForHtml();
   // });
-  console.log("Array initialized");
 
   listUpdate();
 
