@@ -249,6 +249,11 @@ class User_model extends CI_model
 
 		return false;
 	}
+	function createHash($email)
+	{
+		$data = array('hashkey' => strgen(20));
+		return $data['hashkey'];	
+	}
 
 	function activate($email, $hashkey)
 	{
@@ -259,7 +264,7 @@ class User_model extends CI_model
 		$query = $this->db->get('users');
 		if ($query)
 		{
-			return $this->db->update('users', $password, array('uid' => $uid));
+			return $this->db->update('users', array('activated'=>1, 'hashkey'=>strgen(20)));
 		}
 		return false;
 	}
