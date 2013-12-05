@@ -12,6 +12,8 @@ class party extends CI_Controller {
 
 		// load party model
 		$this->load->model('party_model');
+		// load user model
+		$this->load->model('user_model');
 	}
 
 	/**
@@ -19,7 +21,6 @@ class party extends CI_Controller {
 	 */
 	public function create_party()
 	{
-
 		// prepare data for output
 		$data = array();
 
@@ -102,16 +103,32 @@ class party extends CI_Controller {
 		$data = array();
 
 		// get spotify song uri sent via post
-		$uri = $this->input->post("uri");
+		$trackuri = $this->input->post("spotifyuri");
+		// get user id sent via post
+		$uid = $this->login->get_id();
+		// get party id sent via post
+		$partyid = $this->input->post("partyid");
 
-		if($uri)
+		if($trackuri && $this->user_model->user_exist($uid) && $this->party_model->party_exists($partyid))
 		{
-
+			$songid = $this->party_model->add_song($uid, $partyid, $trackuri);
+			if($songid)
+			{
+				$data['status'] = 'success';
+				$data['response'] = $songid;
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'Could not add song.';
+			}
 		}
 		else
 		{
 			$data['status'] = 'error';
-			$data['response'] = 'Missing song post data';
+			$data['response'] = 'Missing song post data or user/party id is invalid.';
+			$data['uid'] = $uid;
+			$data['partyid'] = $partyid;
 		}
 
 		// output the json from data

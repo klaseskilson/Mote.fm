@@ -57,18 +57,52 @@ function parsespotify(query, theobject)
 	// theobject.parent('.spotifysearch').children('.searchresults').show();
 }
 
+function addsong(theobject)
+{
+	var uri = theobject.attr('data-uri');
+
+	// prepare post data
+	var postdata = {
+		'spotifyuri': uri,
+		'partyid': 1
+	};
+
+	// send post request
+	$.ajax({
+		type: "POST",
+		url: BASE_URL + 'api/party/add_song',
+		data: postdata,
+		dataType: 'json'
+	})
+	.fail(function(errordata){
+		console.log(errordata.responseText);
+	})
+	.done(function(answer){
+		if(answer.status === 'success')
+		{
+			console.log(answer);
+
+			var searchresults = theobject.closest('.spotifysearch');
+			// fade out the object, and the remove it. uncluttered DOM <3.
+			theobject.fadeOut(300, function(){
+				theobject.addClass('success').text('Song added!').fadeIn().delay(3000).slideUp(300, function(){theobject.remove()});
+			});
+		}
+		else
+			console.log("Failed. Message: " + answer.response);
+	});
+}
+
 
 $(document).ready(function(){
 	$('.spotifysearch input').on('input', function(){
-		// if($(this).val().length > 2)
-		// 	$(this).wrap('<div class="input-group"></div>').parent().append('<span class="input-group-btn"><button class="btn btn-default" type="button"><span class="glyphicon glyphicon-remove"></span></button></span>');
 		parsespotify($(this).val(), $(this));
 	});
 
 	// listen to clicks on searchresults
 	$(document).on('click', '.spotifysearch .searchresults a', function(event){
 		event.preventDefault();
-		console.log($(this).attr('data-uri'));
+		addsong($(this));
 	});
 
 });
