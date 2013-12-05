@@ -54,7 +54,6 @@ require([
 
 						musicTrack.partyid = partyID;
 						musicTrack.trackuri = track.uri;
-						console.log("Sending");
 						$.post(constants.SERVER_URL + '/Hathor/api/party/spotify_song', musicTrack , function (data, textStatus) {
 							console.log(data);
 						});

@@ -1,7 +1,8 @@
 require([
   '$api/models',
+  'scripts/constants',
   'scripts/jquery.min'
-], function(models, jquery) {
+], function(models, constants, jquery) {
   $(document).ready(function(){
     
     //test if user already is in the session
@@ -50,6 +51,7 @@ require([
           sessionStorage.username = json.result.name;
           document.getElementById('xyz').innerHTML = "LOGIN";
           window.location.href = "party.html";
+          
         }
         else
         {
