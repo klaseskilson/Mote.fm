@@ -130,8 +130,18 @@ html {
 	margin-bottom: 15px;
 	text-align: center;
 }
-.loginName
+#signIn, #forgotPwd, #signUp
 {
 	display: none;
-	opacity: 0;
+	cursor: pointer;
+}
+.loginLeft
+{
+	float:left;
+	display: inline !important;
+}
+.loginRight
+{
+	float:right;
+	display: inline !important;
 }

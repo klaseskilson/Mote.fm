@@ -11,22 +11,49 @@ require([
       //if it is, no need to login again
       window.location.href = "party.html";
     }
-  })
-  $('#signUp').click(function() {
-  	if($('#name').css('display') == 'none')
-  	{
-	  	$('#email').animate({
-	      marginTop: '+=45px'
-	    }, 300, 'linear', function() {
-	    	$('#email').css('margin-top', '0px');
-			$('#name').css('display', 'inline');
-			$('#name').animate({
-				opacity: '1'
-			}, 500);
-	    });	
-  	}
-    
   });
+
+	var situation = "#signIn";
+
+	var switchButtons = function(id) {
+		console.log(id);
+		console.log(situation);
+		if($(id).hasClass('loginLeft'))
+		{
+			$(id).removeClass('loginLeft');
+			$(situation).addClass('loginLeft');
+		}
+		if($(id).hasClass('loginRight'))
+		{
+			$(id).removeClass('loginRight');
+			$(situation).addClass('loginRight');
+		}
+	}
+
+	$('#signUp').click(function() {
+		$('#password').show({duration: 400, queue: false});
+		$('#name').show({duration: 400, queue: false});
+		$('#name').attr('required', '');
+		switchButtons('#signUp');
+		situation = "#signUp";
+		$('#name').focus();
+	});
+
+	$('#forgotPwd').click(function() {
+		$('#password').hide({duration: 400, queue: false});
+		$('#name').hide({duration: 400, queue: false});
+		switchButtons('#forgotPwd');
+		situation = "#forgotPwd";
+		$('#email').focus();
+	});
+
+	$('#signIn').click(function() {
+		$('#password').show({duration: 400, queue: false});
+		$('#name').hide({duration: 400, queue: false});
+		switchButtons('#signIn');
+		situation = "#signIn";
+		$('#email').focus();
+	});
 
   $('#submit').click(function() {
     event.preventDefault();
@@ -36,7 +63,7 @@ require([
             values[this.name] = $(this).val();
         });
 
-  	if($('#name').css('display') == 'none')
+  	if(situation == "#signIn")
   	{
 
 
@@ -60,11 +87,15 @@ require([
 
       });
   	}
-  	else
+  	else if(situation == "#signUp")
   	{
   		//TODO:Sign up 
   		document.getElementById('xyz').innerHTML = "SIGN UP";
   	}
+  	else if(situation == "#forgotPwd")
+  	{
+  		//TODO:Forgot password 
+  		document.getElementById('xyz').innerHTML = "FORGOT PASSWORD";
+  	}
   });
-
 });

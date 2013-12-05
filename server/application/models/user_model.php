@@ -169,7 +169,6 @@ class User_model extends CI_model
 
 		if($query) return $query->num_rows();
 
-
 		return false;
 	}
 

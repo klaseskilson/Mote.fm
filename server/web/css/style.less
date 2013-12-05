@@ -177,6 +177,17 @@ h1, h2, h3, h4, p, body {
 	color: #333;
 	font-weight: bold;
 
+	&.success {
+		color: #468847;
+		background-color: #dff0d8;
+		border-color: #d6e9c6;
+
+		&:focus, &:hover {
+			color: #468847;
+			background-color: #dff0d8;
+		}
+	}
+
 	&:focus, &:hover {
 		background: #eee;
 		text-decoration: none;
