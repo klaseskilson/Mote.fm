@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Hathor</title>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+	<link rel="stylesheet" href="$views/css/image.css">
+	<link rel="stylesheet" href="$views/css/list.css">
+    <link rel="stylesheet" href="$views/css/buttons.css">
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row title">
+            <div class="col-md-6">
+                <h1 class="partyTitle">Hathor</h1>
+                <h2 id="user"></h2>
+                
+            </div>
+            <div class="col-md-6">
+                <div class="partylinks glyphicon glyphicon-link"></div>
+            </div>
+        </div>
+    </div>
+	<div id="queue" class="container"></div>
+
+	<script src="scripts/main.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+        $("#user").html("Welcome Back, " + sessionStorage.username + "!");
+    </script>
+</body>
+</html>

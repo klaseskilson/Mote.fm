@@ -17,12 +17,12 @@ class User_model extends CI_model
 	 */
 	function validate($email, $pwd)
 	{
+		
 		$this->db->select("uid, password, email, name");
 		$this->db->where('email', $email);
 		// password query
 		$pwq = $this->db->get("users");
 		$pwr = $pwq->result(); // password result
-
 		if($this->passwordhash->CheckPassword($pwd, $pwr[0]->password))
 		{
 			return $pwr[0];
@@ -155,7 +155,6 @@ class User_model extends CI_model
 
 			$result = $query->result();
 
-			var_dump($result);
 			return $result[0]->uid;
 		}
 
@@ -248,6 +247,11 @@ class User_model extends CI_model
 
 		return false;
 	}
+	function createHash($email)
+	{
+		$data = array('hashkey' => strgen(20));
+		return $data['hashkey'];	
+	}
 
 	function activate($email, $hashkey)
 	{
@@ -258,7 +262,7 @@ class User_model extends CI_model
 		$query = $this->db->get('users');
 		if ($query)
 		{
-			return $this->db->update('users', $password, array('uid' => $uid));
+			return $this->db->update('users', array('activated'=>1, 'hashkey'=>strgen(20)));
 		}
 		return false;
 	}

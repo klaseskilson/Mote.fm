@@ -94,3 +94,54 @@ html {
 	font-size: 30px;
 	padding-bottom: 10px;
 }
+.track
+{
+	-webkit-transition:-webkit-filter 0.3s ease-in-out; 
+	-webkit-filter: blur(0px);
+}
+.blur
+{
+	-webkit-filter: blur(10px) !important;
+}
+.deleteCheck, .deleteCancel
+{
+	position: absolute;
+	background-color: green;
+	width: 30px;
+	height: 30px;
+	display: none;
+	float: right;
+	cursor: pointer;
+}
+.deleteActive
+{
+	display: inline;
+}
+.login
+{
+	margin-top: 15%;
+	height: 50%;
+	background-color: #E8E8E8;
+	padding-bottom: 30px;
+	border-radius: 10px;
+}
+.loginTitle
+{
+	margin-bottom: 15px;
+	text-align: center;
+}
+#signIn, #forgotPwd, #signUp
+{
+	display: none;
+	cursor: pointer;
+}
+.loginLeft
+{
+	float:left;
+	display: inline !important;
+}
+.loginRight
+{
+	float:right;
+	display: inline !important;
+}

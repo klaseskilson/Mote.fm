@@ -1,15 +1,15 @@
 require([
   '$api/models',
   'scripts/cover',
-  'scripts/postPlayingSong',
+  'scripts/hathor',
   'scripts/trackInfo'
-], function(models, cover, postPlayingSong, trackInfo) {
+], function(models, cover, hathor,trackInfo) {
   'use strict';
 
   var numReloads = 0;
-
-  //FIXME: partyID is hardcoded
-  postPlayingSong.registerHathorCallback(123456); 
+  //FIXME: ett formulär att registrera en fest
+  //för att skicka iväg förfrågan används funktionen nedan!
+  hathor.RegisterParty(sessionStorage.uid, "cool fest");
 
   // Each track has ha vote. Here the id of the voter and
   // timestamp is stored in arrays.
@@ -47,6 +47,9 @@ require([
     this.image = '';
   }
 
+  // Uppdtareas konstigt. Bilderna försvinner.
+  // Undersök hurvida endast de påverkade objekten ska uppdateras eller ej
+  // Just nu töms listan och skrivs ut igen, är det bästa sättet?
   var listUpdate = function() 
   {
     tracks.sort(compare);
@@ -89,7 +92,6 @@ require([
     section += '<div class="songArtist">';
     section += '</div>';
     section += '<div class="numberOfVotes"></div>';
-    section += '<div class="deleteCheck"></div>';
     section += '<div class="delete glyphicon glyphicon-remove"></div>';
     section += '<div class="vote glyphicon glyphicon-chevron-up"></div>';
     section += '</div>';
@@ -97,10 +99,10 @@ require([
     return section;
   }
 
-  // Funktion som avnänds vid sortering av tracks beroende
+  // Funktion som används vid sortering av tracks beroende
   // på votes i första hand, sedan timestamp.
   function compare(a, b) {
-    var votesA = a.votes.amount; var votesB = b.votes.amount;
+    var votesA = a.votes.amount; var votesB = b.votes.amount; // Creates variables for easy and neat handling
     var timeA = a.votes.timestamp; var timeB = b.votes.timestamp;
     if(votesA < votesB)
     {
@@ -127,7 +129,7 @@ require([
     }
   }
 
-  var tracks = new Array();
+  var tracks = new Array(); // Initializes an array of spotify URIs
   tracks[0] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
   tracks[1] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
   tracks[2] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
@@ -141,61 +143,98 @@ require([
   // var country = models.session.load('country').done(function(country){
     // document.getElementById('subheading').innerHTML = country.country.decodeForHtml();
   // });
-  console.log("Array initialized");
 
   listUpdate();
-
-  console.log('bajs');
-
-  for(var i = 0; i < tracks.length; i++)
-  {
-    console.log('kuk');
-    tracks[i].image = document.getElementsByClassName('cover')[i].innerHTML.toString();
-    var aux = tracks[i].section.toString();
-    tracks[i].section = [aux.slice(0,aux.indexOf('cover')+7), tracks[i].image, aux.slice(aux.indexOf('cover')+7)].join();
-    console.log(tracks[i].image);
-  }
 
   // Funktion för att ta bort ett "Track"-elemnent
   // Att göra:
   // * Funktion som endast ska vara tillgänglig för
   //   feststartaren.
   $(document).on('click', '.delete', function() {
-    var pos = $('.delete').index(this);
-    // var deleteCheck = '.deleteCheck:eq('+pos+')';
-    // var height = $(this).parent().parent().height();
-    // console.log(height);
-    // document.getElementsByClassName('deleteCheck')[pos].innerHTML = 'DELETE';
-    // $(deleteCheck).css('padding-left', '18px');
-    // $(deleteCheck).animate({
-    //   width: '+=135px'
-    // }, 500, function() {
-    //   $(this).click(function(){
-    //     $(this).parent().parent().fadeOut(300);
-    //     setTimeout(function(){
-    //         if(pos==0)
-    //         {
-    //           listUpdate();
-    //         }
-    //       },300);
-    //   });
-    //   $(document).click(function() {
-    //     $(deleteCheck).animate({
-    //       width: '0px',
-    //       paddingLeft: '0px'
-    //     }, 300, function() {
-    //       // DONE
-    //       document.getElementsByClassName('deleteCheck')[pos].innerHTML = '';
-    //     });
-        
-    //   });
-    // });
+    // Simple test to clear other active deletions
+    var trackLength = document.getElementsByClassName('track');
+    for(var i = 0; i < trackLength.length; i++)
+    {
+      if($(trackLength[i]).hasClass('blur'))
+      {
+        $(trackLength[i]).removeClass('blur');
+      }
+    }
+    if($('.deleteActive').length != 0)
+    {
+      $('.deleteActive').remove();
+    }
+    // end of test
+    var active = document.getElementsByClassName('track')[pos]; // Creates objects for easy and neat handling
     
-    // 
-    // console.log(pos);
-    tracks[pos].active = false;
-    $(this).parent().parent().fadeOut(200);
-    // listUpdate();
+    var pos = $('.delete').index(this); // Wich position the clicked track is in
+    var top = document.getElementsByClassName("trackmeta")[pos].offsetTop; // Gets the correct position for the buttons
+    var left = document.getElementsByClassName("trackmeta")[pos].offsetLeft;
+
+    var qtop = document.getElementById("queue").offsetTop;
+    var qleft = document.getElementById('queue').offsetLeft;
+
+    var checkDiv = "<div class='deleteCheck deleteActive'></div>"; // the html for the buttons
+    var cancelDiv = "<div class='deleteCancel deleteActive'></div>";
+    
+    var $check = $(checkDiv).prependTo('#queue');
+    var $cancel = $(cancelDiv).prependTo('#queue');
+
+    var delWidth = $check.css("width").replace('px',''); // width of the buttons
+
+    var w = window.innerWidth - left-delWidth-qleft; // Correct values for the css
+    var w2 = w-delWidth-15;
+    top -= qtop;
+
+    $check.css({'margin-top': top, // Sets the correct margins for clicked track
+                  'margin-left': w
+    });
+    $cancel.css({'margin-top': top,
+                   'margin-left': w2
+    });
+
+    if(pos == 0) // The first track row is a bit special
+      active.setAttribute('class', 'track row first blur');
+    else
+      active.setAttribute('class', 'track row blur');    
+
+    // active.disabled=true;
+
+    $(document).click(function(event) { // Activates when a click is done.
+      console.log(event);
+      if($(event.target).parents().index($(active)) == 1) // Checks if the click was made on the track or not
+      {
+        // mX = event.clientX; mY = event.clientY;
+        // checkX = $check.offsetLeft; checkY = $check.offsetTop;
+        // cancelX = $cancel.offsetLeft; cancelY = $cancel.offsetTop;
+
+        // if(mX > checkX && mX < checkX+delWidth)
+        // {
+        //   if(mY > checkY && mY < checkY+delWidth)
+        //   {
+        //     console.log("kuk det är en check");
+        //     tracks[pos].active = false; // The track has been removed
+        //   }
+        // }
+        // else if(mX > cancelX && mX < cancelX+delWidth)
+        // {
+        //   if(mY > cancelY && mY < cancelY+delWidth)
+        //   {
+        //     console.log("kuk det är ecanceln cancel");
+        //   }
+        // }
+        
+      }
+      else // If the click wasn't on the track. Turn back to normal
+      {
+        $check.remove();
+        $cancel.remove();
+        $(active).removeClass('blur');
+      } 
+    });
+
+    console.log(pos+1);
+    
   });
 
 
@@ -213,7 +252,7 @@ require([
     console.log("#" + voteIndex + " has " + tracks[voteIndex].votes.amount +
      " number of votes. Voted by " + tracks[voteIndex].votes.voter[tracks[voteIndex].votes.voter.length-1]
      + ". Voted on time: " + tracks[voteIndex].votes.timestamp[tracks[voteIndex].votes.voter.length-1]);
-    //listUpdate();
+    listUpdate();
   });
 
 });
