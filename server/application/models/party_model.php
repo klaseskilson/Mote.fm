@@ -247,4 +247,22 @@ class Party_model extends CI_model
 
 		return false;
 	}
+
+	/**
+	 * get all parties from a specific user
+	 * @param  int $uid the user id
+	 * @return the parties, array
+	 */
+	function get_all_parties($uid)
+	{
+		$this->db->where('uid', $uid);
+		$query = $this->db->get('parties');
+
+		// only return true if we have something to show
+		if($query && $query->num_rows() > 0)
+			return $query->result_array();
+
+		// return false
+		return false;
+	}
 }
