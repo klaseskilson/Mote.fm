@@ -64,8 +64,9 @@
 						<ul class="nav navbar-nav navbar-right">
 							<?php if(isset($user['uid']) && $user['uid'])
 							{
+								$gravatarMd5 = md5(strtolower($user['email']));
 								?>
-								<li><a href="<?php echo base_url(); ?>user/profile"><?php echo $user['name'];?></a></li>
+								<li><a href="<?php echo base_url(); ?>user/profile"><img class="dashboardavatar" src="<?php echo "http://www.gravatar.com/avatar/$gravatarMd5?s=25"?>" alt=""> <?php echo $user['name'];?></a></li>
 								<li><a href="<?php echo base_url(); ?>party">Parties</a></li>
 								<li><a href="<?php echo base_url(); ?>about">About</a></li>
 								<li><a href="<?php echo base_url(); ?>user/signout">Sign out</a></li>

@@ -1,8 +1,7 @@
 require([
 	'$api/models',
-	'scripts/constants',
 	'scripts/jquery.min'
-	], function(models, constants, jquery){
+	], function(models, jquery){
 		/**
 		 * Register a party on Hathor serverside
 		 * @param {int} uid User unique Id, can be found in sessionStorage.uid after login
