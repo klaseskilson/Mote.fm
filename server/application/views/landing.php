@@ -2,14 +2,14 @@
 	<div id="first" class="pane">
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-6 screamer">
-					<h2>Democratize the play queue</h2>
+				<div class="col-sm-7 screamer">
+					<h2>Democratize music</h2>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-6 screamer">
 					<p>
-						Easily let your guest controll what's playing.
+						Easily let your guest control what's playing.
 					</p>
 				</div>
 				<div class="col-sm-6 screamer">

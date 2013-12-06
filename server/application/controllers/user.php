@@ -33,7 +33,6 @@ class User extends CI_Controller {
 	{
 		$data = array();
 		$data['user'] = $this->login->get_all_info();
-
 		$data['title'] = 'Edit profile';
 
 		$this->load->view('templates/header', $data);
