@@ -52,7 +52,7 @@ class User extends CI_Controller {
 		{
 			$this->login->validate($email, $password);
 
-<<<<<<< HEAD
+
 			//send activation email
 			$hash = $this->user_model->createHash($email);
 			$this->email->from('noreply@taketkvg.se', 'The Hathor crew');
@@ -61,10 +61,7 @@ class User extends CI_Controller {
 			$this->email->message('Hey '.$name.'! Follow this link to activate your Hathor account. '
 			.base_url().'user/activate/'.urlencode($email).'/'.$hash);
 			$this->email->send();
-			echo $this->email->print_debugger();
 
-=======
->>>>>>> 6046a9303eb663c022b79971d6a6ea38c8cbb013
 			// how do we want the response?
 			if($method == 'web') // WEB!
 			{
@@ -160,7 +157,6 @@ class User extends CI_Controller {
 			$this->email->subject('Password reset');
 			$this->email->message('Fuck you. hathor.se/user/forgotPassword/'.$email.'/'.$hash);
 			$this->email->send();
-			echo $this->email->print_debugger();
 		}
 	}
 	public function forgotPassword($email, $hash)
@@ -205,11 +201,11 @@ class User extends CI_Controller {
 		}
 		else
 		{
-			echo "Password has been changed."
+			echo "Password has been changed.";
 			$this->email->from('noreply@taketkvg.se', 'The Hathor crew');
 			$this->email->to($email);
 			$this->email->subject('Change of password');
-			$this->email->message('Hey! Your Hathor password has been changed.'
+			$this->email->message('Hey! Your Hathor password has been changed.');
 			$this->email->send();
 		}
 	}
