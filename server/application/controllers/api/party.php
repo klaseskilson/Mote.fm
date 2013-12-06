@@ -16,6 +16,9 @@ class party extends CI_Controller {
 		$this->load->model('user_model');
 	}
 
+	/**
+	 * Returns the currently played song in spotify from database
+	 */
 	public function get_playing_song()
 	{
 		//load helper and model
@@ -72,6 +75,7 @@ class party extends CI_Controller {
 
 		echo json_encode($data);
 	}
+
 	/**
 	 * create party
 	 */
@@ -80,6 +84,7 @@ class party extends CI_Controller {
 		// prepare data for output
 		$data = array();
 
+		//get postdata
 		$name = $this->input->post('name');
 		$uid = $this->input->post('uid');
 		$locale = $this->input->post('locale');
@@ -108,19 +113,19 @@ class party extends CI_Controller {
 				$data['response'] = 'Could not create party';
 			}
 		}
-
 		// write array json encoded
 		echo json_encode($data);
 	}
+
 	/**
 	 * Post playing song in spotify at the party
 	 */
 	public function spotify_song()
 	{
+		//prepare data
 		$data = array();
-		// load party model
-		$this->load->model('party_model');
 
+		//get Post data
 		$partyid = $this->input->post('partyid');
 		$trackuri = $this->input->post('trackuri');
 
@@ -145,6 +150,7 @@ class party extends CI_Controller {
 
 		echo json_encode($data);
 	}
+	
 	/**
 	 * get the playlist for the party
 	 */
@@ -176,7 +182,6 @@ class party extends CI_Controller {
 				else
 					break;
 			}
-
 			$data['status'] = 'success';
 			$data['result'] = $second;
 		}

@@ -21,18 +21,25 @@ class GetSong extends CI_Controller
 	{
 		//set view
 		$view = "getsong";
-		$data = array();		
+		$data = array();
+
+		//get post data
 		$partyhash = $this->input->get('hash');
 		if($partyhash)
 		{
+			//was there a hash sent?
 			$party = $this->party_model->get_party_from_hash($partyhash);
 			if($party)
 			{
-			
+				//is there a party with the hashcode?
+				//Get track currently played at the party
 				$getTrack = $this->party_model->get_current_track_at_party($party['partyid']);
+				
+				//store data in session data
 				$this->session->set_userdata('trackuri',$getTrack['trackuri']);	
 				$this->session->set_userdata('partyid',$party['partyid']);	
 
+				//Setting data for view
 				$data['title'] = 'Song at ' . $party['name'];
 				$data['titletext'] = $party['name'] . " is now playing:";
 				$data['user'] = $this->login->get_all_info();
@@ -45,6 +52,7 @@ class GetSong extends CI_Controller
 			}
 		}
 
+		//show view
 		$this->load->view('templates/header', $data);
 		$this->load->view($view);	
 		$this->load->view('templates/footer', $data);

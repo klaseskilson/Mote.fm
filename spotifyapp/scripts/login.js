@@ -1,16 +1,18 @@
 require([
   '$api/models',
+  'scripts/constants',
   'scripts/jquery.min'
-], function(models, jquery) {
-	$(document).ready(function(){
+], function(models, constants, jquery) {
+  $(document).ready(function(){
+    
+    //test if user already is in the session
+    if(sessionStorage.username !== undefined)
+    {
+      //if it is, no need to login again
+      window.location.href = "party.html";
+    }
+  });
 
-	//test if user already is in the session
-	if(sessionStorage.username !== undefined)
-	{
-	  //if it is, no need to login again
-	  window.location.href = "party.html";
-	}
-	})
 	var situation = "#signIn";
 
 	var switchButtons = function(id) {
@@ -53,7 +55,6 @@ require([
 		$('#email').focus();
 	});
 
-
   $('#submit').click(function() {
     event.preventDefault();
      var $inputs = $('#login :input');
@@ -77,6 +78,7 @@ require([
           sessionStorage.username = json.result.name;
           document.getElementById('xyz').innerHTML = "LOGIN";
           window.location.href = "party.html";
+          
         }
         else
         {

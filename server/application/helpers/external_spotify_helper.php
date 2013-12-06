@@ -3,6 +3,12 @@
 	Helper for external querying against spotify api
 	simple helpful stuff
 	*/
+
+	/**
+	 * Get artist name from spotify api TODO: only returns one artist
+	 * @param  string $trackURI Spotify uri
+	 * @return string artist name
+	 */
 	function get_artist_name($trackURI)
 	{
 		$ch = curl_init();
@@ -17,6 +23,11 @@
 		return $artists;
 	}
 
+	/**
+	 * Get thumbnail for album related to track
+	 * @param  string $trackURI Spotify uri
+	 * @return string url to thumbnail           
+	 */
 	function get_album_art($trackURI)
 	{
 
@@ -37,6 +48,11 @@
 		return $json['thumbnail_url'];
 	}
 
+	/**
+	 * Get name of track 
+	 * @param  string $trackURI Spotify uri
+	 * @return string name of song
+	 */
 	function get_track_name($trackURI)
 	{
 		$ch = curl_init();
