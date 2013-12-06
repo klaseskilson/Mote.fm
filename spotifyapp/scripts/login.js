@@ -1,8 +1,7 @@
 require([
   '$api/models',
-  'scripts/constants',
   'scripts/jquery.min'
-], function(models, constants, jquery) {
+], function(models, jquery) {
   $(document).ready(function(){
     
     //test if user already is in the session
@@ -65,7 +64,6 @@ require([
 
   	if(situation == "#signIn")
   	{
-
 
       $.post(constants.SERVER_URL + '/Hathor/api/user/signin',values, function(data, textstatus)
       { 
