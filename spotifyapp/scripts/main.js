@@ -7,9 +7,11 @@ require([
   'use strict';
 
   var numReloads = 0;
-  //FIXME: ett formulär att registrera en fest
   //för att skicka iväg förfrågan används funktionen nedan!
-  hathor.RegisterParty(sessionStorage.uid, "cool fest");
+  //hathor.RegisterParty(sessionStorage.uid, "cool fest");
+  
+  //this will send a request to hathor to get current playqueue.
+  hathor.registerHathorQueueCallback(localStorage.partyid, localStorage.queuehash);
 
   // Each track has ha vote. Here the id of the voter and
   // timestamp is stored in arrays.

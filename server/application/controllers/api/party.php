@@ -157,6 +157,7 @@ class party extends CI_Controller {
 	public function get_party_list()
 	{
 		$partyid = $this->input->post('partyid');
+		$partyhash = $this->input->post('partyhash');
 		$data = array();
 
 		if(!$partyid)
@@ -164,26 +165,29 @@ class party extends CI_Controller {
 			$data['status'] = 'error';
 			$data['response'] = 'Missing post data, Not all needed fields were sent';
 		}
-		elseif(!$this->Party_model->party_exists($partyid))
+		elseif(!$this->party_model->party_exists($partyid))
 		{
 			$data['status'] = 'error';
 			$data['response'] = 'Party not found';
 		}
 		else
 		{
-			$first = $this->Party_model->get_party_que($partyid);
-
-			while(true)
+			$queue = $this->party_model->get_party_queue($partyid);
+			$queuehash = md5(serialize($queue));
+	
+			
+			if($queuehash != $partyhash)
 			{
-				$second = $this->Party_model->get_party_que($partyid);
-
-				if($second == $first)
-					sleep(3);
-				else
-					break;
+				$data['status'] = 'error';
+				$data['result'] = 'No need to update the queue, its the same!';	
 			}
-			$data['status'] = 'success';
-			$data['result'] = $second;
+			else
+			{
+				$data['status'] = 'success';
+				$data['result'] = $queue;	
+			}
+			$data['hash'] = $queuehash;
+				
 		}
 
 		// write array json encoded

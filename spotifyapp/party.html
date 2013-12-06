@@ -21,9 +21,10 @@
     <div class="container">
         <div class="row title">
             <div class="col-md-6">
-                <h1 class="partyTitle">Hathor</h1>
+                <h1 class="apptitle">Hathor</h1>
                 <h2 id="user"></h2>
-                
+                <h3 id="partyname"></h3>
+                <h3 id="partyhash"></h3>
             </div>
             <div class="col-md-6">
                 <div class="partylinks glyphicon glyphicon-link"></div>
@@ -38,6 +39,12 @@
     <script src="js/bootstrap.min.js"></script>
     <script>
         $("#user").html("Welcome Back, " + sessionStorage.username + "!");
+        
+        if(localStorage.partyhash)
+        {
+            $("#partyname").html(localStorage.partyname);
+            $("#partyhash").html(localStorage.partyhash);
+        }
     </script>
 </body>
 </html>

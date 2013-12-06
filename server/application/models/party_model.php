@@ -110,16 +110,15 @@ class Party_model extends CI_model
 		return false;
 	}
 
-	function get_party_que($partyid)
+	function get_party_queue($partyid)
 	{
 		if(!$this->party_exists($partyid))
 			return false;
-
-		$this->db->select('quesong.*, COUNT(vote_id) AS vote_count');
+		$this->db->select('quesong.*, COUNT(voteid) AS vote_count');
 		$this->db->from('quesong');
+		$this->db->join('quevote', 'quesong.songid = quevote.songid');
 		$this->db->where('partyid', $partyid);
-		$this->db->join('quevote', 'quesong.songid = quevote.songid', 'left');
-		$this->db->group_by('quesong.songid');
+		$this->db->group_by('songid');
 		$this->db->order_by('vote_count desc, quesong.time');
 
 		$result = $this->db->get();
@@ -167,7 +166,7 @@ class Party_model extends CI_model
 
 		return false;
 	}
-
+	
 	/**
 	 * add vote to quevote table
 	 * @param 	int 	$songid the songid that is voted on
@@ -177,6 +176,7 @@ class Party_model extends CI_model
 	 */
 	function add_vote($songid, $uid)
 	{
+		//If user already have voted on song
 		if(!$this->vote_exists($uid, $songid))
 		{
 			$data = array(

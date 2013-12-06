@@ -65,7 +65,7 @@ require([
   	if(situation == "#signIn")
   	{
 
-      $.post(constants.SERVER_URL + '/Hathor/api/user/signin',values, function(data, textstatus)
+      $.post(constants.SERVER_URL + 'api/user/signin',values, function(data, textstatus)
       { 
         var json = data;
         if(json.status == "success")
