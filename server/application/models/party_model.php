@@ -265,4 +265,20 @@ class Party_model extends CI_model
 		// return false
 		return false;
 	}
+
+	/**
+	 * check if it exists a party with a given hash
+	 * @param  string $hash the hash to search for
+	 * @return bool
+	 */
+	function hash_exists($hash)
+	{
+		$this->db->where('hash', $hash);
+		$this->db->limit(1);
+		$query = $this->db->get('parties');
+
+		if($query) return $query->num_rows();
+
+		return false;
+	}
 }

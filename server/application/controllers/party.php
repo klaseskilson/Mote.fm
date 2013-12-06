@@ -36,7 +36,7 @@ class Party extends CI_controller
 
 	function view($hash = '')
 	{
-		if($this->party_model->hash_exists($hash))
+		if(!$this->party_model->hash_exists($hash))
 		{
 			log_message('error', 'Party hash '.$hash.' returned 404.');
 			show_404();
@@ -48,6 +48,8 @@ class Party extends CI_controller
 		// save user in handy variable
 		$data['user'] = $this->login->get_all_info();
 		$data['user']['names'] = explode(" ", $data['user']['name']);
+
+		$data['party'] = $this->party_model->get_party_from_hash($hash);
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('party/party', $data);

@@ -10,14 +10,19 @@
 		<div class="row">
 			<div class="col-sm-4 col-sm-offset-4">
 				<?php
-				foreach ($parties as $party) {
-					?>
-					<p>
-						<a href="<?php echo base_url().'party/view/'.$party['hash']; ?>">
-							<?php echo $party['name']; ?>
-						</a>
-					</p>
-					<?php
+				// do we have any parties to show?
+				if($parties)
+				{
+					// loop through the parties
+					foreach ($parties as $party) {
+						?>
+						<p>
+							<a href="<?php echo base_url().'party/view/'.$party['hash']; ?>">
+								<?php echo $party['name']; ?>
+							</a>
+						</p>
+						<?php
+					}
 				}
 				?>
 			</div>

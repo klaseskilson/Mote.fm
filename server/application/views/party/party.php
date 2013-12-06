@@ -3,7 +3,7 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<h1>
-					Party!
+					<?php echo $party['name']; ?>
 				</h1>
 			</div>
 		</div>
@@ -11,6 +11,7 @@
 			<div class="col-sm-4">
 				<form role="form">
 					<div class="form-group spotifysearch">
+						<input type="hidden" class="partyid" value="<?php echo $party['partyid']; ?>" />
 						<input type="text" class="form-control" class="searchinput" placeholder="Begin typing to search..." autocomplete="off" autofocus>
 						<div class="searchresults"></div>
 					</div>
