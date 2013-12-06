@@ -33,7 +33,6 @@ class User extends CI_Controller {
 	{
 		$data = array();
 		$data['user'] = $this->login->get_all_info();
-
 		$data['title'] = 'Edit profile';
 
 		$this->load->view('templates/header', $data);
@@ -51,6 +50,7 @@ class User extends CI_Controller {
 		if (valid_email($email) && $this->user_model->create_user($email, $name, $password))
 		{
 			$this->login->validate($email, $password);
+
 
 
 			//send activation email

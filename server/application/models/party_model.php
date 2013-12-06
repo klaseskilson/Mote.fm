@@ -18,9 +18,10 @@ class Party_model extends CI_model
 	{
 		// load user model for user check
 		$this->load->model('User_model');
+		$this->load->helper('common');
 
 		// check if user exists & locale is set, exit function if not
-		if(!$this->user_model->user_exists($uid) && strlen($locale) !== 2)
+		if(!$this->user_model->user_exist($uid) && strlen($locale) !== 2)
 			return false;
 
 		// save data into array
@@ -28,7 +29,7 @@ class Party_model extends CI_model
 					'uid' => $uid,
 					'name' => $name,
 					'locale' => $locale,
-					'hash' => hashgen(5, true, false, true) // generate a 5 char long hash, ALPHAnumeric
+					'hash' => strgen(5, true, false, true) // generate a 5 char long hash, ALPHAnumeric
 				);
 
 		// insert data!
@@ -64,6 +65,34 @@ class Party_model extends CI_model
 		return false;
 	}
 
+	/**
+	 * [get_current_track_at_party description]
+	 * @param  [type] $partyid
+	 * @return [type]
+	 */
+	function get_party_from_hash($partyhash)
+	{
+		// select all columns from parties where partyid=$partyid
+		$this->db->select('*');
+		$this->db->where('hash', $partyhash);
+
+		// run query!
+		$query = $this->db->get('parties');
+		// query worked?
+		if($query)
+		{
+			// return an array with the first row from the results
+			$result = $query->result_array();
+			if(sizeof($result) > 0)
+			{
+				return $result[0];
+			}
+		}
+
+		// if we got this far, something went wrong
+		return false;
+	}
+
 	function get_current_track_at_party($partyid)
 	{
 		$this->db->select('*');
@@ -73,12 +102,11 @@ class Party_model extends CI_model
 
 		$query = $this->db->get('nowplaying');
 
-		if($query)
+		if($query->num_rows() == 1)
 		{
 			$result = $query->result_array();
 			return $result[0];
 		}
-
 		return false;
 	}
 
@@ -124,14 +152,18 @@ class Party_model extends CI_model
 	 */
 	function add_song($uid, $partyid, $trackuri)
 	{
+		// does the song allready exist in this party? if so, add vote and move on.
+		if($this->song_exists($partyid, $trackuri))
+			return $this->add_vote($this->get_song_id_from_uri($trackuri, $partyid), $uid);
+
 		$data = array(
 					'uid' => $uid,
 					'partyid' => $partyid,
-					'trackuri' => $trackuri
+					'uri' => $trackuri
 				);
 
 		if($this->db->insert('quesong', $data))
-			return $this->db->insert_id();
+			return array('songid' => $this->db->insert_id());
 
 		return false;
 	}
@@ -145,14 +177,73 @@ class Party_model extends CI_model
 	 */
 	function add_vote($songid, $uid)
 	{
-		$data = array(
-					'uid' => $uid,
-					'songid' => $songid
-				);
+		if(!$this->vote_exists($uid, $songid))
+		{
+			$data = array(
+						'uid' => $uid,
+						'songid' => $songid
+					);
 
-		// if inserting works, return the new vote id
-		if($this->db->insert('quevote', $data))
-			return $this->db->insert_id();
+			// if inserting works, return the new vote id
+			if($this->db->insert('quevote', $data))
+				return array('voteid' => $this->db->insert_id());
+
+			return false;
+		}
+		return array('voteid' => 'vote allready exists');
+	}
+
+	function song_exists($partyid, $song)
+	{
+		// is it the song id or the song uri we get?
+		if(is_numeric($song))
+			$this->db->where('songid', $song);
+		else
+			$this->db->where('uri', $song);
+
+		// add the party criteria
+		$this->db->where('partyid', $partyid);
+
+		// run query
+		$query = $this->db->get('quesong');
+
+		// did the query work? return num rows
+		if($query) return $query->num_rows();
+
+		// query faulty, return false
+		return false;
+	}
+
+	function get_song_id_from_uri($uri, $partyid)
+	{
+		// add criterias, uri = $uri, only one result
+		$this->db->select('songid');
+		$this->db->where('uri', $uri);
+		$this->db->where('partyid', $partyid);
+		$this->db->limit(1);
+
+		// run query!
+		$query = $this->db->get('quesong');
+
+		if($query )
+		{
+			$result = $query->result_array();
+			return $result[0]['songid'];
+		}
+
+		// query faulty
+		return false;
+	}
+
+	function vote_exists($uid, $songid)
+	{
+		$this->db->where('uid', $uid);
+		$this->db->where('songid', $songid);
+		$this->db->limit(1);
+
+		$query = $this->db->get('quevote');
+
+		if($query) return $query->num_rows();
 
 		return false;
 	}
