@@ -9,7 +9,7 @@ class Party extends CI_controller
 		parent::__construct();
 
 		// make sure that the user is logged in. Redirect to login page if not.
-		if(!$this->login->is_logged_in() && $this->uri->segment(2) == 'profile')
+		if(!$this->login->is_logged_in())
 			redirect('/user/signin?redir='.urlencode(uri_string()));
 
 		$this->load->model('party_model');
@@ -20,18 +20,22 @@ class Party extends CI_controller
 		$this->all();
 	}
 
+	/**
+	 * some sort of party dashboard
+	 */
 	function all()
 	{
 		// save user in handy variable
 		$data['user'] = $this->login->get_all_info();
 		$data['user']['names'] = explode(" ", $data['user']['name']);
 
+		// load party data
 		$data['parties'] = $this->party_model->get_all_parties($this->login->get_id());
+		$data['party_contrib'] = $this->party_model->contrib_parties($this->login->get_id());
 
 		$this->load->view('templates/header', $data);
-		$this->load->view('party/all', $data);
+		$this->load->view('dashboard', $data);
 		$this->load->view('templates/footer', $data);
-
 	}
 
 	function view($hash = '')
@@ -50,9 +54,10 @@ class Party extends CI_controller
 		$data['user']['names'] = explode(" ", $data['user']['name']);
 
 		$data['party'] = $this->party_model->get_party_from_hash($hash);
+		$data['party_que'] = $this->party_model->get_party_que_from_hash($hash);
 
 		$this->load->view('templates/header', $data);
-		$this->load->view('party/party', $data);
+		$this->load->view('party', $data);
 		$this->load->view('templates/footer', $data);
 	}
 }
