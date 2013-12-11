@@ -58,18 +58,19 @@ class User extends CI_Controller {
 			$this->email->subject('Activate your Hathor account');
 			$this->email->message('Hey '.$name.'! Follow this link to activate your Hathor account. '
 			.base_url().'user/activate/'.urlencode($email).'/'.$hash);
-			$this->email->send();
-			echo $this->email->print_debugger();
+			// $this->email->send();
 
 			// how do we want the response?
 			if($method == 'web') // WEB!
 			{
 				echo "Well done my kuk.";
+				echo $this->email->print_debugger();
 			}
 			elseif($method == 'json') // return with machine encoded json
 			{
 				$response = array(
-								'status' => 'success'
+								'status' => 'success',
+								'maildebug' => $this->email->print_debugger()
 						   );
 				echo json_encode($response);
 			}

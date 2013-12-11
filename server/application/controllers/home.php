@@ -21,7 +21,8 @@ class Home extends CI_Controller {
 	{
 		// logged in?
 		if($this->login->is_logged_in())
-			$this->dashboard();
+			//$this->dashboard();
+			redirect(base_url().'party');
 		else
 			$this->start();
 	}

@@ -59,12 +59,13 @@ function parsespotify(query, theobject)
 
 function addsong(theobject)
 {
-	var uri = theobject.attr('data-uri');
+	var uri = theobject.attr('data-uri'),
+		searchresults = theobject.closest('.spotifysearch');
 
 	// prepare post data
 	var postdata = {
 		'spotifyuri': uri,
-		'partyid': 1
+		'partyid': searchresults.children('input.partyid').val()
 	};
 
 	// send post request
@@ -82,10 +83,9 @@ function addsong(theobject)
 		{
 			console.log(answer);
 
-			var searchresults = theobject.closest('.spotifysearch');
 			// fade out the object, and the remove it. uncluttered DOM <3.
 			theobject.fadeOut(300, function(){
-				theobject.addClass('success').text('Song added!').fadeIn().delay(3000).slideUp(300, function(){theobject.remove()});
+				theobject.addClass('success').text('Song added!').fadeIn().delay(1500).slideUp(300, function(){theobject.remove()});
 			});
 		}
 		else
