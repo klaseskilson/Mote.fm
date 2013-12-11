@@ -6,10 +6,32 @@ $(document).ready(function(){ // boring needed stuff
 
 	$("a[href*=#]").click(function(e) {
 		e.preventDefault();
-		window.history.pushState("string", "Title", this.hash);
-		$("html, body").animate({ scrollTop: $(this.hash).offset().top }, 1000);
+		if(this.hash)
+		{
+			window.history.pushState("string", "Title", this.hash);
+			$("html, body").animate({ scrollTop: $(this.hash).offset().top }, 1000);
+		}
 	});
 
+	// $(document).on('click', 'a[data-toggle="reset"]', function(e) {
+	// 	e.preventDefault();
+	// 	$('input#login_password').slideUp('fast');
+	// 	$('input#login_email').toggleClass('square-bottom', 0).focus();
+	// 	$('input#login_submit').attr('value', 'Send reset mail!');
+	// 	$(this).attr('data-toggle', 'login').text('Login!');
+	// });
+
+	// $(document).on('click', 'a[data-toggle="login"]', function(e) {
+	// 	e.preventDefault();
+	// 	$('input#login_password').slideDown('fast');
+	// 	$('input#login_email').toggleClass('square-bottom', 1).focus();
+	// 	$('input#login_submit').attr('value', 'Go!');
+	// 	$(this).attr('data-toggle', 'reset').text('Forgot your password?');
+	// });
+
+	/**
+	 * when submitting signup!
+	 */
 	$('form#signupform').submit(function(event){
     	// prevent form from beeing sent
 		event.preventDefault();
@@ -61,7 +83,7 @@ $(document).ready(function(){ // boring needed stuff
 				$errordiv.append('<p><strong>Oh noes!</strong> There are some things you need to check before we continue.</p>');
 				// add specific error messages
 				if(!data.errors.email)
-					$errordiv.append('<p>There is something wrong with that email. Have you entered it correctly? Do you already have an account, but <a href="'+BASE_URL+'user/recover">forgot your password</a>?</p>');
+					$errordiv.append('<p>There is something wrong with that email. Have you entered it correctly? Do you already have an account, but <a href="'+BASE_URL+'user/reset">forgot your password</a>?</p>');
 				if(!data.errors.name)
 					$errordiv.append('<p>That name is too short. We think you want at least two characters there.</p>');
 				if(!data.errors.password)

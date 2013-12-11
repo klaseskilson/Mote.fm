@@ -4,13 +4,13 @@
 			<div class="col-sm-4">
 				<h3>Welcome back, <?php echo $user['names'][0]; ?></h3>
 				<div class="row">
-					<div class="col-xs-6">
+					<div class="col-xs-4">
 						<?php
 							$gravatarMd5 = md5(strtolower($user['email']));
 							echo '<img src="http://www.gravatar.com/avatar/'.$gravatarMd5.'?s=600" class="img-responsive img-circle" alt=""/>';
 						?>
 					</div>
-					<div class="col-xs-6">
+					<div class="col-xs-8">
 						<p>Name: <?php echo $user['name'] ?></p>
 						<p>Email: <?php echo $user['email'] ?></p>
 					</div>

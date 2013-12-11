@@ -146,21 +146,74 @@ class User extends CI_Controller {
 	}
 	public function reset()
 	{
-		$email = $this->input->post('email');
-		$id = $this->user_model->get_id($email);
+		// prepare data to send to view
+		$data = array();
 
-		if ($this->user_model->user_exist($id))
+		$data['title'] = 'Reset password!';
+
+		// get email input from post
+		$email = $this->input->post('email');
+
+		if($email)
 		{
-			$hash = $this->user_model->reset($email);
-			$this->email->from('noreply@taketkvg.se', 'Einis');
-			$this->email->to($email);
-			$this->email->subject('Password reset');
-			$this->email->message('Fuck you. hathor.se/user/forgotPassword/'.$email.'/'.$hash);
-			$this->email->send();
-			echo $this->email->print_debugger();
+			// get id from email
+			$id = $this->user_model->get_id($email);
+			// get user info from id
+			$user = $this->user_model->get_all_info($id);
+
+			// did get_all_info return anything? proceed.
+			if ($id)
+			{
+				$hash = $this->user_model->reset($email);
+
+				$this->email->from($this->config->item('noreply_mail'), $this->config->item('noreply_name'));
+				$this->email->to($email);
+
+				// set message and stuff, using the format_mail from common_helper
+				$message = '<p>
+								Hi '.$user['name'].',
+							</p>
+							<p>
+								We heard you forgot your password, and therefore we prepared this awesome link for you, so that
+								you can reset it and access you account again. Nice, right?
+							</p>
+							<p>
+								All you need to do is click this button and follow the instructions:
+								<a href="'.base_url().'/'.urlencode($email).'/'.$hash.'" class="button">RESET PASSWORD!</a>
+							</p>
+							<p>
+								<small>
+									No button? Copy this link into you adress bar and hit enter: '.base_url().'/'.urlencode($email).'/'.$hash.'
+								</small>
+							</p>
+							';
+				$sendthis = format_mail('Reset password', $message);
+
+				$this->email->subject($this->config->item('mail_title').'Reset password');
+				$this->email->message($sendthis);
+
+				// AWAY!
+				$this->email->send();
+
+				// debug
+				//echo $this->email->print_debugger();
+
+				$data['success'] = true;
+				$data['email'] = $user['user'];
+			}
+			else
+			{
+				$data['success'] = false;
+				$data['email'] = $email;
+
+			}
 		}
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('reset', $data);
+		$this->load->view('templates/footer', $data);
 	}
-	public function forgotPassword($email, $hash)
+	public function forgotpassword($email, $hash)
 	{
 		$newPassword = $this->input->post('newPassword');
 		$confirm = $this->input->post('confirm');
