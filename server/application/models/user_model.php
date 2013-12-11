@@ -17,7 +17,7 @@ class User_model extends CI_model
 	 */
 	function validate($email, $pwd)
 	{
-		
+
 		$this->db->select("uid, password, email, name");
 		$this->db->where('email', $email);
 		// password query
@@ -149,10 +149,9 @@ class User_model extends CI_model
 		$this->db->where('email', $email);
 		$this->db->limit('1');
 		$query = $this->db->get('users');
-		//echo $query->num_rows();
+
 		if($query && $query->num_rows() > 0)
 		{
-
 			$result = $query->result();
 
 			return $result[0]->uid;
@@ -250,7 +249,7 @@ class User_model extends CI_model
 	function createHash($email)
 	{
 		$data = array('hashkey' => strgen(20));
-		return $data['hashkey'];	
+		return $data['hashkey'];
 	}
 
 	function activate($email, $hashkey)

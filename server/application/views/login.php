@@ -2,7 +2,11 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-4 col-sm-offset-4">
-				<form action="<?php echo $redir ? '?redir='.$redir : ''; ?>" method="post">
+				<h3>Sign in!</h3>
+				<p>
+					To access all awesome features that Mote.fm offers, sign in!
+				</p>
+				<form action="<?php echo $redir ? '?redir='.$redir : ''; ?>" method="post" class="login">
 					<?php
 					if(isset($email))
 					{
@@ -16,15 +20,15 @@
 					}
 					?>
 					<p>
-						<input type="email" name="email" id="email" class="form-control input-lg square-bottom"
+						<input type="email" name="email" id="login_email" class="form-control input-lg square-bottom"
 							   placeholder="Email" <?php echo isset($email) ? ' value="'.$email.'"' : ''; ?>required autofocus>
-						<input type="password" name="password" id="password" class="form-control input-lg square-top" placeholder="Password" required>
+						<input type="password" name="password" id="login_password" class="form-control input-lg square-top" placeholder="Password" required>
 					</p>
 					<p>
-						<input type="submit" name="submit" id="submit" value="Go!" class="btn btn-default btn-lg btn-block">
+						<input type="submit" name="submit" id="login_submit" value="Go!" class="btn btn-default btn-lg btn-block">
 					</p>
 					<p>
-						<a href="">Forgot your password?
+						<a href="<?php echo base_url().'user/reset';?>" data-toggle="reset">Forgot your password?</a>
 					</p>
 				</form>
 			</div>
