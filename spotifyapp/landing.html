@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Mote.fm - party</title>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+    <link rel="stylesheet" href="$views/css/image.css">
+    <link rel="stylesheet" href="$views/css/list.css">
+    <link rel="stylesheet" href="$views/css/buttons.css">
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <style type="text/css">
+        body
+        {
+            background-image: url("img/party_2.jpg");
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="col-md-10 col-md-offset-1 login">
+            <div class="row">
+                <h2 id="user" style="text-align:center;"></h2>
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>
+                                Create a party through Mote.fm, lock your computer and let everyone decide through their smartphones.
+                            </p>
+                            <p>
+                                Just type the name of your party and hit go!
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2">
+                            <span id="createError"></span>
+                            <form action="?redir=/home/" method="post" id="partyNameForm">
+                                <div class="col-md-10">
+                                    <input type="text" name="name" id="name" class="form-control input-lg square-bottom partyName" placeholder="This awesome party">
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="submit" name="submit" id="submit" value="Go!" class="btn btn-default btn-lg">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <h3>Past parties</h3>
+                    <ul id="pastParties">
+                        <li>
+                            <span id="1" class="pastParty">
+                                <div class="glyphicon glyphicon-chevron-right"></div>
+                                Einars mysfest
+                            </span>
+                        </li>
+                        <li>
+                            <span id="2" class="pastParty">
+                                <div class="glyphicon glyphicon-chevron-right"></div>
+                                Glöggkväll på ölk
+                            </span>
+                        </li>
+                        <li>
+                            <span id="3" class="pastParty">
+                                <div class="glyphicon glyphicon-chevron-right"></div>
+                                Klas fylleslag
+                            </span>
+                        </li>
+                        <li>
+                            <span id="4" class="pastParty">
+                                <div class="glyphicon glyphicon-chevron-right"></div>
+                                Utflyttningsfest
+                            </span>
+                        </li>
+                        <li>
+                            <span id="5" class="pastParty">
+                                <div class="glyphicon glyphicon-chevron-right"></div>
+                                Hathors firmafest
+                            </span>
+                        </li>
+                    </ul id="pastParties">                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS  -->
+    <script src="scripts/constants.js"></script>
+    <script src="scripts/landing.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+</body>
+</html>
