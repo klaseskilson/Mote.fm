@@ -8,7 +8,7 @@ require([
 	if(sessionStorage.username !== undefined)
 	{
 	  //if it is, no need to login again
-	  window.location.href = "party.html";
+	  window.location.href = "landing.html";
 	}
 	})
 	var situation = "#signIn";
@@ -35,6 +35,7 @@ require([
 		switchButtons('#signUp');
 		situation = "#signUp";
 		$('#name').focus();
+		document.getElementById('submit').setAttribute('value', 'Sign up!');
 	});
 
 	$('#forgotPwd').click(function() {
@@ -43,6 +44,7 @@ require([
 		switchButtons('#forgotPwd');
 		situation = "#forgotPwd";
 		$('#email').focus();
+		document.getElementById('submit').setAttribute('value', 'Recover!');
 	});
 
 	$('#signIn').click(function() {
@@ -51,6 +53,7 @@ require([
 		switchButtons('#signIn');
 		situation = "#signIn";
 		$('#email').focus();
+		document.getElementById('submit').setAttribute('value', 'Sign in!');
 	});
 
 
@@ -66,7 +69,7 @@ require([
   	{
 
 
-      $.post(constants.SERVER_URL + '/Hathor/api/user/signin',values, function(data, textstatus)
+      $.post(constants.SERVER_URL + '/api/user/signin',values, function(data, textstatus)
       { 
         var json = data;
         if(json.status == "success")
@@ -75,8 +78,7 @@ require([
           sessionStorage.uid = json.result.uid;
           sessionStorage.useremail = json.result.email;
           sessionStorage.username = json.result.name;
-          document.getElementById('xyz').innerHTML = "LOGIN";
-          window.location.href = "party.html";
+          window.location.href = "landing.html";
         }
         else
         {

@@ -16,27 +16,41 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom -->
     <link rel="stylesheet" type="text/css" href="style.css">
+    <style type="text/css">
+        body
+        {
+            background-image: url("img/party_3.jpg");
+            height: 100vh;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <div class="row title">
-            <div class="col-md-6">
-                <h1 class="partyTitle">Hathor</h1>
-                <h2 id="user"></h2>
-                
+        <div class="col-md-12 partyContainer">
+            <div class="row title">
+                <div class="col-md-6">
+                    <h1 class="partyTitle" id="partyname"></h1>                    
+                </div>
+                <div class="col-md-6">
+                    <div id="home" class="partylinks glyphicon glyphicon-home"></div>
+                    <div id="partyLink" class="partylinks glyphicon glyphicon-link"></div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <div class="partylinks glyphicon glyphicon-link"></div>
-            </div>
+            <div id="queue"></div>
         </div>
     </div>
-	<div id="queue" class="container"></div>
 
 	<script src="scripts/main.js"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script>
-        $("#user").html("Welcome Back, " + sessionStorage.username + "!");
+        $("#partyname").html(sessionStorage.partyname);
+        $("#home").click(function() {
+            window.location.href = "landing.html";
+        });
+        $("#partyLink").click(function(){
+
+        });
     </script>
 </body>
 </html>

@@ -1,3 +1,3 @@
 var constants = {
-	SERVER_URL: "http://localhost:8888/server/"
+	SERVER_URL: "http://127.0.0.1"
 };
