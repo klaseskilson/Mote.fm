@@ -2,7 +2,7 @@ require([
   '$api/models',
   'scripts/jquery.min'
 ], function(models, jquery) {
-	$(document).ready(function(){
+  $(document).ready(function(){
 
 	//test if user already is in the session
 	if(sessionStorage.username !== undefined)
@@ -11,6 +11,7 @@ require([
 	  window.location.href = "landing.html";
 	}
 	})
+
 	var situation = "#signIn";
 
 	var switchButtons = function(id) {
@@ -56,7 +57,6 @@ require([
 		document.getElementById('submit').setAttribute('value', 'Sign in!');
 	});
 
-
   $('#submit').click(function() {
     event.preventDefault();
      var $inputs = $('#login :input');
@@ -68,8 +68,9 @@ require([
   	if(situation == "#signIn")
   	{
 
-
       $.post(constants.SERVER_URL + '/api/user/signin',values, function(data, textstatus)
+		// THIS IS FOR DANIEL
+      // $.post(constants.SERVER_URL + '/Hathor/api/user/signin',values, function(data, textstatus)
       { 
         var json = data;
         if(json.status == "success")

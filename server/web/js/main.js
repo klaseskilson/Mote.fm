@@ -6,13 +6,36 @@ $(document).ready(function(){ // boring needed stuff
 
 	$("a[href*=#]").click(function(e) {
 		e.preventDefault();
-		window.history.pushState("string", "Title", this.hash);
-		$("html, body").animate({ scrollTop: $(this.hash).offset().top }, 1000);
+		if(this.hash)
+		{
+			window.history.pushState("string", "Title", this.hash);
+			$("html, body").animate({ scrollTop: $(this.hash).offset().top }, 1000);
+		}
 	});
 
+	// $(document).on('click', 'a[data-toggle="reset"]', function(e) {
+	// 	e.preventDefault();
+	// 	$('input#login_password').slideUp('fast');
+	// 	$('input#login_email').toggleClass('square-bottom', 0).focus();
+	// 	$('input#login_submit').attr('value', 'Send reset mail!');
+	// 	$(this).attr('data-toggle', 'login').text('Login!');
+	// });
+
+	// $(document).on('click', 'a[data-toggle="login"]', function(e) {
+	// 	e.preventDefault();
+	// 	$('input#login_password').slideDown('fast');
+	// 	$('input#login_email').toggleClass('square-bottom', 1).focus();
+	// 	$('input#login_submit').attr('value', 'Go!');
+	// 	$(this).attr('data-toggle', 'reset').text('Forgot your password?');
+	// });
+
+	/**
+	 * when submitting signup!
+	 */
 	$('form#signupform').submit(function(event){
     	// prevent form from beeing sent
 		event.preventDefault();
+		$('button[type=submit], input[type=submit]').attr('disabled',true);
 		console.log("form sent, default prevented");
 
 		var postdata = {
@@ -22,10 +45,21 @@ $(document).ready(function(){ // boring needed stuff
 		};
 
 		// send postdata to server
-		$.post(BASE_URL + 'user/signup/json', postdata, function(data){
+		$.ajax({
+			type: "POST",
+			url: BASE_URL + 'user/signup/json',
+			data: postdata,
+			dataType: 'json'
+		})
+		.fail(function(errordata){
+			console.log(errordata.responseText);
+		})
+		.done(function(data){
+			console.log(data);
 			// what is the return message from server?
 			if(data.status === 'success')
 			{
+				console.log('Done!');
 				// tell the user about our success!
 				// change sign up title to something nice
 				$('#signuptitle').fadeOut('fast', function() {
@@ -33,7 +67,7 @@ $(document).ready(function(){ // boring needed stuff
 				});
 				// tell the user what to do now
 				$('#signuparea').fadeOut(function(){
-					$(this).html('<h3>You now have an acoount. <a href="'+BASE_URL+'">Continue!</a></h3><p>We sent an email to you confirming this. You\'ll need to activate your account by clicking the link in the email within three days.').fadeIn()
+					$(this).html('<h3>You now have an account. <a href="'+BASE_URL+'">Continue!</a></h3><p>We sent an email to you confirming this. You\'ll need to activate your account by clicking the link in the email within three days.').fadeIn()
 				});
 			}
 			else
@@ -49,7 +83,7 @@ $(document).ready(function(){ // boring needed stuff
 				$errordiv.append('<p><strong>Oh noes!</strong> There are some things you need to check before we continue.</p>');
 				// add specific error messages
 				if(!data.errors.email)
-					$errordiv.append('<p>There is something wrong with that email. Have you entered it correctly? Do you allready have an account, but <a href="'+BASE_URL+'user/recover">forgot your password</a>?</p>');
+					$errordiv.append('<p>There is something wrong with that email. Have you entered it correctly? Do you already have an account, but <a href="'+BASE_URL+'user/reset">forgot your password</a>?</p>');
 				if(!data.errors.name)
 					$errordiv.append('<p>That name is too short. We think you want at least two characters there.</p>');
 				if(!data.errors.password)
@@ -57,6 +91,7 @@ $(document).ready(function(){ // boring needed stuff
 
 				// show message
 				$errordiv.show();
+		$('button[type=submit], input[type=submit]').attr('disabled',false);
 			}
 		}, 'json');
 	});

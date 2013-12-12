@@ -80,7 +80,7 @@ $autoload['helper'] = array('url', 'common_helper');
 |
 */
 
-$autoload['config'] = array();
+$autoload['config'] = array('mote_config');
 
 
 /*

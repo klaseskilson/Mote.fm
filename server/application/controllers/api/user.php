@@ -13,7 +13,10 @@ class user extends CI_Controller {
 		// load user model
 		$this->load->model('user_model');
 	}
-
+	
+	/**
+	 * Send a login request to server (Do we have a session server-side?)
+	 */
 	public function signin()
 	{
 		$this->load->library('PasswordHash', array(8, false));
@@ -21,6 +24,7 @@ class user extends CI_Controller {
 		$email = $this->input->post('email');
 		$password = $this->input->post('password');
 		$data = array();
+
 		if(!$email || !$password)
 		{
 			$data['status'] = 'error';
@@ -42,6 +46,7 @@ class user extends CI_Controller {
 			$data['status'] = 'error';
 			$data['response'] = 'Incorrect password';			
 		}
+
 		echo json_encode($data);
 	}
 }
