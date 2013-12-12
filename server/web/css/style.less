@@ -8,6 +8,10 @@ Don't go deeper than three levels, man. Follow http://css-tricks.com/sass-style-
 @headbackground: #333;
 @bodybackground: #f9f9f9;
 
+@first-color: #F1F0EB;
+@second-color: #385573;
+@third-color: #FF704A;
+
 /************************************************
  * FONTS
  ***********************************************/
@@ -46,7 +50,7 @@ Don't go deeper than three levels, man. Follow http://css-tricks.com/sass-style-
  ***********************************************/
 
 body {
-	background-color: @bodybackground;
+	background-color: @first-color;
 }
 
 html, body, #container {
@@ -63,7 +67,7 @@ html, body, #container {
 		color: #fff;
 	}
 	&.color .container {
-		background: @headbackground;
+		background: @second-color;
 	}
 
 	.navbar-hathor {
@@ -160,7 +164,7 @@ h1, h2, h3, h4, p, body {
 }
 
 .between {
-	background: @headbackground;
+	background: @second-color;
 	color: #fff;
 	padding: 4em 0;
 
