@@ -101,7 +101,24 @@ require([
   	else if(situation == "#signUp")
   	{
   		//TODO:Sign up 
-  		document.getElementById('xyz').innerHTML = "SIGN UP";
+  		// document.getElementById('xyz').innerHTML = "SIGN UP";
+  		$.post(constants.SERVER_URL + '/user/signUp',values, function(data, textstatus)
+		{ 
+			var json = data;
+			if(json.status == "success")
+			{
+			  // Only login
+			  sessionStorage.uid = json.result.uid;
+			  sessionStorage.useremail = json.result.email;
+			  sessionStorage.username = json.result.name;
+			  window.location.href = "landing.html";
+			}
+			else
+			{
+			  $('#loginstatus').html(json.status + ": " + json.response);
+			}
+
+		});
   	}
   	else if(situation == "#forgotPwd")
   	{

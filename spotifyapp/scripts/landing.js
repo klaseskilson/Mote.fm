@@ -38,12 +38,12 @@ require([
 			{
 				var party = json.result[i];
 				//add parties to the list
-				html += '<li>'
-                html += '   <span id="' + party.partyid + '" class="pastParty">'
-                html += '      <div class="glyphicon glyphicon-chevron-right"></div>'
-				html += party.name
-                html += '   </span>'
-                html += '</li>'
+				html += '<li>';
+                html += '   <span id="' + party.partyid + '" class="pastParty">';
+                html += '      <div class="glyphicon glyphicon-chevron-right"></div>';
+				html += ' ' + party.name;
+                html += '   </span>';
+                html += '</li>';
 			}
 
 			$('#pastParties').html(html);
@@ -52,8 +52,15 @@ require([
 		else
 		{
 			//show error
-			$('#createError').html(json.status + ": " + json.response);
-			console.log(html);
+			var html = "";
+			html += '<li>';
+            html += '   <span class="pastParty" style="cursor:default;">';
+            html += '      <div class="glyphicon glyphicon-chevron-right"></div>';
+			html += ' ' + json.status + ": " + json.response;
+            html += '   </span>';
+            html += '</li>';
+            $('#pastParties').html(html);
+			console.log("ERROR YOLO");
 		}
 	});
 
