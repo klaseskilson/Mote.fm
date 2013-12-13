@@ -76,6 +76,65 @@ class party extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	public function get_party_info()
+	{
+		$data = array();
+
+		$partyid = $this->input->post('partyid');
+		if(!$partyid)
+		{
+			$data['status'] = 'error';
+			$data['response'] = 'partyid was not given';
+		}
+		else
+		{
+			$party = $this->party_model->get_party_from_id($partyid);
+			if($party)
+			{
+				$data['status'] = 'success';
+				$data['result'] = $party;
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'party not found!';		
+			}
+		}
+		echo json_encode($data);
+	}
+
+	/**
+	 * Get list of parties register to the user
+	 * @return list of parties own by user
+	 */
+	public function get_user_parties()
+	{
+		$data = array();
+
+		$uid = $this->input->post('uid');
+		if(!$uid)
+		{
+			$data['status'] = 'error';
+			$data['response'] = 'user ID (uid) was not given';
+		}
+		else
+		{
+			$parties = $this->party_model->get_all_parties($uid);
+			if($parties)
+			{
+				$data['status'] = 'success';
+				$data['result'] = $parties;				
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'No parties found!';
+			}
+		}
+
+		echo json_encode($data);
+	}
+
 	/**
 	 * create party
 	 */
@@ -176,16 +235,16 @@ class party extends CI_Controller {
 			$queuehash = md5(serialize($queue));
 	
 			
-			if($queuehash != $partyhash)
-			{
-				$data['status'] = 'error';
-				$data['result'] = 'No need to update the queue, its the same!';	
-			}
-			else
-			{
+			// if($queuehash != $partyhash)
+			// {
+			// 	$data['status'] = 'error';
+			// 	$data['result'] = 'No need to update the queue, its the same!';	
+			// }
+			// else
+			// {
 				$data['status'] = 'success';
 				$data['result'] = $queue;	
-			}
+			// }
 			$data['hash'] = $queuehash;
 				
 		}

@@ -7,11 +7,12 @@ require([
   'use strict';
 
   var numReloads = 0;
-  //för att skicka iväg förfrågan används funktionen nedan!
-  //hathor.RegisterParty(sessionStorage.uid, "cool fest");
+
+  //Register party to send playing song to Hathor
+  hathor.registerHathorCallback(sessionStorage.partyid);
   
   //this will send a request to hathor to get current playqueue.
-  hathor.registerHathorQueueCallback(localStorage.partyid, localStorage.queuehash);
+  hathor.registerHathorQueueCallback(sessionStorage.partyid, sessionStorage.queuehash);
 
   // Each track has ha vote. Here the id of the voter and
   // timestamp is stored in arrays.

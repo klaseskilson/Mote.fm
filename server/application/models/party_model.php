@@ -283,6 +283,7 @@ class Party_model extends CI_model
 	function get_all_parties($uid)
 	{
 		$this->db->where('uid', $uid);
+		$this->db->order_by('time', 'desc');
 		$query = $this->db->get('parties');
 
 		// only return true if we have something to show
