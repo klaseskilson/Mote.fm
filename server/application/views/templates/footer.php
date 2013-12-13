@@ -2,7 +2,28 @@
 
 			<footer id="footer">
 				<div class="container">
-
+					<div class="row">
+						<div class="col-sm-4">
+							<h3>
+								Mote.fm
+							</h3>
+							<p>
+								Who da bes? <a href="iam">I am!</a>
+							</p>
+						</div>
+						<div class="col-sm-4">
+							<h3>
+								Contact us
+							</h3>
+							yo
+						</div>
+						<div class="col-sm-4">
+							<h3>
+								Mote.fm
+							</h3>
+							yo
+						</div>
+					</div>
 				</div>
 			</footer><!-- end #footer -->
 		</div><!-- end #container -->

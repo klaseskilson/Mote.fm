@@ -6,7 +6,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<title>Hathor<?php echo isset($title) ? ' &mdash; '.$title : ''; ?></title>
+		<title>Mote.fm<?php echo isset($title) ? ' &mdash; '.$title : ''; ?></title>
 		<meta name="description" content="">
 		<meta name="HandheldFriendly" content="True">
 		<meta name="MobileOptimized" content="320">
@@ -57,7 +57,7 @@
 							<span class="icon-bar"></span>
 						</button>
 						<a class="navbar-brand" href="<?php echo base_url(); ?>">
-							Hathor
+							Mote.fm
 						</a>
 					</div>
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -66,7 +66,7 @@
 							{
 								$gravatarMd5 = md5(strtolower($user['email']));
 								?>
-								<li><a href="<?php echo base_url(); ?>user/profile"><img class="dashboardavatar" src="<?php echo "http://www.gravatar.com/avatar/$gravatarMd5?s=25"?>" alt=""> <?php echo $user['name'];?></a></li>
+								<li><a href="<?php echo base_url(); ?>user/profile"><img class="dashboardavatar" src="<?php echo "http://www.gravatar.com/avatar/$gravatarMd5?s=25&d=mm"?>" alt=""> <?php echo $user['name'];?></a></li>
 								<li><a href="<?php echo base_url(); ?>party">Parties</a></li>
 								<li><a href="<?php echo base_url(); ?>about">About</a></li>
 								<li><a href="<?php echo base_url(); ?>user/signout">Sign out</a></li>

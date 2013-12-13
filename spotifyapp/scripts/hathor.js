@@ -2,32 +2,42 @@ require([
 	'$api/models',
 	'scripts/jquery.min'
 	], function(models, jquery){
-		/**
-		 * Register a party on Hathor serverside
-		 * @param {int} uid User unique Id, can be found in sessionStorage.uid after login
-		 * @param {string} partyname Name of the party
-		 */
-		var RegisterParty = function(uid, partyname){
+
+		var registerHathorQueueCallback = function(partyid, partyhash)
+		{
 			var postData = {
-					'uid' : 0,
-					'locale' : '',
-					'name': partyname
+				'partyid' : partyid,
+				'partyhash' : partyhash
+			}
+
+			$.post(constants.SERVER_URL + "/api/party/get_party_list", postData, function (data) {
+				if(data.status == 'error')
+				{
+					//something went wrong
+					console.log(data);	
 				}
+				else
+				{
 
-			models.session.load('country').done(function(){
-				var locale = models.session.country;
-						
-				postData.uid = uid;
-				postData.locale = locale;
-				$.post(constants.SERVER_URL + '/Hathor/api/party/create_party', postData , function (data, textStatus) {
-					var jsonobj= data;
-					console.log(data);
-					localStorage.partyid = jsonobj.result.partyid;
-					localStorage.partyname = jsonobj.result.partyname;
-					localStorage.partyhash = jsonobj.result.hash;
+					console.log(data);	
+					//store queuehash on localstorage
+					sessionStorage.queuehash = data.hash;
+		
+					//create a new temporary playlist to add queue to
+					models.Playlist.create("hathor").done(function(pl){
+							sessionStorage.playlist = pl;
+							pl.load("tracks").done(function(pl){
+								for(var i = 0; i < data.result.length; i++)
+								{
+									pl.tracks.add(models.Track.fromURI(data.result[i].uri));
+								}
 
-					registerHathorCallback(localStorage.partyid); 
-				});
+								//start playing!
+								models.player.playContext(pl);	
+							});
+						});
+				}
+				
 			});
 		}
 
@@ -40,8 +50,7 @@ require([
 			models.player.addEventListener('change:index', function(stuff){
 				models.player.load('track').done(function(){
 
-					//Spotify is a retard, we have to wait one second to get
-					//correct song
+					//Spotify is a retard, we have to wait one second to get correct song
 					setTimeout(function() { 
 
 						var musicTrack = {
@@ -53,14 +62,13 @@ require([
 
 						musicTrack.partyid = partyID;
 						musicTrack.trackuri = track.uri;
-						$.post(constants.SERVER_URL + '/Hathor/api/party/spotify_song', musicTrack , function (data, textStatus) {
+						$.post(constants.SERVER_URL + '/api/party/spotify_song', musicTrack , function (data, textStatus) {
 							console.log(data);
 						});
 					}, 1000);
 				});
 			});
 		};
-
+		exports.registerHathorQueueCallback = registerHathorQueueCallback;
 		exports.registerHathorCallback = registerHathorCallback;
-		exports.RegisterParty = RegisterParty;
 	});

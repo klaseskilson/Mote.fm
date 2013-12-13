@@ -246,10 +246,31 @@ class User_model extends CI_model
 
 		return false;
 	}
+
 	function createHash($email)
 	{
 		$data = array('hashkey' => strgen(20));
 		return $data['hashkey'];
+	}
+
+	function validate_hash($email, $hash)
+	{
+		$this->db->select('*');
+		$this->db->where('email', $email);
+		$this->db->where('hashkey', $hash);
+		$this->db->limit(1);
+
+		$query = $this->db->get('users');
+
+		if($query && $query->num_rows() > 0)
+		{
+			$result = $query->result_array();
+
+			return $result[0]['uid'];
+		}
+
+		// return false, no user found!
+		return false;
 	}
 
 	function activate($email, $hashkey)

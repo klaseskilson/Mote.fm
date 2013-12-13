@@ -4,6 +4,7 @@ $(document).ready(function(){ // boring needed stuff
 		// $('body.fancypane #head').toggleClass('color', ($(this).scrollTop() > $(window).height()*0.1));
 	});
 
+	// nice scroll animation
 	$("a[href*=#]").click(function(e) {
 		e.preventDefault();
 		if(this.hash)
@@ -13,21 +14,53 @@ $(document).ready(function(){ // boring needed stuff
 		}
 	});
 
-	// $(document).on('click', 'a[data-toggle="reset"]', function(e) {
-	// 	e.preventDefault();
-	// 	$('input#login_password').slideUp('fast');
-	// 	$('input#login_email').toggleClass('square-bottom', 0).focus();
-	// 	$('input#login_submit').attr('value', 'Send reset mail!');
-	// 	$(this).attr('data-toggle', 'login').text('Login!');
-	// });
+	// nice fancy slide look when switching from sign in to sign up
+	$(document).on('click', 'a[data-toggle="signupsignin"]', function(e) {
+		e.preventDefault();
+		if($('#signinarea').is(':hidden'))
+		{
+			// change url!
+			window.history.pushState("string", "Title", BASE_URL+"user/signin");
 
-	// $(document).on('click', 'a[data-toggle="login"]', function(e) {
-	// 	e.preventDefault();
-	// 	$('input#login_password').slideDown('fast');
-	// 	$('input#login_email').toggleClass('square-bottom', 1).focus();
-	// 	$('input#login_submit').attr('value', 'Go!');
-	// 	$(this).attr('data-toggle', 'reset').text('Forgot your password?');
-	// });
+			// hide/show
+			$('#signuparea').slideUp('slow');
+			$('#signinarea').slideDown('slow', function(){
+				// focus on input field
+				$('#login_email').focus();
+			});
+		}
+		else
+		{
+			// change url!
+			window.history.pushState("string", "Title", BASE_URL+"user/signup/web");
+
+			// hide/show
+			$('#signinarea').slideUp('slow');
+			$('#signuparea').slideDown('slow', function(){
+				// focus on input field
+				$('#name').focus();
+			});
+		}
+	});
+
+	// password change from reset link, validation!
+	$('.newpwd input').on('input', function(){
+		// are the password inputs the same?
+		if($('input#newpwd_confirm').val() !== '' && $('input#newpwd_confirm').val() !== $('input#newpwd_password').val())
+		{
+			// show error message
+			if($(this).closest('.newpwd').children('.alert').is(':hidden'))
+				$(this).closest('.newpwd').children('.alert').slideDown('fast');
+
+			$('input#newpwd_submit').attr('disabled', true);
+		}
+		else
+		{
+			// hide error message!
+			$(this).closest('.newpwd').children('.alert').slideUp('fast');
+			$('input#newpwd_submit').attr('disabled',false);
+		}
+	});
 
 	/**
 	 * when submitting signup!
@@ -77,7 +110,11 @@ $(document).ready(function(){ // boring needed stuff
 				// create an error div
 				var $errordiv = $("<div>", {id: "signuperror", class: "alert alert-danger"});
 				// prepend it to signup area
-				$errordiv.hide().prependTo('#signuparea');
+				console.log($('#signuparea h3').length);
+				if($('#signuparea h3').length > 0)
+					$errordiv.hide().insertAfter('#signuparea h3');
+				else
+					$errordiv.hide().prependTo('#signuparea');
 
 				// add common error message
 				$errordiv.append('<p><strong>Oh noes!</strong> There are some things you need to check before we continue.</p>');
@@ -91,7 +128,7 @@ $(document).ready(function(){ // boring needed stuff
 
 				// show message
 				$errordiv.show();
-		$('button[type=submit], input[type=submit]').attr('disabled',false);
+				$('button[type=submit], input[type=submit]').attr('disabled',false);
 			}
 		}, 'json');
 	});

@@ -20,11 +20,11 @@
 				</form>
 			</div>
 			<div class="col-sm-8 col-sm-pull-4">
-				<h4>Play que</h4>
+				<h4>Play queue</h4>
 				<?php
-					if($party_que)
+					if($party_queue)
 					{
-						foreach ($party_que as $entry)
+						foreach ($party_queue as $entry)
 						{
 							?>
 							<p>

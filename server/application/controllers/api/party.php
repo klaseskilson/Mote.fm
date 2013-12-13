@@ -76,6 +76,65 @@ class party extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	public function get_party_info()
+	{
+		$data = array();
+
+		$partyid = $this->input->post('partyid');
+		if(!$partyid)
+		{
+			$data['status'] = 'error';
+			$data['response'] = 'partyid was not given';
+		}
+		else
+		{
+			$party = $this->party_model->get_party_from_id($partyid);
+			if($party)
+			{
+				$data['status'] = 'success';
+				$data['result'] = $party;
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'party not found!';		
+			}
+		}
+		echo json_encode($data);
+	}
+
+	/**
+	 * Get list of parties register to the user
+	 * @return list of parties own by user
+	 */
+	public function get_user_parties()
+	{
+		$data = array();
+
+		$uid = $this->input->post('uid');
+		if(!$uid)
+		{
+			$data['status'] = 'error';
+			$data['response'] = 'user ID (uid) was not given';
+		}
+		else
+		{
+			$parties = $this->party_model->get_all_parties($uid);
+			if($parties)
+			{
+				$data['status'] = 'success';
+				$data['result'] = $parties;				
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'No parties found!';
+			}
+		}
+
+		echo json_encode($data);
+	}
+
 	/**
 	 * create party
 	 */
@@ -157,6 +216,7 @@ class party extends CI_Controller {
 	public function get_party_list()
 	{
 		$partyid = $this->input->post('partyid');
+		$partyhash = $this->input->post('partyhash');
 		$data = array();
 
 		if(!$partyid)
@@ -164,26 +224,29 @@ class party extends CI_Controller {
 			$data['status'] = 'error';
 			$data['response'] = 'Missing post data, Not all needed fields were sent';
 		}
-		elseif(!$this->Party_model->party_exists($partyid))
+		elseif(!$this->party_model->party_exists($partyid))
 		{
 			$data['status'] = 'error';
 			$data['response'] = 'Party not found';
 		}
 		else
 		{
-			$first = $this->Party_model->get_party_que($partyid);
-
-			while(true)
-			{
-				$second = $this->Party_model->get_party_que($partyid);
-
-				if($second == $first)
-					sleep(3);
-				else
-					break;
-			}
-			$data['status'] = 'success';
-			$data['result'] = $second;
+			$queue = $this->party_model->get_party_queue($partyid);
+			$queuehash = md5(serialize($queue));
+	
+			
+			// if($queuehash != $partyhash)
+			// {
+			// 	$data['status'] = 'error';
+			// 	$data['result'] = 'No need to update the queue, its the same!';	
+			// }
+			// else
+			// {
+				$data['status'] = 'success';
+				$data['result'] = $queue;	
+			// }
+			$data['hash'] = $queuehash;
+				
 		}
 
 		// write array json encoded
