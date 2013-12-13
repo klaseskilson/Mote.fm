@@ -13,21 +13,23 @@ $(document).ready(function(){ // boring needed stuff
 		}
 	});
 
-	// $(document).on('click', 'a[data-toggle="reset"]', function(e) {
-	// 	e.preventDefault();
-	// 	$('input#login_password').slideUp('fast');
-	// 	$('input#login_email').toggleClass('square-bottom', 0).focus();
-	// 	$('input#login_submit').attr('value', 'Send reset mail!');
-	// 	$(this).attr('data-toggle', 'login').text('Login!');
-	// });
-
-	// $(document).on('click', 'a[data-toggle="login"]', function(e) {
-	// 	e.preventDefault();
-	// 	$('input#login_password').slideDown('fast');
-	// 	$('input#login_email').toggleClass('square-bottom', 1).focus();
-	// 	$('input#login_submit').attr('value', 'Go!');
-	// 	$(this).attr('data-toggle', 'reset').text('Forgot your password?');
-	// });
+	$(document).on('click', 'a[data-toggle="signupsignin"]', function(e) {
+		e.preventDefault();
+		if($('#signinarea').is(':hidden'))
+		{
+			$('#signuparea').slideUp('slow');
+			$('#signinarea').slideDown('slow', function(){
+				$('#login_email').focus();
+			});
+		}
+		else
+		{
+			$('#signinarea').slideUp('slow');
+			$('#signuparea').slideDown('slow', function(){
+				$('#name').focus();
+			});
+		}
+	});
 
 	/**
 	 * when submitting signup!

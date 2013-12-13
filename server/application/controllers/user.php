@@ -199,7 +199,7 @@ class User extends CI_Controller {
 				//echo $this->email->print_debugger();
 
 				$data['success'] = true;
-				$data['email'] = $user['user'];
+				$data['email'] = $user['email'];
 			}
 			else
 			{
