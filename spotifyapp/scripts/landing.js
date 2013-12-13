@@ -56,7 +56,7 @@ require([
 			html += '<li>';
             html += '   <span class="pastParty" style="cursor:default;">';
             html += '      <div class="glyphicon glyphicon-chevron-right"></div>';
-			html += ' ' + json.status + ": " + json.response;
+			html += ' ' + json.response;
             html += '   </span>';
             html += '</li>';
             $('#pastParties').html(html);

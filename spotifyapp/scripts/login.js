@@ -1,3 +1,4 @@
+
 require([
   '$api/models',
   'scripts/jquery.min'
@@ -70,6 +71,7 @@ require([
 	});
 
   $('#submit').click(function() {
+  	console.log(situation);
     event.preventDefault();
      var $inputs = $('#login :input');
      var values = {};
@@ -102,16 +104,21 @@ require([
   	{
   		//TODO:Sign up 
   		// document.getElementById('xyz').innerHTML = "SIGN UP";
-  		$.post(constants.SERVER_URL + '/user/signUp',values, function(data, textstatus)
+  		$.post(constants.SERVER_URL + '/api/user/signUp',values, function(data, textstatus)
 		{ 
 			var json = data;
 			if(json.status == "success")
 			{
-			  // Only login
-			  sessionStorage.uid = json.result.uid;
-			  sessionStorage.useremail = json.result.email;
-			  sessionStorage.username = json.result.name;
-			  window.location.href = "landing.html";
+				// Only login
+				sessionStorage.useremail = json.result.email;
+			  
+				$('#password').show({duration: 400, queue: false});
+				$('#name').hide({duration: 400, queue: false});
+				switchButtons('#signIn');
+				situation = "#signIn";
+				document.getElementById('submit').setAttribute('value', 'Sign in!');
+
+				$('#loginstatus').html("Congratulations! You are now a member of our family.");
 			}
 			else
 			{

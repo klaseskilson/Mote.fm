@@ -185,6 +185,7 @@ require([
   // Att göra:
   // * Funktion som endast ska vara tillgänglig för
   //   feststartaren.
+  var active;
   $(document).on('click', '.delete', function() {
     // Simple test to clear other active deletions
     var trackLength = document.getElementsByClassName('track');
@@ -201,7 +202,7 @@ require([
     }
     // end of test
     var pos = $('.delete').index(this); // Wich position the clicked track is in
-    var active = document.getElementsByClassName('track')[pos]; // Creates objects for easy and neat handling
+    active = document.getElementsByClassName('track')[pos+1]; // Creates objects for easy and neat handling
     
     var top = document.getElementsByClassName("trackmeta")[pos].offsetTop; // Gets the correct position for the buttons
     var left = document.getElementsByClassName("trackmeta")[pos].offsetLeft;
@@ -233,34 +234,15 @@ require([
     else
       active.setAttribute('class', 'track row blur');    
 
-    // active.disabled=true;
-
     $(document).click(function(event) { // Activates when a click is done.
-      console.log(event);
-      if($(event.target).parents().index($(active)) == 1) // Checks if the click was made on the track or not
+      if(event.target.className == "deleteCheck deleteActive") // Checks if the click was made on the deleteCheck button
       {
-        mX = event.clientX; mY = event.clientY;
-        checkX = $check.offsetLeft; checkY = $check.offsetTop;
-        cancelX = $cancel.offsetLeft; cancelY = $cancel.offsetTop;
-
-        if(mX > checkX && mX < checkX+delWidth)
-        {
-          if(mY > checkY && mY < checkY+delWidth)
-          {
-            console.log("kuk det är en check");
-            tracks[pos].active = false; // The track has been removed
-          }
-        }
-        else if(mX > cancelX && mX < cancelX+delWidth)
-        {
-          if(mY > cancelY && mY < cancelY+delWidth)
-          {
-            console.log("kuk det är ecanceln cancel");
-          }
-        }
-        
+        $(active).hide({duration: 200, queue: false});
+        active.remove();
+        $check.remove();
+        $cancel.remove();
       }
-      else // If the click wasn't on the track. Turn back to normal
+      else // If the click wasn't on the track or on the cancelbutton. Turn back to normal
       {
         $check.remove();
         $cancel.remove();
@@ -271,7 +253,6 @@ require([
     console.log(pos+1);
     
   });
-
 
 
   // Funktion för att lägga en röst på en låt

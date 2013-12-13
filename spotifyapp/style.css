@@ -108,10 +108,12 @@ html {
 {
 	-webkit-transition:-webkit-filter 0.3s ease-in-out; 
 	-webkit-filter: blur(0px);
+	z-index: 1;
 }
 .blur
 {
 	-webkit-filter: blur(10px) !important;
+	z-index: 0;
 }
 .deleteCheck, .deleteCancel
 {
@@ -127,11 +129,12 @@ html {
 	display: inline;
 	font-size: 15px;
 	font-weight: bold;
-	background-color: #c3c3c3;
+	background-color: #FDDF4D;
 	border-radius: 3px;
 	padding-top: 5px;
 	padding-bottom: 15px;
 	padding-left: 2px;
+	z-index: 1;
 }
 .rounded
 {
