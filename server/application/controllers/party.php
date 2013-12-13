@@ -54,7 +54,7 @@ class Party extends CI_controller
 		$data['user']['names'] = explode(" ", $data['user']['name']);
 
 		$data['party'] = $this->party_model->get_party_from_hash($hash);
-		$data['party_que'] = $this->party_model->get_party_que_from_hash($hash);
+		$data['party_queue'] = $this->party_model->get_party_queue_from_hash($hash);
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('party', $data);
