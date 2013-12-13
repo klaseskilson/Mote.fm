@@ -19,6 +19,7 @@ require([
 			if(json.status == "success")
 			{
 				sessionStorage.partyname = json.result.name;
+				sessionStorage.partyid = json.result.partyid;
 				window.location.href = "party.html";
 			}
 			else

@@ -4,6 +4,18 @@ require([
 ], function(models, jquery) {
   $(document).ready(function(){
 
+  	$.ajax({
+	 url: constants.SERVER_URL,
+	 cache: false,
+	 async : false,
+	 error: function(XMLHttpRequest, textStatus, errorThrown) {
+	       $('#loginstatus').html("Server connection is down. Unfortunatly you can't log in at this moment.");
+	        },
+	 success: function(html){
+	          // Server is up and running, hurray!
+	        }
+	});
+
 	//test if user already is in the session
 	if(sessionStorage.username !== undefined)
 	{
@@ -69,8 +81,6 @@ require([
   	{
 
       $.post(constants.SERVER_URL + '/api/user/signin',values, function(data, textstatus)
-		// THIS IS FOR DANIEL
-      // $.post(constants.SERVER_URL + '/Hathor/api/user/signin',values, function(data, textstatus)
       { 
         var json = data;
         if(json.status == "success")

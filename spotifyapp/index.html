@@ -17,23 +17,35 @@
     <!-- Custom -->
     <link rel="stylesheet" type="text/css" href="style.css">
     <style type="text/css">
-        body
+        html, body
         {
-            background-image: url('img/party_4.jpg');
-            height: 100vh;
-            background-size: cover;
+            margin: 0;
+            height: 100%;
+            width: 100%;    
+            background-color: #2C2A40;
+        }
+        .head
+        {
+            background-color: #7A9E85;
+            height: 200px;
+        }
+        .content
+        {
+            background-color: #CEC0B3;
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="col-md-4 col-md-offset-4 login">
+    <div class="head"></div>
+    <div class="container content">
+        <div class="col-md-4 col-md-offset-4 rounded">
             <h1 id="xyz" class="loginTitle">Mote.fm</h1>
             <form action="?redir=/home/" method="post" id="login">
                 <p>
                     Login to experience Mote.fm, the ultimate tool to democratize your party.
                 </p>
-                <p id="loginstatus" style="padding-left:10px;"></p>
+                <p id="loginstatus" style="font-style:italic;"></p>
                 <p>
                     <input type="text" name="name" id="name" class="form-control input-lg square-bottom loginName" placeholder="Full name">
                     <script>$('#name').hide();</script>
