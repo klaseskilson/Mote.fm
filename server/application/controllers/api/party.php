@@ -288,4 +288,34 @@ class party extends CI_Controller {
 		}
 		echo json_encode($data);
 	}
+
+	public function get_spotify_img_url()
+	{
+		$data = array();
+		$this->load->helper('external_spotify');
+
+
+		$uri = $this->input->post('uri');
+		if(!$uri)
+		{
+			$data['status'] = "error";
+			$data['response'] = "uri for song not given";
+		}
+		else
+		{
+			$albumurl = get_album_art($uri);
+			if($albumurl)
+			{
+				$data['status'] = "success";
+				$data['result'] = $albumurl;
+			}
+			else
+			{
+				$data['status'] = "error";
+				$data['response'] = "Error retrieving album cover";		
+			}
+		}
+			
+		echo json_encode($data);
+	}
 }

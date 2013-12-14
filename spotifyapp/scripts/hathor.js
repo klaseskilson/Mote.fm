@@ -21,7 +21,7 @@ require([
 					models.player.playTrack(models.Track.fromURI(data.result[0].uri));
 					//store queuehash on localstorage
 					sessionStorage.queuehash = data.hash;
-		
+			
 				}
 				
 			});

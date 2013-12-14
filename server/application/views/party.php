@@ -28,7 +28,7 @@
 						{
 							?>
 							<p>
-								<?php echo $entry['uri']; ?>, <?php echo $entry['vote_count']; ?> votes
+								<img src="<?php echo $entry['albumart']?>" alt="" width ="50"><?php echo $entry['artistname']; ?> - <?php echo $entry['trackname']; ?> , <?php echo $entry['vote_count']; ?> votes
 							</p>
 							<?php
 						}
