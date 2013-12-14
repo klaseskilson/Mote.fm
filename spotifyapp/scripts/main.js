@@ -168,9 +168,9 @@ require([
       $('.deleteActive').remove();
     }
     // end of test
-    var active = document.getElementsByClassName('track')[pos]; // Creates objects for easy and neat handling
-    
     var pos = $('.delete').index(this); // Wich position the clicked track is in
+        
+    var active = document.getElementsByClassName('track')[pos]; // Creates objects for easy and neat handling
     var top = document.getElementsByClassName("trackmeta")[pos].offsetTop; // Gets the correct position for the buttons
     var left = document.getElementsByClassName("trackmeta")[pos].offsetLeft;
 
@@ -197,9 +197,9 @@ require([
     });
 
     if(pos == 0) // The first track row is a bit special
-      active.setAttribute('class', 'track row first blur');
-    else
       active.setAttribute('class', 'track row blur');    
+    else
+      active.setAttribute('class', 'track row first blur');
 
     // active.disabled=true;
 

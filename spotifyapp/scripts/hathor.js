@@ -18,24 +18,21 @@ require([
 				}
 				else
 				{
-
-					console.log(data);	
+					models.player.playTrack(models.Track.fromURI(data.result[0].uri));
 					//store queuehash on localstorage
 					sessionStorage.queuehash = data.hash;
 		
-					//create a new temporary playlist to add queue to
+					/*//create a new temporary playlist to add queue to
 					models.Playlist.create("hathor").done(function(pl){
-							sessionStorage.playlist = pl;
-							pl.load("tracks").done(function(pl){
+							pl.load("tracks").done(function(){
 								for(var i = 0; i < data.result.length; i++)
 								{
 									pl.tracks.add(models.Track.fromURI(data.result[i].uri));
 								}
-
 								//start playing!
-								models.player.playContext(pl);	
+								
 							});
-						});
+						});*/
 				}
 				
 			});
