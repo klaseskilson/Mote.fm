@@ -36,13 +36,8 @@ require([
   // with info about tracks. URI, votes and timestamp.
   function track(URI)
   {
-    if(URI.length == 36 &&
-       URI.substr(0,14) == 'spotify:track:') // If the whole link is pasted
-      this.URI = URI;
-    else if(URI.length == 22) //if only the id is pasted
-      this.URI = "spotify:track:" + URI;
-    else
-      this.URI = "spotify:track:6JEK0CvvjDjjMUBFoXShNZ"; // RICK ROLL
+    this.URI = URI;
+    this.songid;
     // Creates new object vote 
     this.votes = new vote();
     this.section = createSection(this.URI);
@@ -132,7 +127,44 @@ require([
     }
   }
 
+  // var values = {};
+  // values["spotifyuri"] = "spotify:track:4qw6yAygswKYFsO5GMybWu";
+  // values["partyid"] = sessionStorage.partyId;
+  // values["uid"] = sessionStorage.uid;
+  // $.post(constants.SERVER_URL + '/api/party/add_song',values, function(data, textstatus)
+  // { 
+  //   var json = data;
+  //   if(json.status == "success")
+  //   {
+  //     console.log("song added");
+  //     var info = {};
+  //     info["partyid"] = sessionStorage.partyId;
+
+  //     $.post(constants.SERVER_URL + '/api/party/get_party_list',info, function(data, textstatus)
+  //     { 
+  //       var json = data;
+  //         console.log("get party");
+  //       if(json.status == "success")
+  //       {
+  //         for(var i = 0; i < json.size(); i++)
+  //         {
+  //           tracks[i] = new track(json.result.quesong[i]);
+  //         }
+  //       }
+  //       else
+  //       {
+  //         $('#createError').html(json.status + ": " + json.response);
+  //       }
+  //     });
+  //   }
+  //   else
+  //   {
+  //     console.log("song wasn't added");
+  //   }
+  // });
+
   var tracks = new Array(); // Initializes an array of spotify URIs
+
   tracks[0] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
   tracks[1] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
   tracks[2] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
@@ -153,6 +185,7 @@ require([
   // Att göra:
   // * Funktion som endast ska vara tillgänglig för
   //   feststartaren.
+  var active;
   $(document).on('click', '.delete', function() {
     // Simple test to clear other active deletions
     var trackLength = document.getElementsByClassName('track');
@@ -169,16 +202,16 @@ require([
     }
     // end of test
     var pos = $('.delete').index(this); // Wich position the clicked track is in
-        
-    var active = document.getElementsByClassName('track')[pos]; // Creates objects for easy and neat handling
+    active = document.getElementsByClassName('track')[pos+1]; // Creates objects for easy and neat handling
+  
     var top = document.getElementsByClassName("trackmeta")[pos].offsetTop; // Gets the correct position for the buttons
     var left = document.getElementsByClassName("trackmeta")[pos].offsetLeft;
 
     var qtop = document.getElementById("queue").offsetTop;
     var qleft = document.getElementById('queue').offsetLeft;
 
-    var checkDiv = "<div class='deleteCheck deleteActive'></div>"; // the html for the buttons
-    var cancelDiv = "<div class='deleteCancel deleteActive'></div>";
+    var checkDiv = "<div class='deleteCheck deleteActive'>delete</div>"; // the html for the buttons
+    var cancelDiv = "<div class='deleteCancel deleteActive'>cancel</div>";
     
     var $check = $(checkDiv).prependTo('#queue');
     var $cancel = $(cancelDiv).prependTo('#queue');
@@ -201,34 +234,15 @@ require([
     else
       active.setAttribute('class', 'track row first blur');
 
-    // active.disabled=true;
-
     $(document).click(function(event) { // Activates when a click is done.
-      console.log(event);
-      if($(event.target).parents().index($(active)) == 1) // Checks if the click was made on the track or not
+      if(event.target.className == "deleteCheck deleteActive") // Checks if the click was made on the deleteCheck button
       {
-        // mX = event.clientX; mY = event.clientY;
-        // checkX = $check.offsetLeft; checkY = $check.offsetTop;
-        // cancelX = $cancel.offsetLeft; cancelY = $cancel.offsetTop;
-
-        // if(mX > checkX && mX < checkX+delWidth)
-        // {
-        //   if(mY > checkY && mY < checkY+delWidth)
-        //   {
-        //     console.log("kuk det är en check");
-        //     tracks[pos].active = false; // The track has been removed
-        //   }
-        // }
-        // else if(mX > cancelX && mX < cancelX+delWidth)
-        // {
-        //   if(mY > cancelY && mY < cancelY+delWidth)
-        //   {
-        //     console.log("kuk det är ecanceln cancel");
-        //   }
-        // }
-        
+        $(active).hide({duration: 200, queue: false});
+        active.remove();
+        $check.remove();
+        $cancel.remove();
       }
-      else // If the click wasn't on the track. Turn back to normal
+      else // If the click wasn't on the track or on the cancelbutton. Turn back to normal
       {
         $check.remove();
         $cancel.remove();
@@ -239,7 +253,6 @@ require([
     console.log(pos+1);
     
   });
-
 
 
   // Funktion för att lägga en röst på en låt

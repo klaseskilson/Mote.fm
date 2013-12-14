@@ -10,7 +10,7 @@ require([
 			var post = {
 				'partyid' : id
 			};
-			
+
 			$.post(constants.SERVER_URL + '/api/party/get_party_info', post, function(json){
 				console.log(json);
 				if(json.status = 'success')
@@ -18,7 +18,7 @@ require([
 					sessionStorage.partyname = json.result.name;
 					sessionStorage.partyhash = json.result.hash;
 					sessionStorage.partyid = json.result.partyid;
-					
+
 					window.location.href = "party.html";
 				}
 			});
@@ -38,12 +38,12 @@ require([
 			{
 				var party = json.result[i];
 				//add parties to the list
-				html += '<li>'
-                html += '   <span id="' + party.partyid + '" class="pastParty">'
-                html += '      <div class="glyphicon glyphicon-chevron-right"></div>'
-				html += party.name
-                html += '   </span>'
-                html += '</li>'
+				html += '<li>';
+                html += '   <span id="' + party.partyid + '" class="pastParty">';
+                html += '      <div class="glyphicon glyphicon-chevron-right"></div>';
+				html += ' ' + party.name;
+                html += '   </span>';
+                html += '</li>';
 			}
 
 			$('#pastParties').html(html);
@@ -52,8 +52,15 @@ require([
 		else
 		{
 			//show error
-			$('#createError').html(json.status + ": " + json.response);
-			console.log(html);
+			var html = "";
+			html += '<li>';
+            html += '   <span class="pastParty" style="cursor:default;">';
+            html += '      <div class="glyphicon glyphicon-chevron-right"></div>';
+			html += ' ' + json.response;
+            html += '   </span>';
+            html += '</li>';
+            $('#pastParties').html(html);
+			console.log("ERROR YOLO");
 		}
 	});
 
@@ -71,14 +78,14 @@ require([
 			values["uid"] = sessionStorage.uid;
 			values["locale"] = locale;
 
-			$.post(constants.SERVER_URL + '/api/party/create_party',values, function(data) { 
+			$.post(constants.SERVER_URL + '/api/party/create_party',values, function(data) {
 				var json = data;
 				if(json.status == "success")
 				{
 					sessionStorage.partyname = json.result.name;
 					sessionStorage.partyhash = json.result.hash;
 					sessionStorage.partyid = json.result.partyid;
-					
+
 					window.location.href = "party.html";
 				}
 				else

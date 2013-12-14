@@ -22,17 +22,6 @@ require([
 					//store queuehash on localstorage
 					sessionStorage.queuehash = data.hash;
 		
-					/*//create a new temporary playlist to add queue to
-					models.Playlist.create("hathor").done(function(pl){
-							pl.load("tracks").done(function(){
-								for(var i = 0; i < data.result.length; i++)
-								{
-									pl.tracks.add(models.Track.fromURI(data.result[i].uri));
-								}
-								//start playing!
-								
-							});
-						});*/
 				}
 				
 			});

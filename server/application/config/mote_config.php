@@ -15,7 +15,7 @@
 	$config['contact_name'] = 'Mote.fm team';
 	$config['support_mail'] = 'team@mote.fm';
 
-	$config['mail_title'] = 'Mote.fm &mdash; ';
+	$config['mail_title'] = 'Mote.fm – ';
 
 
 

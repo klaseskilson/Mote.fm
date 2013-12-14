@@ -42,59 +42,70 @@ class User extends CI_Controller {
 
 	public function signUp($method = 'web')
 	{
+		$data = array();
+
 		$name = $this->input->post('name');
 		$email = $this->input->post('email');
 		$password = $this->input->post('password');
 
-		// validate email using CI magic && try signup
-		if (valid_email($email) && $this->user_model->create_user($email, $name, $password))
+		if($name)
 		{
-			$this->login->validate($email, $password);
-
-			//send activation email
-			$hash = $this->user_model->createHash($email);
-			$this->email->from('noreply@taketkvg.se', 'The Hathor crew');
-			$this->email->to($email);
-			$this->email->subject('Activate your Hathor account');
-			$this->email->message('Hey '.$name.'! Follow this link to activate your Hathor account. '
-			.base_url().'user/activate/'.urlencode($email).'/'.$hash);
-			// $this->email->send();
-
-			// how do we want the response?
-			if($method == 'web') // WEB!
+			// validate email using CI magic && try signup
+			if (valid_email($email) && $this->user_model->create_user($email, $name, $password))
 			{
-				echo "Well done my kuk.";
-				echo $this->email->print_debugger();
+				$this->login->validate($email, $password);
+
+				//send activation email
+				$hash = $this->user_model->createHash($email);
+				$this->email->from('noreply@taketkvg.se', 'The Hathor crew');
+				$this->email->to($email);
+				$this->email->subject('Activate your Hathor account');
+				$this->email->message('Hey '.$name.'! Follow this link to activate your Hathor account. '
+				.base_url().'user/activate/'.urlencode($email).'/'.$hash);
+				// $this->email->send();
+
+				// how do we want the response?
+				if($method == 'web') // WEB!
+				{
+					echo "Well done my kuk.";
+					echo $this->email->print_debugger();
+				}
+				elseif($method == 'json') // return with machine encoded json
+				{
+					$response = array(
+									'status' => 'success',
+									'maildebug' => $this->email->print_debugger()
+							   );
+					echo json_encode($response);
+				}
 			}
-			elseif($method == 'json') // return with machine encoded json
+			else // something wrong!
 			{
-				$response = array(
-								'status' => 'success',
-								'maildebug' => $this->email->print_debugger()
-						   );
-				echo json_encode($response);
+				// how do we want the response?
+				if($method == 'web')
+				{
+					echo "ajaj";
+				}
+				elseif($method == 'json')
+				{
+					// return response using json! prepare data
+					$response = array(
+									'status' => 'error',
+									'errors' => array(
+													'name'	 => (strlen($name) > 2),
+													'email'	 => valid_email($email) && !$this->user_model->email_exists($email),
+													'password' => !(strlen($password) <= 6)
+												)
+							    );
+					echo json_encode($response);
+				}
 			}
-		}
-		else // something wrong!
+		} // if (name)
+		else
 		{
-			// how do we want the response?
-			if($method == 'web')
-			{
-				echo "ajaj";
-			}
-			elseif($method == 'json')
-			{
-				// return response using json! prepare data
-				$response = array(
-								'status' => 'error',
-								'errors' => array(
-												'name'	 => (strlen($name) > 2),
-												'email'	 => valid_email($email) && !$this->user_model->email_exists($email),
-												'password' => !(strlen($password) <= 6)
-											)
-						    );
-				echo json_encode($response);
-			}
+			$this->load->view('templates/header', $data);
+			$this->load->view('signup', $data);
+			$this->load->view('templates/footer', $data);
 		}
 	}
 
@@ -126,7 +137,6 @@ class User extends CI_Controller {
 			else
 			{
 				// ajaj, fel!
-				$data['title'] = 'Sign in!';
 				$data['email'] = $email;
 
 				$this->load->view('templates/header', $data);
@@ -136,8 +146,6 @@ class User extends CI_Controller {
 		}
 		else
 		{
-			$data['title'] = 'Sign in!';
-
 			$this->load->view('templates/header', $data);
 			$this->load->view('login', $data);
 			$this->load->view('templates/footer', $data);
@@ -179,11 +187,11 @@ class User extends CI_Controller {
 							</p>
 							<p>
 								All you need to do is click this button and follow the instructions:
-								<a href="'.base_url().'/'.urlencode($email).'/'.$hash.'" class="button">RESET PASSWORD!</a>
+								<a href="'.base_url().'user/forgotpassword/'.urlencode($email).'/'.$hash.'" class="button">RESET PASSWORD!</a>
 							</p>
 							<p>
 								<small>
-									No button? Copy this link into you adress bar and hit enter: '.base_url().'/'.urlencode($email).'/'.$hash.'
+									No button? Copy this link into you adress bar and hit enter: '.base_url().'user/forgotpassword/'.urlencode($email).'/'.$hash.'
 								</small>
 							</p>
 							';
@@ -215,18 +223,38 @@ class User extends CI_Controller {
 	}
 	public function forgotpassword($email, $hash)
 	{
-		$newPassword = $this->input->post('newPassword');
-		$confirm = $this->input->post('confirm');
-		$id = $this->user_model->get_id($email);
+		// prepare data array
+		$data = array();
+		$data['email'] = urldecode($email);
+		$data['hash'] = $hash;
+		// get user id from user model using the validate_hash function
+		$id = $this->user_model->validate_hash(urldecode($email), $hash);
 
-		if(!($this->user_model->update_password($id, $newPassword, $confirm)))
+		$newPassword = $this->input->post('password');
+		$confirm = $this->input->post('confirm');
+
+		if($id)
 		{
-			echo "Something went wrong.";
+			if($newPassword && $newPassword == $confirm)
+			{
+				if(!($this->user_model->update_password($id, $newPassword, $confirm)))
+				{
+					$data['success'] = true;
+				}
+				else
+				{
+					$data['success'] = true;
+				}
+			}
 		}
 		else
 		{
-			echo "Your password has been reset.";
+			$data['user'] = false;
 		}
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('forgotpassword', $data);
+		$this->load->view('templates/footer', $data);
 	}
 
 	public function activate($email, $hashkey)

@@ -17,21 +17,57 @@
     <!-- Custom -->
     <link rel="stylesheet" type="text/css" href="style.css">
     <style type="text/css">
-        body
+        html, body
         {
-            background-image: url("img/party_2.jpg");
-            height: 100vh;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+            background-color: #514e54;
+        }
+        .head
+        {
+            background-color: #2c2a40;
+            height: 200px;
+            padding-top: 130px;
+            text-align: center;
+        }
+        .content
+        {
+            background-color: #f1f0eb;
+            width: 100%;
+            padding-top: 20px;
+            padding-bottom: 30px;
+        }
+        #user
+        {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .content>h3
+        {
+            margin-top: -20px;
+        }
+        .contentTitle
+        {
+            margin-top: 0px;
+        }
+        #pastParties
+        {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="col-md-10 col-md-offset-1 login">
+    <div class="head"></div>
+    <div class="container content">
+        <div class="col-md-6 col-md-offset-3">
             <div class="row">
                 <h2 id="user" style="text-align:center;"></h2>
             </div>
+        </div>
+        <div class="col-md-6 col-md-offset-3">
             <div class="row">
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <div class="row">
                         <div class="col-md-12">
                             <p>
@@ -43,7 +79,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-8 col-md-offset-2">
+                        <div class="col-md-10 col-md-offset-1">
                             <span id="createError"></span>
                             <form action="?redir=/home/" method="post" id="partyNameForm">
                                 <div class="col-md-10">
@@ -56,21 +92,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <h3>Past parties</h3>
+                <div class="col-md-4">
+                    <h3 class="contentTitle">Past parties</h3>
                     <ul id="pastParties">
-                         <li>
-                            <span id="1" class="pastParty">
-                                <div class="glyphicon glyphicon-chevron-right"></div>
-                                Einars mysfest
-                            </span>
-                        </li>
                     </ul id="pastParties">                    
                 </div>
             </div>
         </div>
     </div>
-
     <!-- JS  -->
     <script src="scripts/constants.js"></script>
     <script src="scripts/landing.js"></script>

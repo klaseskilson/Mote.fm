@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 html {
   overflow: auto;
   background-color: white;
@@ -107,16 +108,17 @@ html {
 {
 	-webkit-transition:-webkit-filter 0.3s ease-in-out; 
 	-webkit-filter: blur(0px);
+	z-index: 1;
 }
 .blur
 {
 	-webkit-filter: blur(10px) !important;
+	z-index: 0;
 }
 .deleteCheck, .deleteCancel
 {
 	position: absolute;
-	background-color: green;
-	width: 30px;
+	width: 50px;
 	height: 30px;
 	display: none;
 	float: right;
@@ -125,12 +127,20 @@ html {
 .deleteActive
 {
 	display: inline;
+	font-size: 15px;
+	font-weight: bold;
+	background-color: #FDDF4D;
+	border-radius: 3px;
+	padding-top: 5px;
+	padding-bottom: 15px;
+	padding-left: 2px;
+	z-index: 1;
 }
-.login
+.rounded
 {
-	margin-top: 15%;
+	margin-top: 30px;
 	height: 50%;
-	background-color: #E8E8E8;
+	background-color: #CEC0B3;
 	padding-bottom: 30px;
 	border-radius: 10px;
 }

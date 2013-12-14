@@ -7,7 +7,7 @@
 					<div class="col-xs-4">
 						<?php
 							$gravatarMd5 = md5(strtolower($user['email']));
-							echo '<img src="http://www.gravatar.com/avatar/'.$gravatarMd5.'?s=600" class="img-responsive img-circle" alt=""/>';
+							echo '<img src="http://www.gravatar.com/avatar/'.$gravatarMd5.'?s=600&d=mm" class="img-responsive img-circle" alt=""/>';
 						?>
 					</div>
 					<div class="col-xs-8">
