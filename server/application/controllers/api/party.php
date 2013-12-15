@@ -21,10 +21,6 @@ class party extends CI_Controller {
 	 */
 	public function get_playing_song()
 	{
-		//load helper and model
-		$this->load->helper('external_spotify');
-		$this->load->model('party_model');
-
 		//FIXME: skall detta hämtas via post istället?
 		//get session data
 		$partyID = $this->session->userdata('partyid');
@@ -292,8 +288,6 @@ class party extends CI_Controller {
 	public function get_spotify_img_url()
 	{
 		$data = array();
-		$this->load->helper('external_spotify');
-
 
 		$uri = $this->input->post('uri');
 		if(!$uri)
@@ -316,6 +310,44 @@ class party extends CI_Controller {
 			}
 		}
 			
+		echo json_encode($data);
+	}
+
+	public function add_vote()
+	{
+		$data = array();
+
+		$songid = $this->input->post('songid');
+		// get user id sent via post
+		$uid = $this->login->get_id();
+		
+		if(!$songid || !$uid)
+		{
+			$data['status'] = 'error';
+			$data['response'] = 'songid or uid not defined!';
+		}
+		else
+		{
+			$vote = $this->party_model->add_vote($songid, $uid);
+			if($vote)
+			{
+				if($vote['voteid'] == 'vote already exists')
+				{
+					$data['status'] = 'error';
+					$data['response'] = "You've already voted on this song!";				
+				}
+				else
+				{
+					$data['status'] = 'success';
+					$data['result'] = $vote;
+				}
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'Vote failed for some reason!';		
+			}
+		}
 		echo json_encode($data);
 	}
 }

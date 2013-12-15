@@ -116,4 +116,25 @@ $(document).ready(function(){
 		addsong($(this));
 	});
 
+	$(document).on('click', '.vote', function(event){
+		event.preventDefault();
+		var songid = $(this).attr('data-songid');
+		var postdata = {
+			songid: songid,
+		};
+
+		$.ajax({
+			type: "POST",
+			url: BASE_URL + "api/party/add_vote",
+			data: postdata,
+			dataType: "JSON"
+		})
+		.fail(function(errordata){
+			console.log(errordata.responseText);
+		})
+		.done(function(answer){
+			console.log(answer);
+		});
+	});
+
 });
