@@ -98,6 +98,7 @@ function addsong(theobject)
 			theobject.fadeOut(300, function(){
 				theobject.addClass('success').text('Song added!').fadeIn().delay(1500).slideUp(300, function(){theobject.remove()});
 			});
+			$('#partyqueue').append(answer.html);
 		}
 		else
 			console.log("Failed. Message: " + answer.response);

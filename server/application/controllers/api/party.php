@@ -14,6 +14,8 @@ class party extends CI_Controller {
 		$this->load->model('party_model');
 		// load user model
 		$this->load->model('user_model');
+
+		$this->load->helper('external_spotify');
 	}
 
 	/**
@@ -268,6 +270,22 @@ class party extends CI_Controller {
 			{
 				$data['status'] = 'success';
 				$data['response'] = $songid;
+				
+				$artist = get_artist_name($trackuri);
+				$trackname = get_track_name($trackuri);
+				$albumart = get_album_art($trackuri);
+				$voters = $this->party_model->get_voters_from_song($trackuri);
+
+				$user = $this->user_model->get_all_info($uid);
+				$gravatarMd5 = md5(strtolower($user['email']));
+
+				$html ='<p>';
+				$html .='<img src="'. $albumart .'" alt="" width="50">';
+				$html .= $artist . ' - ' . $trackname . ', 1 votes ';
+				$html .= '<a href="#" class="vote" data-songid="' . $songid['songid'] . '">vote!</a>';
+				$html .= '<img class="voteavatar" src="http://www.gravatar.com/avatar/' . $gravatarMd5 . '?s=25&d=mm" alt="'. $user['name'] . '" title="'. $user['name'] . '">';
+				$html .='</p>';
+				$data['html'] = $html;
 			}
 			else
 			{
@@ -320,8 +338,7 @@ class party extends CI_Controller {
 		$songid = $this->input->post('songid');
 		// get user id sent via post
 		$uid = $this->login->get_id();
-		
-		if(!$songid || !$uid)
+		if(!$songid || !$this->user_model->user_exist($uid))
 		{
 			$data['status'] = 'error';
 			$data['response'] = 'songid or uid not defined!';
