@@ -58,7 +58,8 @@
 					</p>
 					<form action="<?php echo base_url().'user/forgotpassword/'.urlencode($email).'/'.$hash; ?>" method="post" class="newpwd">
 						<div class="alert alert-danger" style="<?php echo isset($success) ? '' : 'display:none;'; ?>">
-							<strong>Passwords do not match.</strong>
+							<strong>Passwords do not match.</strong> Make sure the passwords you
+							entered are exactly the same.
 						</div>
 						<p>
 							<input type="password" name="password" id="newpwd_password" class="form-control input-lg square-bottom"

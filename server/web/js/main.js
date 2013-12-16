@@ -62,6 +62,10 @@ $(document).ready(function(){ // boring needed stuff
 		}
 	});
 
+	// bootstrap tooltip hover thingy
+	$('*[data-toggle="tooltip"]').tooltip({html:true});
+	$('*[data-toggle="tooltip-bottom"]').tooltip({html:true, placement:'bottom'});
+
 	/**
 	 * when submitting signup!
 	 */

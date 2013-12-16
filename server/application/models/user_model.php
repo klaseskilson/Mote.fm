@@ -22,7 +22,13 @@ class User_model extends CI_model
 		$this->db->where('email', $email);
 		// password query
 		$pwq = $this->db->get("users");
+
+		// check so that we have some results
+		if(!$pwq || $pwq->num_rows() == 0)
+			return false;
+
 		$pwr = $pwq->result(); // password result
+
 		if($this->passwordhash->CheckPassword($pwd, $pwr[0]->password))
 		{
 			return $pwr[0];
@@ -185,6 +191,29 @@ class User_model extends CI_model
 		return false;
 	}
 
+	/**
+	 * update email, given uid and new email
+	 */
+	function update_email($uid, $email)
+	{
+		if(valid_email($email))
+		{
+			$email = array('email' => $email, 'hashkey' => strgen(20), 'activated' => 0);
+
+			if($this->db->update('users', $email, array('uid' => $uid)))
+				return $email['hashkey'];
+		}
+		return false;
+	}
+
+	/**
+	 * update something (array), given uid and new email
+	 */
+	function update($uid, $what)
+	{
+		return $this->db->update('users', $what, array('uid' => $uid));
+	}
+
 	function get_all()
 	{
 		$this->db->select("users.*, admin.privil");
@@ -282,7 +311,7 @@ class User_model extends CI_model
 		$query = $this->db->get('users');
 		if ($query)
 		{
-			return $this->db->update('users', array('activated'=>1, 'hashkey'=>strgen(20)));
+			return $this->db->update('users', array('activated' => 1, 'hashkey' => strgen(20)));
 		}
 		return false;
 	}

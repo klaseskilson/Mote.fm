@@ -31,9 +31,194 @@ class User extends CI_Controller {
 
 	public function profile()
 	{
+		// get all user data!
 		$data = array();
 		$data['user'] = $this->login->get_all_info();
+		// set nice page title
 		$data['title'] = 'Edit profile';
+
+		$input = array(
+					'name' => $this->input->post('name'),
+					'email' => $this->input->post('email'),
+					'oldpwd' => $this->input->post('password'),
+					'new_password' => $this->input->post('new_password'),
+					'new_confirm' => $this->input->post('new_confirm')
+				 );
+
+		// save user id
+		$id = $this->login->get_id();
+
+		// is form sent?
+		if($input['oldpwd'])
+		{
+			// tell view we have tried to do something
+			$data['sent'] = true;
+
+			// is the confirmation pwd correct?
+			if($this->user_model->validate($data['user']['email'], $input['oldpwd']))
+			{
+				// prepare array to use to send informatino to view about what has been changed
+				$data['changes'] = array();
+
+				// should we update the password?
+				if(strlen($input['new_password']) > 0)
+				{
+					if($this->user_model->update_password($id, $input['new_password'], $input['new_confirm']))
+						$data['changes']['newpwd'] = true;
+					else
+						$data['errors']['newpwd'] = true;
+				}
+
+				// should we update the email?
+				if($input['email'] !== $data['user']['email'])
+				{
+
+					if(valid_email($input['email']) && !$this->user_model->email_exists($input['email']))
+					{
+						// update email
+						$emailhash = $this->user_model->update_email($id, $input['email']);
+
+						// se if it worked
+						if($emailhash)
+							$data['changes']['email'] = true;
+						else
+							$data['errors']['email'] = true;
+					}
+					else
+						$data['errors']['email'] = true;
+				}
+				// should we update the name?
+				if($input['name'] !== $data['user']['name'])
+				{
+					if(strlen($input['name']) > 1 && $this->user_model->update($id, array('name' => $input['name'])))
+						$data['changes']['name'] = true;
+					else
+						$data['errors']['name'] = true;
+				}
+
+				// prepare sending email!
+				if(count($data['changes']) > 0)
+				{
+					// update session storage
+					$this->login->refresh();
+					$data['newuser'] = $this->login->get_all_info();
+
+					// time to send a email to the user confirmig the changes!
+					// check what has been changed and add something about this to the email
+					$message = '';
+
+					if(isset($data['changes']['newpwd']) && $data['changes']['newpwd'])
+					{
+						$message .= '
+								<p>
+									Your password has been changed. If this wasn\'t done by you,
+									head over to <a href="'.base_url().'user/reset">this page</a>
+									to reclaim control over you account.
+								</p>';
+					}
+					if(isset($data['changes']['email']) && $data['changes']['email'])
+					{
+						$message .= '
+								<p>
+									The email adress linked to you account has been changed. Therefore,
+									you\'ll need to confirm your new email by clicking a link sent
+									to that email, '.$input['email'].'.
+								</p>';
+					}
+					if(isset($data['changes']['name']) && $data['changes']['name'])
+					{
+						$message .= '
+								<p>
+									The name related to you account has been changed.
+								</p>';
+					}
+
+					// set message and stuff, using the format_mail from common_helper
+					$message = '<p>
+									Hi '.$data['newuser']['name'].',
+								</p>
+								<p>
+									There has been some changes made to you account. Please review
+									them below and make sure that everything is in order.
+								</p>
+								'.$message.'
+								<p>
+									If you didn\'t make these changes and you don\'t know who did,
+									contact us immediately.
+								</p>
+								';
+					$sendthis = format_mail('Account changes', $message);
+
+					$this->email->from($this->config->item('noreply_mail'), $this->config->item('noreply_name'));
+					$this->email->to($data['user']['email']);
+
+					$this->email->subject($this->config->item('mail_title').'Changes were made to your Mote.fm account');
+					$this->email->message($sendthis);
+
+					// AWAY!
+					$this->email->send();
+
+					// debug
+					//echo $this->email->print_debugger();
+
+					// now, we'll check if we need to send the activation mail to the user once again
+					if($data['changes']['email'])
+					{
+						// clear email class before sending new email
+						$this->email->clear();
+
+						// prepare message
+						$message = '<p>
+									Hi '.$data['newuser']['name'].',
+								</p>
+								<p>
+									The email adress related to you account was just changed.
+									It used to be '.$data['user']['email'].', and was changed to
+									'.$data['newuser']['email'].'. We need you to confirm this
+									address.
+								</p>
+								<p>
+									All you need to do is click this button and follow the instructions:
+									<a href="'.base_url().'user/activate/'.urlencode($data['newuser']['email']).'/'.$emailhash.'"
+										class="button">Activate account!</a>
+								</p>
+								<p>
+									<small>
+										No button? Copy this link into you adress bar and hit enter:
+										'.base_url().'user/activate/'.urlencode($data['newuser']['email']).'/'.$emailhash.'
+									</small>
+								</p>
+								<p>
+									If you didn\'t make these changes and you don\'t know who did,
+									contact us immediately.
+								</p>';
+						$sendthis = format_mail('Confirm new email', $message);
+
+						// to/from prop
+						$this->email->from($this->config->item('noreply_mail'), $this->config->item('noreply_name'));
+						$this->email->to($data['newuser']['email']);
+
+						// set subject and message
+						$this->email->subject($this->config->item('mail_title').'Confirm your new email');
+						$this->email->message($sendthis);
+
+						// AWAY!
+						$this->email->send();
+						// debug
+						// echo $this->email->print_debugger();
+					}
+
+					// we no longer need old info from database, change it
+					$data['user'] = $data['newuser'];
+				}
+			}
+			else
+			{
+				$data['errors']['oldpwd'] = true;
+			}
+		}
+
+		$data['input'] = $input;
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('profile', $data);
@@ -191,7 +376,8 @@ class User extends CI_Controller {
 							</p>
 							<p>
 								<small>
-									No button? Copy this link into you adress bar and hit enter: '.base_url().'user/forgotpassword/'.urlencode($email).'/'.$hash.'
+									No button? Copy this link into you adress bar and hit enter:
+									'.base_url().'user/forgotpassword/'.urlencode($email).'/'.$hash.'
 								</small>
 							</p>
 							';
@@ -221,6 +407,7 @@ class User extends CI_Controller {
 		$this->load->view('reset', $data);
 		$this->load->view('templates/footer', $data);
 	}
+
 	public function forgotpassword($email, $hash)
 	{
 		// prepare data array
@@ -237,14 +424,11 @@ class User extends CI_Controller {
 		{
 			if($newPassword && $newPassword == $confirm)
 			{
-				if(!($this->user_model->update_password($id, $newPassword, $confirm)))
-				{
-					$data['success'] = true;
-				}
-				else
-				{
-					$data['success'] = true;
-				}
+				$data['success'] = $this->user_model->update_password($id, $newPassword, $confirm);
+			}
+			else
+			{
+				$data['success'] = false;
 			}
 		}
 		else

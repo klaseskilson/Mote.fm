@@ -98,4 +98,26 @@ class Login
 		$this->CI->session->set_userdata($data);
 		$this->CI->session->sess_destroy();
 	}
+
+	/**
+	 * refresh info stored in session from database
+	 */
+	public function refresh()
+	{
+		$this->CI->load->model('User_model');
+		$result = $this->CI->user_model->get_all_info($this->get_id());
+
+		if($result) // if the database responend with something
+		{
+			$data = array(
+				'email' => $result['email'],
+				'name' => $result['name']
+			);
+			$this->CI->session->set_userdata($data);
+			return true;
+		}
+
+		// incorrect username or password
+		return false;
+	}
 }
