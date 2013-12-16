@@ -4,7 +4,6 @@ require([
 	'use strict';
 
 	var insertSongInfo = function(trackURI) {
-                console.log(trackURI.substr(14,36));
                 models.Track.fromURI(trackURI).load('name', 'artists').done(function(track) {
                         var id = 'songName';
                         document.getElementById(trackURI.substr(14,36)).getElementsByClassName(id)[0].innerHTML = track.name.decodeForHtml();

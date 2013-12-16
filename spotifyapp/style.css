@@ -195,3 +195,19 @@ li
 {
 	margin-top: 25px;
 }
+
+#footer
+{
+	background-color: #514E54;
+	color: #847f89;
+}
+#footer a
+{
+	color: #FDDF4D;
+}
+#footer h3
+{
+	font-size: 100%;
+	border-bottom: 1px solid #6a676e;
+	text-transform: uppercase;
+}

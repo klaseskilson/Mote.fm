@@ -19,15 +19,16 @@
 					<!-- <button type="submit" class="btn btn-default">Submit</button> -->
 				</form>
 			</div>
-			<div class="col-sm-8 col-sm-pull-4" id="partyqueue">
+			<div class="col-sm-8 col-sm-pull-4">
 				<h4>Play queue</h4>
+				<div id="partyqueue">
 				<?php
 					if($party_queue)
 					{
 						foreach ($party_queue as $entry)
 						{
 							?>
-							<p>
+							<div>
 								<img src="<?php echo $entry['albumart']?>" alt="" width ="50"><?php echo $entry['artistname']; ?> - <?php echo $entry['trackname']; ?> , <?php echo $entry['vote_count']; ?> votes
 								<a href="#" class="vote" data-songid="<?php echo $entry['songid']?>">vote!</a>
 								<?php
@@ -37,7 +38,7 @@
 									echo '<img class="voteavatar" src="http://www.gravatar.com/avatar/' . $gravatarMd5 . '?s=25&d=mm" alt="'. $voter['name'] . '" title="'. $voter['name'] . '">';
 								}
 								?>
-							</p>
+							</div>
 							<?php
 						}
 					}
@@ -50,6 +51,7 @@
 						<?php
 					}
 				?>
+				</div>
 			</div>
 		</div>
 	</div>
