@@ -230,6 +230,17 @@ class party extends CI_Controller {
 		else
 		{
 			$queue = $this->party_model->get_party_queue($partyid);
+			for($i = 0; $i < sizeof($queue); $i++)
+			{
+				$voters = $this->party_model->get_voters_from_song($queue[$i]['songid']);
+
+				for($j = 0; $j < sizeof($voters); $j++)
+				{
+					//we md5hash it here since we cant do it easy in javascript
+					$voters[$j]['email'] = md5(strtolower($voters[$j]['email']));
+				}
+				$queue[$i]['voter'] = $voters;
+			}
 			$queuehash = md5(serialize($queue));
 	
 			

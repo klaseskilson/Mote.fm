@@ -61,14 +61,12 @@
     <script src="js/bootstrap.min.js"></script>
     <script>
         $("#partyname").html(sessionStorage.partyname);
+
         $("#home").click(function() {
             window.location.href = "landing.html";
         });
-
-        $("#partyLink").click(function(){
-            
         $("#partyLink").html(constants.SERVER_URL + "/" + sessionStorage.partyhash); // http://mote.fm/
-        });
+        
     </script>
 </body>
 </html>

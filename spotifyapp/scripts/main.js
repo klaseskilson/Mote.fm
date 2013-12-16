@@ -16,6 +16,7 @@ require([
 
   // Each track has ha vote. Here the id of the voter and
   // timestamp is stored in arrays.
+  
   function vote()
   {
     this.amount = 1;
@@ -165,12 +166,12 @@ require([
 
   var tracks = new Array(); // Initializes an array of spotify URIs
 
-  tracks[0] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
-  tracks[1] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
-  tracks[2] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
-  tracks[3] = new track('spotify:track:1r9mGafUiSgumJoRqyLrSt');
-  tracks[4] = new track('spotify:track:3YXUMVKfRy4mwPEAslWg1p');
-  tracks[5] = new track('spotify:track:2xaNOCsGBhFJ3bp6mvSqXz');
+  // tracks[0] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
+  // tracks[1] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
+  // tracks[2] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
+  // tracks[3] = new track('spotify:track:1r9mGafUiSgumJoRqyLrSt');
+  // tracks[4] = new track('spotify:track:3YXUMVKfRy4mwPEAslWg1p');
+  // tracks[5] = new track('spotify:track:2xaNOCsGBhFJ3bp6mvSqXz');
 
   // models.player.setShuffle(false);
   // models.player.setRepeat(false);
@@ -179,7 +180,7 @@ require([
     // document.getElementById('subheading').innerHTML = country.country.decodeForHtml();
   // });
 
-  listUpdate();
+  // listUpdate();
 
   // Funktion för att ta bort ett "Track"-elemnent
   // Att göra:
@@ -251,7 +252,6 @@ require([
     });
 
     console.log(pos+1);
-    
   });
 
 

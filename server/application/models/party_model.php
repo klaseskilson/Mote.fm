@@ -336,7 +336,7 @@ class Party_model extends CI_model
 
 	function get_voters_from_song($songid)
 	{
-		$this->db->select('users.*');
+		$this->db->select('users.email, users.name, users.uid');
 		$this->db->from('quevote');
 		$this->db->join('users', 'quevote.uid = users.uid', 'left');
 		$this->db->where('quevote.songid', $songid);
