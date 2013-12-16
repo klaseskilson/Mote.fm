@@ -38,6 +38,8 @@
 |
 */
 
+$route['(?!party|about)([a-zA-Z0-9]{5}+)'] = "party/view/$1";
+
 $route['default_controller'] = "home";
 $route['404_override'] = '';
 

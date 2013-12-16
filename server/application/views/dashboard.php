@@ -6,7 +6,7 @@
 				<div class="row">
 					<div class="col-xs-4">
 						<a href="<?php echo base_url().'user/profile/';?>" data-toggle="tooltip"
-							title="<span class='glyphicon glyphicon-cog'></span> Redigera konto">
+							title="<span class='glyphicon glyphicon-cog'></span> Edit account">
 							<?php
 								$gravatarMd5 = md5(strtolower($user['email']));
 								echo '<img src="http://www.gravatar.com/avatar/'.$gravatarMd5.'?s=600&d=mm"
