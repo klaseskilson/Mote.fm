@@ -203,6 +203,8 @@ class party extends CI_Controller {
 
 			$data['status'] = 'success';
 			$data['result'] = $query;
+
+			$data['vote'] = $this->party_model->set_track_as_played($partyid, $trackuri);
 		}
 
 		echo json_encode($data);
@@ -214,7 +216,7 @@ class party extends CI_Controller {
 	public function get_party_list()
 	{
 		$partyid = $this->input->post('partyid');
-		$partyhash = $this->input->post('partyhash');
+		$partyqueuehash = $this->input->post('partyqueuehash');
 		$data = array();
 
 		if(!$partyid)
@@ -230,10 +232,22 @@ class party extends CI_Controller {
 		else
 		{
 			$queue = $this->party_model->get_party_queue($partyid);
+			$hashdata = array();
+			$hashdata['partyid'] = $partyid;
+			$hashdata['songcount'] = sizeof($queue);
+			$hashdata['votecount'] = 0;
+			for($i = 0; $i < sizeof($queue); $i++)
+			{
+				$hashdata['votecount'] += sizeof($this->party_model->get_voters_from_song($queue[$i]['songid']));
+				if($queue[$i]['played'] == 1)
+				{
+					array_splice($queue, $i, 1);
+					$i--;
+				}
+			}
 			for($i = 0; $i < sizeof($queue); $i++)
 			{
 				$voters = $this->party_model->get_voters_from_song($queue[$i]['songid']);
-
 				for($j = 0; $j < sizeof($voters); $j++)
 				{
 					//we md5hash it here since we cant do it easy in javascript
@@ -241,19 +255,21 @@ class party extends CI_Controller {
 				}
 				$queue[$i]['voter'] = $voters;
 			}
-			$queuehash = md5(serialize($queue));
 
+			$data['hashdata'] = $hashdata;
+			$queuehash = md5(serialize($hashdata));
+			// $queuehash = md5(serialize($queue));
 
-			// if($queuehash != $partyhash)
-			// {
-			// 	$data['status'] = 'error';
-			// 	$data['result'] = 'No need to update the queue, its the same!';
-			// }
-			// else
-			// {
+			if($queuehash == $partyqueuehash)
+			{
+				$data['status'] = 'error';
+				$data['result'] = 'No need to update the queue, its the same!';
+			}
+			else
+			{
 				$data['status'] = 'success';
 				$data['result'] = $queue;
-			// }
+			}
 			$data['hash'] = $queuehash;
 
 		}
@@ -291,12 +307,12 @@ class party extends CI_Controller {
 				$user = $this->user_model->get_all_info($uid);
 				$gravatarMd5 = md5(strtolower($user['email']));
 
-				$html ='<p>';
+				$html ='<div>';
 				$html .='<img src="'. $albumart .'" alt="" width="50">';
 				$html .= $artist . ' - ' . $trackname . ', 1 votes ';
 				$html .= '<a href="#" class="vote" data-songid="' . (isset($songid['songid']) ? $songid['songid'] : '') . '">vote!</a>';
 				$html .= '<img class="voteavatar" src="http://www.gravatar.com/avatar/' . $gravatarMd5 . '?s=25&d=mm" alt="'. $user['name'] . '" title="'. $user['name'] . '">';
-				$html .='</p>';
+				$html .='</div>';
 				$data['html'] = $html;
 			}
 			else

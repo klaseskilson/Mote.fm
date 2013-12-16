@@ -356,4 +356,22 @@ class Party_model extends CI_model
 			return $query->result_array();
 		return false;
 	}
+
+	function set_track_as_played($partyid, $trackuri)
+	{
+		
+		$data = array( 'played' => 1);
+		$this->db->where('partyid', $partyid);
+		$this->db->where('uri', $trackuri);
+
+		
+		$query = $this->db->update('quesong', $data);
+
+		if($query)
+		{
+			return $query;
+		}
+			
+		return false;
+	}
 }

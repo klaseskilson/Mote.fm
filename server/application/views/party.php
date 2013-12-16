@@ -28,8 +28,9 @@
 					<!-- <button type="submit" class="btn btn-default">Submit</button> -->
 				</form>
 			</div>
-			<div class="col-sm-8 col-sm-pull-4" id="partyqueue">
+			<div class="col-sm-8 col-sm-pull-4">
 				<h4>Play queue</h4>
+				<div id="partyqueue">
 				<?php
 					if($party_queue)
 					{
@@ -37,6 +38,7 @@
 						{
 							// var_dump($entry);
 							?>
+
 							<div class="row">
 								<div class="col-xs-4 col-sm-3">
 									<img src="<?php echo $entry['albumart']; ?>" alt="" class="img-responsive" />
@@ -110,6 +112,7 @@
 						<?php
 					}
 				?>
+				</div>
 			</div>
 		</div>
 	</div>

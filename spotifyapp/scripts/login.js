@@ -102,16 +102,11 @@ require([
   	}
   	else if(situation == "#signUp")
   	{
-  		//TODO:Sign up 
-  		// document.getElementById('xyz').innerHTML = "SIGN UP";
   		$.post(constants.SERVER_URL + '/api/user/signUp',values, function(data, textstatus)
 		{ 
 			var json = data;
 			if(json.status == "success")
 			{
-				// Only login
-				sessionStorage.useremail = json.result.email;
-			  
 				$('#password').show({duration: 400, queue: false});
 				$('#name').hide({duration: 400, queue: false});
 				switchButtons('#signIn');
@@ -129,8 +124,25 @@ require([
   	}
   	else if(situation == "#forgotPwd")
   	{
-  		//TODO:Forgot password 
-  		document.getElementById('xyz').innerHTML = "FORGOT PASSWORD";
+  		$.post(constants.SERVER_URL + '/api/user/reset',values, function(data, textstatus)
+		{ 
+			var json = data;
+			if(json.status == "success")
+			{
+				$('#password').show({duration: 400, queue: false});
+				$('#name').hide({duration: 400, queue: false});
+				switchButtons('#signIn');
+				situation = "#signIn";
+				document.getElementById('submit').setAttribute('value', 'Sign in!');
+
+				$('#loginstatus').html("We have sent you a lifeboat to your email, please check your inbox.");
+			}
+			else
+			{
+			  $('#loginstatus').html(json.status + ": " + json.response);
+			}
+
+		});
   	}
   });
 });

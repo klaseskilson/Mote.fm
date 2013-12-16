@@ -102,4 +102,74 @@ class user extends CI_Controller {
 			echo json_encode($data);
 		}
 	}
+	public function reset()
+	{
+		// prepare data to send to view
+		$data = array();
+
+		$data['title'] = 'Reset password!';
+
+		// get email input from post
+		$email = $this->input->post('email');
+
+		if($email)
+		{
+			// get id from email
+			$id = $this->user_model->get_id($email);
+			// get user info from id
+			$user = $this->user_model->get_all_info($id);
+
+			// did get_all_info return anything? proceed.
+			if ($id)
+			{
+				$hash = $this->user_model->reset($email);
+
+				$this->email->from($this->config->item('noreply_mail'), $this->config->item('noreply_name'));
+				$this->email->to($email);
+
+				// set message and stuff, using the format_mail from common_helper
+				$message = '<p>
+								Hi '.$user['name'].',
+							</p>
+							<p>
+								We heard you forgot your password, and therefore we prepared this awesome link for you, so that
+								you can reset it and access you account again. Nice, right?
+							</p>
+							<p>
+								All you need to do is click this button and follow the instructions:
+								<a href="'.base_url().'user/forgotpassword/'.urlencode($email).'/'.$hash.'" class="button">RESET PASSWORD!</a>
+							</p>
+							<p>
+								<small>
+									No button? Copy this link into you adress bar and hit enter: '.base_url().'user/forgotpassword/'.urlencode($email).'/'.$hash.'
+								</small>
+							</p>
+							';
+				$sendthis = format_mail('Reset password', $message);
+
+				$this->email->subject($this->config->item('mail_title').'Reset password');
+				$this->email->message($sendthis);
+
+				// AWAY!
+				$this->email->send();
+
+				// debug
+				//echo $this->email->print_debugger();
+
+				$data['status'] = "success";
+				$data['result'] = array(
+										'email' => $user['email']
+										);
+			}
+			else
+			{
+				$data['status'] = "error";
+				$data['email'] = $email;
+				$data['response'] = "An error occurred.";
+
+			}
+		}
+
+		echo json_encode($data);
+	}
 }

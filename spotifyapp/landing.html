@@ -55,6 +55,21 @@
         {
             margin-bottom: 20px;
         }
+        /*@media only screen and (max-width: 992px) {
+            .col-md-10,
+            .col-md-8,
+            .col-md-6,
+            .col-md-2
+            {
+                float: left;
+            }
+            .col-lg-2 {
+               width: 16.666666666666664%;
+            }
+            .col-lg-6 {
+                width: 50%;
+           }
+        }*/
     </style>
 </head>
 <body>
@@ -65,11 +80,11 @@
                 <h2 id="user" style="text-align:center;"></h2>
             </div>
         </div>
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-8 col-sm-8">
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-12 col-sm-12">
                             <p>
                                 Create a party through Mote.fm, lock your computer and let everyone decide through their smartphones.
                             </p>
@@ -79,13 +94,13 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-10 col-md-offset-1">
+                        <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
                             <span id="createError"></span>
                             <form action="?redir=/home/" method="post" id="partyNameForm">
-                                <div class="col-md-10">
+                                <div class="col-md-10 col-sm-10 col-xs-10">
                                     <input type="text" name="name" id="name" class="form-control input-lg square-bottom partyName" placeholder="This awesome party">
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-2 col-sm-2 col-xs-2">
                                     <input type="submit" name="submit" id="submit" value="Go!" class="btn btn-default btn-lg">
                                 </div>
                             </form>
@@ -100,6 +115,32 @@
             </div>
         </div>
     </div>
+    <footer id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
+                    <h3>
+                        Mote.fm
+                    </h3>
+                    <p>
+                        Who da bes? <a href="iam">I am!</a>
+                    </p>
+                    </div>
+                    <div class="col-sm-4">
+                        <h3>
+                            Contact us
+                        </h3>
+                        yo
+                    </div>
+                    <div class="col-sm-4">
+                    <h3>
+                        Mote.fm
+                    </h3>
+                    yo
+                </div>
+            </div>
+        </div>
+    </footer><!-- end #footer -->
     <!-- JS  -->
     <script src="scripts/constants.js"></script>
     <script src="scripts/landing.js"></script>
