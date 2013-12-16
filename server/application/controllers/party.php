@@ -41,7 +41,7 @@ class Party extends CI_controller
 
 	function view($hash = '')
 	{
-		if(!$this->party_model->hash_exists($hash))
+		if($hash == '' || !$this->party_model->hash_exists($hash))
 		{
 			log_message('error', 'Party hash '.$hash.' returned 404.');
 			show_404();

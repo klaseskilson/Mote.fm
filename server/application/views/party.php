@@ -4,6 +4,12 @@
 			<div class="col-sm-12">
 				<h1>
 					<?php echo $party['name']; ?>
+					<small>
+						<a href="<?php echo base_url().$party['hash']; ?>" data-toggle="tooltip"
+							title="Share this link with your friends to let them add songs!">
+							<?php echo str_replace('http://', '', base_url()).$party['hash']; ?>
+						</a>
+					</small>
 				</h1>
 			</div>
 		</div>
