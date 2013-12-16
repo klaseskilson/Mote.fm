@@ -95,7 +95,7 @@ class party extends CI_Controller {
 			else
 			{
 				$data['status'] = 'error';
-				$data['response'] = 'party not found!';		
+				$data['response'] = 'party not found!';
 			}
 		}
 		echo json_encode($data);
@@ -121,7 +121,7 @@ class party extends CI_Controller {
 			if($parties)
 			{
 				$data['status'] = 'success';
-				$data['result'] = $parties;				
+				$data['result'] = $parties;
 			}
 			else
 			{
@@ -207,7 +207,7 @@ class party extends CI_Controller {
 
 		echo json_encode($data);
 	}
-	
+
 	/**
 	 * get the playlist for the party
 	 */
@@ -242,20 +242,20 @@ class party extends CI_Controller {
 				$queue[$i]['voter'] = $voters;
 			}
 			$queuehash = md5(serialize($queue));
-	
-			
+
+
 			// if($queuehash != $partyhash)
 			// {
 			// 	$data['status'] = 'error';
-			// 	$data['result'] = 'No need to update the queue, its the same!';	
+			// 	$data['result'] = 'No need to update the queue, its the same!';
 			// }
 			// else
 			// {
 				$data['status'] = 'success';
-				$data['result'] = $queue;	
+				$data['result'] = $queue;
 			// }
 			$data['hash'] = $queuehash;
-				
+
 		}
 
 		// write array json encoded
@@ -277,11 +277,12 @@ class party extends CI_Controller {
 		if($trackuri && $this->user_model->user_exist($uid) && $this->party_model->party_exists($partyid))
 		{
 			$songid = $this->party_model->add_song($uid, $partyid, $trackuri);
+
 			if($songid)
 			{
 				$data['status'] = 'success';
 				$data['response'] = $songid;
-				
+
 				$artist = get_artist_name($trackuri);
 				$trackname = get_track_name($trackuri);
 				$albumart = get_album_art($trackuri);
@@ -293,7 +294,7 @@ class party extends CI_Controller {
 				$html ='<p>';
 				$html .='<img src="'. $albumart .'" alt="" width="50">';
 				$html .= $artist . ' - ' . $trackname . ', 1 votes ';
-				$html .= '<a href="#" class="vote" data-songid="' . $songid['songid'] . '">vote!</a>';
+				$html .= '<a href="#" class="vote" data-songid="' . (isset($songid['songid']) ? $songid['songid'] : '') . '">vote!</a>';
 				$html .= '<img class="voteavatar" src="http://www.gravatar.com/avatar/' . $gravatarMd5 . '?s=25&d=mm" alt="'. $user['name'] . '" title="'. $user['name'] . '">';
 				$html .='</p>';
 				$data['html'] = $html;
@@ -335,10 +336,10 @@ class party extends CI_Controller {
 			else
 			{
 				$data['status'] = "error";
-				$data['response'] = "Error retrieving album cover";		
+				$data['response'] = "Error retrieving album cover";
 			}
 		}
-			
+
 		echo json_encode($data);
 	}
 
@@ -362,7 +363,7 @@ class party extends CI_Controller {
 				if($vote['voteid'] == 'vote already exists')
 				{
 					$data['status'] = 'error';
-					$data['response'] = "You've already voted on this song!";				
+					$data['response'] = "You've already voted on this song!";
 				}
 				else
 				{
@@ -373,7 +374,7 @@ class party extends CI_Controller {
 			else
 			{
 				$data['status'] = 'error';
-				$data['response'] = 'Vote failed for some reason!';		
+				$data['response'] = 'Vote failed for some reason!';
 			}
 		}
 		echo json_encode($data);

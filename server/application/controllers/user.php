@@ -162,7 +162,7 @@ class User extends CI_Controller {
 					//echo $this->email->print_debugger();
 
 					// now, we'll check if we need to send the activation mail to the user once again
-					if($data['changes']['email'])
+					if(isset($data['changes']['email']) && $data['changes']['email'])
 					{
 						// clear email class before sending new email
 						$this->email->clear();
