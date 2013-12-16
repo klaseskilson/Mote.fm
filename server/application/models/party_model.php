@@ -52,7 +52,8 @@ class Party_model extends CI_model
 	function get_party_from_id($partyid)
 	{
 		// select all columns from parties where partyid=$partyid
-		$this->db->select('*');
+		$this->db->select('*, users.name AS hostname, users.uid');
+		$this->db->join('users', 'users.uid = parties.uid', 'left');
 		$this->db->where('partyid', $partyid);
 		$this->db->limit(1);
 
@@ -82,7 +83,8 @@ class Party_model extends CI_model
 			return false;
 
 		// select all columns from parties where partyid=$partyid
-		$this->db->select('*');
+		$this->db->select('parties.*, users.name AS hostname, users.uid');
+		$this->db->join('users', 'users.uid = parties.uid', 'left');
 		$this->db->where('hash', $partyhash);
 
 		// run query!
@@ -324,12 +326,14 @@ class Party_model extends CI_model
 	function contrib_parties($uid)
 	{
 		$this->db->distinct();
-		$this->db->select('quesong.partyid, parties.name, parties.hash');
+		$this->db->select('quesong.partyid, parties.name, parties.hash, users.name AS hostname');
 		$this->db->from('quevote');
-		$this->db->join('quesong', 'quesong.uid = quevote.uid', 'left');
+		$this->db->join('quesong', 'quesong.songid = quevote.songid', 'left');
 		$this->db->join('parties', 'parties.partyid = quesong.partyid', 'left');
-		$this->db->where('quevote.uid', $uid);
-		$this->db->or_where('quesong.uid', $uid);
+		$this->db->join('users', 'users.uid = parties.uid', 'left');
+		$this->db->where('(quevote.uid = '.$uid.' OR quesong.uid = '.$uid.')');
+		// $this->db->or_where('quesong.uid', $uid);
+		$this->db->where('parties.uid !=', $uid);
 		$this->db->order_by('quevote.time');
 
 		$query = $this->db->get();
@@ -350,6 +354,24 @@ class Party_model extends CI_model
 
 		if($query && $query->num_rows() > 0)
 			return $query->result_array();
+		return false;
+	}
+
+	function set_track_as_played($partyid, $trackuri)
+	{
+		
+		$data = array( 'played' => 1);
+		$this->db->where('partyid', $partyid);
+		$this->db->where('uri', $trackuri);
+
+		
+		$query = $this->db->update('quesong', $data);
+
+		if($query)
+		{
+			return $query;
+		}
+			
 		return false;
 	}
 }

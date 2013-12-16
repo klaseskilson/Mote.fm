@@ -9,13 +9,16 @@
 			<div class="row">
 				<div class="col-sm-6 screamer">
 					<p>
-						Easily let your guest control what's playing.
+						Mote.fm helps you to easily let your guest control what's playing.
+						No more skipped songs halfway through, and no more fighting over the play queue.
 					</p>
-				</div>
-				<div class="col-sm-6 screamer">
 					<p>
 						<a href="#second">Sign up!</a>
 					</p>
+				</div>
+				<div class="col-sm-6 screamer">
+					<img src="<?php echo base_url().'web/img/landing/screenshot_iphone.png'; ?>" alt="iPhone screenshot"
+						title="Apapts to your screen!" data-toggle="tooltip" />
 				</div>
 			</div> <!-- end .row -->
 			<div class="bottom">

@@ -6,23 +6,34 @@ require([
 	'scripts/jquery.min'
 	], function(models, Image, cover, trackInfo, jquery){
 
-		var registerHathorQueueCallback = function(partyid, partyhash)
+		var startParty = function(partyid, partyqueuehash)
 		{
+			getPlaylist(partyid,partyqueuehash);
+		}
+		var getPlaylist = function(partyid, partyqueuehash){
 			var postData = {
 				'partyid' : partyid,
-				'partyhash' : partyhash
+				'partyqueuehash' : partyqueuehash
 			}
 
 			$.post(constants.SERVER_URL + "/api/party/get_party_list", postData, function (data) {
+				console.log(data.hashdata);
+				console.log(data.hash);
 				if(data.status == 'error')
 				{
 					//something went wrong
 					console.log(data);	
+					playNextSong(partyid, sessionStorage.queuehash, false);	
+
 				}
 				else
 				{
-					//models.player.playTrack(models.Track.fromURI(data.result[0].uri));
-					console.log(data);
+					if(data.result.length == 0)
+					{
+						//divs doesnt work here?!
+						$('#queue').html("<div class='track row'>No songs at party, what a boring party!</div>");
+						return;
+					}
 					$('#queue').html("");
 					for(var i = 0; i < data.result.length; i++)
 					{
@@ -30,14 +41,23 @@ require([
 						if(i == 0)
 							var section = '<div id="' + track.uri.substr(14,36) + '" class="track row first">';
 						else
-							var section = '<div id="' + track.uri.substr(14,36) + '" class="track row">';  
+							var section = '<div id="' + track.uri.substr(14,36) + '" class="track row">';
     					section += '<div class="cover"></div>';
 				    	section += '<div class="row trackmeta">';
 				    	section += '<div class="songName">';
 				    	section += '</div>';
 				    	section += '<div class="songArtist">';
 				    	section += '</div>';
-				    	section += '<div class="numberOfVotes"></div>';
+				    	section += '<div class="numberOfVotes">'+ track.vote_count + '</div>';
+				    	section += '<div class="voters">';
+				    	for(var j = 0; j < track.voter.length; j++)
+				    	{
+				    		var voter = track.voter[j];
+				    		var gravatarurl = 'http://www.gravatar.com/avatar/' + voter.email + '?s=25&d=mm"';
+				    		section+= '<img src="'+ gravatarurl + '"alt="' + voter.name + '" title="'+ voter.name + '">';
+				    	}
+
+				    	section += '</div>';
 					    section += '<div class="delete glyphicon glyphicon-remove"></div>';
 					    section += '<div class="vote glyphicon glyphicon-chevron-up"></div>';
 					    section += '</div>';
@@ -48,18 +68,49 @@ require([
 					    trackInfo.insertSongInfo(track.uri);
 					}
 					//store queuehash on sesionsstorage
-					sessionStorage.queuehash = data.hash;		
+					sessionStorage.queuehash = data.hash;	
+					playNextSong(partyid, sessionStorage.queuehash, true);	
 				}
 				
 			});
 		}
-
+		/**
+		 * Will play next song in the queue list
+		 */
+		var playNextSong = function(partyid, partyhash, playlistchanged)
+		{
+			if(!playlistchanged)
+			{
+				$('#queue').children('div')[0].remove();							
+			}
+			if($('#queue').children('div').length != 0)
+			{
+				var child = $('#queue').children('div')[0];
+				var track = child.id;
+				$('#queue').children('div').eq(0).css('background-color', '#CEC0B3');
+					
+				track = 'spotify:track:' + track;
+				var spTrack = models.Track.fromURI(track);
+				models.player.playTrack(spTrack);
+				registerSong(partyid);
+				
+				spTrack.load('duration').done(function(spTrack){
+					setTimeout(function(){
+						getPlaylist(partyid, partyhash);												
+					},  spTrack.duration);
+				});
+			}
+			else
+			{
+				console.log("no tracks!!");
+				//
+			}
+		}
 		/**
 		 * Register a callback to report playing song to Hathor server
 		 * @param  {[type]} partyID The partyID that the callback should relates to
 		 */
-		var registerHathorCallback = function(partyID) {
-			models.player.addEventListener('change:index', function(stuff){
+		var registerSong = function(partyID) {
 				models.player.load('track').done(function(){
 
 					//Spotify is a retard, we have to wait one second to get correct song
@@ -79,8 +130,6 @@ require([
 						});
 					}, 1000);
 				});
-			});
-		};
-		exports.registerHathorQueueCallback = registerHathorQueueCallback;
-		exports.registerHathorCallback = registerHathorCallback;
+		}
+		exports.startParty = startParty;
 	});

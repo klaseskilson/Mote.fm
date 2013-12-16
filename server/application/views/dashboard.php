@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-4">
-				<h3>Welcome back, <?php echo $user['names'][0]; ?></h3>
+				<h3>Welcome, <?php echo $user['names'][0]; ?>!</h3>
 				<div class="row">
 					<div class="col-xs-4">
 						<a href="<?php echo base_url().'user/profile/';?>" data-toggle="tooltip"
@@ -49,29 +49,32 @@
 			</div>
 			<div class="col-sm-4">
 				<h3>Parties you've attended</h3>
-			<?php
-				if($party_contrib)
-				{
-					foreach ($party_contrib as $party)
+				<?php
+					if($party_contrib)
+					{
+						foreach ($party_contrib as $party)
+						{
+							?>
+							<p>
+								<a href="<?php echo base_url().'party/view/'.$party['hash']; ?>">
+									<?php
+									echo $party['hostname'].'\'';
+									echo substr($party['hostname'], -1) !== 's' ? 's' : '';
+									?> <?php echo $party['name']; ?>
+								</a>
+							</p>
+							<?php
+						}
+					}
+					else
 					{
 						?>
 						<p>
-							<a href="<?php echo base_url().'party/view/'.$party['hash']; ?>">
-								<?php echo $party['name']; ?>
-							</a>
+							It appears as if you have not attended any parties. Other than your own, that is.
 						</p>
 						<?php
 					}
-				}
-				else
-				{
-					?>
-					<p>
-						It appears as if you have not attended any parties. Other than your own, that is.
-					</p>
-					<?php
-				}
-			?>
+				?>
 			</div>
 		</div>
 	</div>

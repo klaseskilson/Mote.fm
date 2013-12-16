@@ -9,7 +9,23 @@
 					</p>
 					<form action="<?php echo $redir ? '?redir='.$redir : ''; ?>" method="post" class="login">
 						<?php
-						if(isset($email))
+						if(isset($activate) && is_array($activate) && $activate['error'] == 'activatefirst')
+						{
+							?>
+							<div class="alert alert-danger">
+								<p>
+									<strong>Uh-oh!</strong>
+									We found you account! However, you need to activate it first.
+								</p>
+								<p>
+									Check you email and click the activation link we sent
+									you there. Go <a href="<?php echo base_url().'user/resend'; ?>">here</a>
+									if you have not recieved an activation email.
+								</p>
+							</div>
+							<?php
+						}
+						elseif(isset($email))
 						{
 							?>
 							<div class="alert alert-danger">

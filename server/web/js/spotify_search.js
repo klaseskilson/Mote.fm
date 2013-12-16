@@ -16,15 +16,15 @@ function parsespotify(query, theobject)
 			if(data.info.num_results > 0)
 			{
 				var limit = Math.min(data.tracks.length,10);
+
 				// loop through the results
 				for(var i = 0; i < limit; i++)
 				{
-
 					//FIXME - hardcoded territory!
 					if(data.tracks[i].album.availability.territories.indexOf("SE") == -1)
 					{
 						continue;
-					} 
+					}
 
 					// save what we want in variables!
 					// save string with artists
@@ -33,14 +33,17 @@ function parsespotify(query, theobject)
 						uri = data.tracks[i].href;
 
 					var track = data.tracks[i];
-					
+
 					// loop through the artists and add name to string
-			
 					for(var k = 0; k < track.artists.length; k++)
 						artists += (k !== 0 ? ', ' : '' ) + track.artists[k].name;
+
 					// create object and append to search results
 					$('<a></a>').attr('href', '#').attr('data-uri', uri)
 						.html(name + " <span>" + artists +"</span>").appendTo(searchresults);
+
+					// take a step in the loop
+					// i++;
 				}
 
 				console.log("Nr of results: " + data.info.num_results);
@@ -50,10 +53,10 @@ function parsespotify(query, theobject)
 				console.log("Nothing found for " + query);
 			}
 
-		}).done(function(){ 
+		}).done(function(){
 			// get album art -- not working -- it is now :)
-			theobject.parent('.spotifysearch').children('.searchresults').children('a').each(function() {
-				var child = $(this); 
+			/*theobject.parent('.spotifysearch').children('.searchresults').children('a').each(function() {
+				var child = $(this);
 				var uri = $(this).attr('data-uri');
 				$.ajax({
 					url: BASE_URL + "api/party/get_spotify_img_url",
@@ -61,8 +64,8 @@ function parsespotify(query, theobject)
 					data: {uri: uri}}).done(function(json){
 						child.prepend('<img src="' + json.result + '" alt="" width="20">');
 					});
-			});
-			
+			});*/
+
 		});
 
 	// theobject.parent('.spotifysearch').children('.searchresults').show();
@@ -98,7 +101,15 @@ function addsong(theobject)
 			theobject.fadeOut(300, function(){
 				theobject.addClass('success').text('Song added!').fadeIn().delay(1500).slideUp(300, function(){theobject.remove()});
 			});
-			$('#partyqueue').append(answer.html);
+			if($('#partyqueue > div').length == 0)
+			{
+				$('#partyqueue').html(answer.html);
+			}
+			else
+			{
+				$('#partyqueue').append(answer.html);	
+			}
+			
 		}
 		else
 			console.log("Failed. Message: " + answer.response);

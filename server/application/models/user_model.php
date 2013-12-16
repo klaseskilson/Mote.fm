@@ -17,9 +17,12 @@ class User_model extends CI_model
 	 */
 	function validate($email, $pwd)
 	{
+		$time = date('Y-m-d H:i:s', time() - $this->config->item('activate_time'));
 
 		$this->db->select("uid, password, email, name");
 		$this->db->where('email', $email);
+		$this->db->where('(activated = 1 OR time > "'.$time.'")');
+
 		// password query
 		$pwq = $this->db->get("users");
 
@@ -34,6 +37,24 @@ class User_model extends CI_model
 			return $pwr[0];
 		}
 		return false;
+	}
+
+	/**
+	 * does the user need to be activated in order to log in?
+	 */
+	function need_activation($email)
+	{
+		$time = date('Y-m-d H:i:s', time() - $this->config->item('activate_time'));
+
+		$this->db->select("uid, password, email, name");
+		$this->db->where('email', $email);
+		$this->db->where('activated',0);
+		$this->db->where('time <', $time);
+
+		$query = $this->db->get('users');
+
+		if($query)
+			return $query->num_rows();
 	}
 
 	/**
@@ -302,16 +323,24 @@ class User_model extends CI_model
 		return false;
 	}
 
+	/**
+	 * set new hash to user
+	 */
+	function refresh_hash($email)
+	{
+		$data = array('hashkey' => strgen(20));
+		if($this->db->update('users', $data, array('email' => $email)))
+			return $data['hashkey'];
+
+		return false;
+	}
+
 	function activate($email, $hashkey)
 	{
-		$this->db->select("activated");
-		$this->db->where('email', $email);
-		$this->db->where('hashkey', $hashkey);
-
-		$query = $this->db->get('users');
-		if ($query)
+		if($this->validate_hash($email, $hashkey))
 		{
-			return $this->db->update('users', array('activated' => 1, 'hashkey' => strgen(20)));
+			$data = array('activated' => 1, 'hashkey' => strgen(20));
+			return $this->db->update('users', $data, array('email' => $email));
 		}
 		return false;
 	}

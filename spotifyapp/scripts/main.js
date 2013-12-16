@@ -7,12 +7,14 @@ require([
   'use strict';
 
   var numReloads = 0;
-
+  sessionStorage.queuehash = "";
+  //just to clear users playqueue
+  models.player.stop();
   //Register party to send playing song to Hathor
-  hathor.registerHathorCallback(sessionStorage.partyid);
+  //hathor.registerHathorCallback(sessionStorage.partyid);
   
   //this will send a request to hathor to get current playqueue.
-  hathor.registerHathorQueueCallback(sessionStorage.partyid, sessionStorage.queuehash);
+  hathor.startParty(sessionStorage.partyid, sessionStorage.queuehash);
 
   // Each track has ha vote. Here the id of the voter and
   // timestamp is stored in arrays.

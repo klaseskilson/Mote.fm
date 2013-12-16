@@ -24,3 +24,11 @@
  ***************/
 
 	$config['default_title'] = 'Mote.fm';
+
+
+
+/****************
+ * USER SETTINGS
+ ***************/
+	// how many days does the user have to activate their accout?
+	$config['activate_time'] = 3 * 24 * 60 * 60;

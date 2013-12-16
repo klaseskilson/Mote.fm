@@ -162,7 +162,7 @@ class User extends CI_Controller {
 					//echo $this->email->print_debugger();
 
 					// now, we'll check if we need to send the activation mail to the user once again
-					if($data['changes']['email'])
+					if(isset($data['changes']['email']) && $data['changes']['email'])
 					{
 						// clear email class before sending new email
 						$this->email->clear();
@@ -314,20 +314,26 @@ class User extends CI_Controller {
 			$email = $this->input->post('email');
 			$password = $this->input->post('password');
 
+			$logintry = $this->login->validate($email, $password);
+
 			// kolla inloggning mot login lib
-			if($this->login->validate($email, $password))
+			if(is_array($logintry))
+			{
+				// does the user need to activate it's account?
+				$data['activate'] = $logintry;
+			}
+			elseif($this->login->validate($email, $password))
 			{
 				redirect(urldecode($data['redir']), 'location');
+				die();
 			}
-			else
-			{
-				// ajaj, fel!
-				$data['email'] = $email;
 
-				$this->load->view('templates/header', $data);
-				$this->load->view('login', $data);
-				$this->load->view('templates/footer', $data);
-			}
+			// ajaj, fel!
+			$data['email'] = $email;
+
+			$this->load->view('templates/header', $data);
+			$this->load->view('login', $data);
+			$this->load->view('templates/footer', $data);
 		}
 		else
 		{
@@ -335,8 +341,8 @@ class User extends CI_Controller {
 			$this->load->view('login', $data);
 			$this->load->view('templates/footer', $data);
 		}
-
 	}
+
 	public function reset()
 	{
 		// prepare data to send to view
@@ -441,16 +447,88 @@ class User extends CI_Controller {
 		$this->load->view('templates/footer', $data);
 	}
 
+	public function resend()
+	{
+		// prepare data to send to view
+		$data = array();
+
+		$data['title'] = 'Resend activation link';
+
+		// get email input from post
+		$email = $this->input->post('email');
+
+		if($email)
+		{
+			// get id from email
+			$id = $this->user_model->get_id($email);
+
+			// does the user exist?
+			if ($id)
+			{
+				// get user info from id
+				$user = $this->user_model->get_all_info($id);
+
+				// get new hash for user
+				$hash = $this->user_model->refresh_hash($email);
+
+				$this->email->from($this->config->item('noreply_mail'), $this->config->item('noreply_name'));
+				$this->email->to($email);
+
+				// set message and stuff, using the format_mail from common_helper
+				$message = '<p>
+								Hi '.$user['name'].',
+							</p>
+							<p>
+								We heard you needed a new activation link for your account. Here you go!
+							</p>
+							<p>
+								All you need to do is click this button and follow the instructions:
+								<a href="'.base_url().'user/activate/'.urlencode($email).'/'.$hash.'" class="button">Activate account!</a>
+							</p>
+							<p>
+								<small>
+									No button? Copy this link into you adress bar and hit enter:
+									'.base_url().'user/activate/'.urlencode($email).'/'.$hash.'
+								</small>
+							</p>
+							';
+				$sendthis = format_mail('Activate your account', $message);
+
+				$this->email->subject($this->config->item('mail_title').'Activate you Mote.fm account');
+				$this->email->message($sendthis);
+
+				// AWAY!
+				$this->email->send();
+
+				// debug
+				// echo $this->email->print_debugger();
+
+				$data['success'] = true;
+				$data['email'] = $user['email'];
+			}
+			else
+			{
+				$data['success'] = false;
+				$data['email'] = $email;
+			}
+		}
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('resend', $data);
+		$this->load->view('templates/footer', $data);
+	}
+
+
 	public function activate($email, $hashkey)
 	{
-		if (!($this->user_model->activate(urldecode($email), $hashkey)))
-		{
-			echo "Error";
-		}
-		else
-		{
-			echo "User activated";
-		}
+		$data = array();
+		$data['title'] = 'Activate account';
+
+		$data['success'] = $this->user_model->activate(urldecode($email), $hashkey);
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('activate', $data);
+		$this->load->view('templates/footer', $data);
 	}
 
 	public function changePassword()
