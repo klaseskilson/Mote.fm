@@ -1,8 +1,21 @@
+
 require([
   '$api/models',
   'scripts/jquery.min'
 ], function(models, jquery) {
   $(document).ready(function(){
+
+  	$.ajax({
+	 url: constants.SERVER_URL,
+	 cache: false,
+	 async : false,
+	 error: function(XMLHttpRequest, textStatus, errorThrown) {
+	       $('#loginstatus').html("Server connection is down. Unfortunatly you can't log in at this moment.");
+	        },
+	 success: function(html){
+	          // Server is up and running, hurray!
+	        }
+	});
 
 	//test if user already is in the session
 	if(sessionStorage.username !== undefined)
@@ -58,6 +71,7 @@ require([
 	});
 
   $('#submit').click(function() {
+  	console.log(situation);
     event.preventDefault();
      var $inputs = $('#login :input');
      var values = {};
@@ -69,8 +83,6 @@ require([
   	{
 
       $.post(constants.SERVER_URL + '/api/user/signin',values, function(data, textstatus)
-		// THIS IS FOR DANIEL
-      // $.post(constants.SERVER_URL + '/Hathor/api/user/signin',values, function(data, textstatus)
       { 
         var json = data;
         if(json.status == "success")
@@ -91,7 +103,29 @@ require([
   	else if(situation == "#signUp")
   	{
   		//TODO:Sign up 
-  		document.getElementById('xyz').innerHTML = "SIGN UP";
+  		// document.getElementById('xyz').innerHTML = "SIGN UP";
+  		$.post(constants.SERVER_URL + '/api/user/signUp',values, function(data, textstatus)
+		{ 
+			var json = data;
+			if(json.status == "success")
+			{
+				// Only login
+				sessionStorage.useremail = json.result.email;
+			  
+				$('#password').show({duration: 400, queue: false});
+				$('#name').hide({duration: 400, queue: false});
+				switchButtons('#signIn');
+				situation = "#signIn";
+				document.getElementById('submit').setAttribute('value', 'Sign in!');
+
+				$('#loginstatus').html("Congratulations! You are now a member of our family.");
+			}
+			else
+			{
+			  $('#loginstatus').html(json.status + ": " + json.response);
+			}
+
+		});
   	}
   	else if(situation == "#forgotPwd")
   	{

@@ -4,12 +4,13 @@ require([
 	'use strict';
 
 	var insertSongInfo = function(trackURI) {
+                console.log(trackURI.substr(14,36));
                 models.Track.fromURI(trackURI).load('name', 'artists').done(function(track) {
                         var id = 'songName';
-                        document.getElementById(trackURI.substr(15,36)).getElementsByClassName(id)[0].innerHTML = track.name.decodeForHtml();
+                        document.getElementById(trackURI.substr(14,36)).getElementsByClassName(id)[0].innerHTML = track.name.decodeForHtml();
                         var artist = models.Artist.fromURI(track.artists).load('name').done(function(artist) {
                                 id = 'songArtist';
-                                document.getElementById(trackURI.substr(15,36)).getElementsByClassName(id)[0].innerHTML = artist.name.decodeForHtml();
+                                document.getElementById(trackURI.substr(14,36)).getElementsByClassName(id)[0].innerHTML = artist.name.decodeForHtml();
                         });
                 });
         };

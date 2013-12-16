@@ -217,7 +217,7 @@ class Party_model extends CI_model
 
 			return false;
 		}
-		return array('voteid' => 'vote allready exists');
+		return array('voteid' => 'vote already exists');
 	}
 
 	function song_exists($partyid, $song)
@@ -331,6 +331,19 @@ class Party_model extends CI_model
 		if($query && $query->num_rows() > 0)
 			return $query->result_array();
 
+		return false;
+	}
+
+	function get_voters_from_song($songid)
+	{
+		$this->db->select('users.email, users.name, users.uid');
+		$this->db->from('quevote');
+		$this->db->join('users', 'quevote.uid = users.uid', 'left');
+		$this->db->where('quevote.songid', $songid);
+		$query = $this->db->get();
+
+		if($query && $query->num_rows() > 0)
+			return $query->result_array();
 		return false;
 	}
 }

@@ -1,7 +1,10 @@
 require([
 	'$api/models',
+	'$views/image#Image',
+	'scripts/cover',
+	'scripts/trackInfo',
 	'scripts/jquery.min'
-	], function(models, jquery){
+	], function(models, Image, cover, trackInfo, jquery){
 
 		var registerHathorQueueCallback = function(partyid, partyhash)
 		{
@@ -18,24 +21,31 @@ require([
 				}
 				else
 				{
+					//models.player.playTrack(models.Track.fromURI(data.result[0].uri));
+					console.log(data);
+					$('#queue').html("");
+					for(var i = 0; i < data.result.length; i++)
+					{
+						var track = data.result[i];
+						var section = '<div id="' + track.uri.substr(14,36) + '" class="track row">';  
+    					section += '<div class="cover"></div>';
+				    	section += '<div class="row trackmeta">';
+				    	section += '<div class="songName">';
+				    	section += '</div>';
+				    	section += '<div class="songArtist">';
+				    	section += '</div>';
+				    	section += '<div class="numberOfVotes"></div>';
+					    section += '<div class="delete glyphicon glyphicon-remove"></div>';
+					    section += '<div class="vote glyphicon glyphicon-chevron-up"></div>';
+					    section += '</div>';
+					    section += '</div>';
+					    $('#queue').append(section);
 
-					console.log(data);	
-					//store queuehash on localstorage
-					sessionStorage.queuehash = data.hash;
-		
-					//create a new temporary playlist to add queue to
-					models.Playlist.create("hathor").done(function(pl){
-							sessionStorage.playlist = pl;
-							pl.load("tracks").done(function(pl){
-								for(var i = 0; i < data.result.length; i++)
-								{
-									pl.tracks.add(models.Track.fromURI(data.result[i].uri));
-								}
-
-								//start playing!
-								models.player.playContext(pl);	
-							});
-						});
+					    cover.insertImage(track.uri);
+					    trackInfo.insertSongInfo(track.uri);
+					}
+					//store queuehash on sesionsstorage
+					sessionStorage.queuehash = data.hash;		
 				}
 				
 			});
@@ -45,7 +55,6 @@ require([
 		 * Register a callback to report playing song to Hathor server
 		 * @param  {[type]} partyID The partyID that the callback should relates to
 		 */
-		
 		var registerHathorCallback = function(partyID) {
 			models.player.addEventListener('change:index', function(stuff){
 				models.player.load('track').done(function(){
