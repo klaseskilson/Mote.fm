@@ -16,6 +16,7 @@ require([
 
   // Each track has ha vote. Here the id of the voter and
   // timestamp is stored in arrays.
+  
   function vote()
   {
     this.amount = 1;
@@ -165,12 +166,12 @@ require([
 
   var tracks = new Array(); // Initializes an array of spotify URIs
 
-  tracks[0] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
-  tracks[1] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
-  tracks[2] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
-  tracks[3] = new track('spotify:track:1r9mGafUiSgumJoRqyLrSt');
-  tracks[4] = new track('spotify:track:3YXUMVKfRy4mwPEAslWg1p');
-  tracks[5] = new track('spotify:track:2xaNOCsGBhFJ3bp6mvSqXz');
+  // tracks[0] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
+  // tracks[1] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
+  // tracks[2] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
+  // tracks[3] = new track('spotify:track:1r9mGafUiSgumJoRqyLrSt');
+  // tracks[4] = new track('spotify:track:3YXUMVKfRy4mwPEAslWg1p');
+  // tracks[5] = new track('spotify:track:2xaNOCsGBhFJ3bp6mvSqXz');
 
   // models.player.setShuffle(false);
   // models.player.setRepeat(false);
@@ -179,7 +180,7 @@ require([
     // document.getElementById('subheading').innerHTML = country.country.decodeForHtml();
   // });
 
-  listUpdate();
+  // listUpdate();
 
   // Funktion för att ta bort ett "Track"-elemnent
   // Att göra:
@@ -201,8 +202,9 @@ require([
     }
     // end of test
     var pos = $('.delete').index(this); // Wich position the clicked track is in
+
     var active = document.getElementsByClassName('track')[pos+1]; // Creates objects for easy and neat handling
-    
+
     var top = document.getElementsByClassName("trackmeta")[pos].offsetTop; // Gets the correct position for the buttons
     var left = document.getElementsByClassName("trackmeta")[pos].offsetLeft;
 
@@ -230,11 +232,6 @@ require([
 
     $(active).addClass('blur');
 
-    // if(pos == 0) // The first track row is a bit special
-    //   active.setAttribute('class', 'track row first blur');
-    // else
-    //   active.setAttribute('class', 'track row blur');    
-
     $(document).click(function(event) { // Activates when a click is done.
       if(event.target.className == "deleteCheck deleteActive") // Checks if the click was made on the deleteCheck button
       {
@@ -257,7 +254,6 @@ require([
     });
 
     console.log(pos+1);
-    
   });
 
 

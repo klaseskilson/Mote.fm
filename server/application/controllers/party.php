@@ -12,6 +12,7 @@ class Party extends CI_controller
 		if(!$this->login->is_logged_in())
 			redirect('/user/signin?redir='.urlencode(uri_string()));
 
+		$this->load->helper('external_spotify');
 		$this->load->model('party_model');
 	}
 
@@ -40,7 +41,7 @@ class Party extends CI_controller
 
 	function view($hash = '')
 	{
-		if(!$this->party_model->hash_exists($hash))
+		if($hash == '' || !$this->party_model->hash_exists($hash))
 		{
 			log_message('error', 'Party hash '.$hash.' returned 404.');
 			show_404();
@@ -54,7 +55,17 @@ class Party extends CI_controller
 		$data['user']['names'] = explode(" ", $data['user']['name']);
 
 		$data['party'] = $this->party_model->get_party_from_hash($hash);
-		$data['party_queue'] = $this->party_model->get_party_queue_from_hash($hash);
+
+		$queue =  $this->party_model->get_party_queue_from_hash($hash);
+
+		for($i = 0; $i < sizeof($queue); $i++)
+		{
+			$queue[$i]['artistname'] = get_artist_name($queue[$i]['uri']);
+			$queue[$i]['trackname'] = get_track_name($queue[$i]['uri']);
+			$queue[$i]['albumart'] = get_album_art($queue[$i]['uri']);
+			$queue[$i]['voters'] = $this->party_model->get_voters_from_song($queue[$i]['songid']);
+		}
+		$data['party_queue'] = $queue;
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('party', $data);

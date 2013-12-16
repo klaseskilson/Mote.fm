@@ -5,10 +5,14 @@
 				<h3>Welcome back, <?php echo $user['names'][0]; ?></h3>
 				<div class="row">
 					<div class="col-xs-4">
-						<?php
-							$gravatarMd5 = md5(strtolower($user['email']));
-							echo '<img src="http://www.gravatar.com/avatar/'.$gravatarMd5.'?s=600&d=mm" class="img-responsive img-circle" alt=""/>';
-						?>
+						<a href="<?php echo base_url().'user/profile/';?>" data-toggle="tooltip"
+							title="<span class='glyphicon glyphicon-cog'></span> Edit account">
+							<?php
+								$gravatarMd5 = md5(strtolower($user['email']));
+								echo '<img src="http://www.gravatar.com/avatar/'.$gravatarMd5.'?s=600&d=mm"
+									  class="img-responsive img-circle" alt="" />';
+							?>
+						</a>
 					</div>
 					<div class="col-xs-8">
 						<p>Name: <?php echo $user['name'] ?></p>

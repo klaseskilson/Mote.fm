@@ -24,12 +24,18 @@ class Party_model extends CI_model
 		if(!$this->user_model->user_exist($uid) && strlen($locale) !== 2)
 			return false;
 
+		$hash = strgen(5, true, false, true); // generate a 5 char long hash, ALPHAnumeric
+
+		// make sure we don't create dublicate hashes
+		while($this->hash_exists($hash))
+			$hash = strgen(5, true, false, true);
+
 		// save data into array
 		$data = array(
 					'uid' => $uid,
 					'name' => $name,
 					'locale' => $locale,
-					'hash' => strgen(5, true, false, true) // generate a 5 char long hash, ALPHAnumeric
+					'hash' => $hash
 				);
 
 		// insert data!
@@ -72,6 +78,9 @@ class Party_model extends CI_model
 	 */
 	function get_party_from_hash($partyhash)
 	{
+		if(strlen($partyhash) !== 5)
+			return false;
+
 		// select all columns from parties where partyid=$partyid
 		$this->db->select('*');
 		$this->db->where('hash', $partyhash);
@@ -79,14 +88,11 @@ class Party_model extends CI_model
 		// run query!
 		$query = $this->db->get('parties');
 		// query worked?
-		if($query)
+		if($query && $query->num_rows() > 0)
 		{
 			// return an array with the first row from the results
 			$result = $query->result_array();
-			if(sizeof($result) > 0)
-			{
-				return $result[0];
-			}
+			return $result[0];
 		}
 
 		// if we got this far, something went wrong
@@ -193,7 +199,7 @@ class Party_model extends CI_model
 
 		return false;
 	}
-	
+
 	/**
 	 * add vote to quevote table
 	 * @param 	int 	$songid the songid that is voted on
@@ -217,7 +223,7 @@ class Party_model extends CI_model
 
 			return false;
 		}
-		return array('voteid' => 'vote allready exists');
+		return array('voteid' => 'vote already exists');
 	}
 
 	function song_exists($partyid, $song)
@@ -331,6 +337,19 @@ class Party_model extends CI_model
 		if($query && $query->num_rows() > 0)
 			return $query->result_array();
 
+		return false;
+	}
+
+	function get_voters_from_song($songid)
+	{
+		$this->db->select('users.email, users.name, users.uid');
+		$this->db->from('quevote');
+		$this->db->join('users', 'quevote.uid = users.uid', 'left');
+		$this->db->where('quevote.songid', $songid);
+		$query = $this->db->get();
+
+		if($query && $query->num_rows() > 0)
+			return $query->result_array();
 		return false;
 	}
 }

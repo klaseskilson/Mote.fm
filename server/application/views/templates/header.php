@@ -43,7 +43,10 @@
 	</head>
 	<body<?php echo isset($bodystyle) ? ' class="'.$bodystyle.'"' : ''; ?>>
 		<!--[if lt IE 7]>
-			<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+			<p class="chromeframe">You are using an <strong>outdated</strong> browser.
+			Please <a href="http://browsehappy.com/">upgrade your browser</a> or
+			<a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a>
+			to improve your experience.</p>
 		<![endif]-->
 	<div id="container">
 		<header id="head">
@@ -66,7 +69,13 @@
 							{
 								$gravatarMd5 = md5(strtolower($user['email']));
 								?>
-								<li><a href="<?php echo base_url(); ?>user/profile"><img class="dashboardavatar" src="<?php echo "http://www.gravatar.com/avatar/$gravatarMd5?s=25&d=mm"?>" alt=""> <?php echo $user['name'];?></a></li>
+								<li>
+									<a href="<?php echo base_url(); ?>user/profile">
+										<img class="dashboardavatar img-circle"
+										src="<?php echo "http://www.gravatar.com/avatar/$gravatarMd5?s=25&d=mm"?>" alt="">
+										<?php echo $user['name'];?>
+									</a>
+								</li>
 								<li><a href="<?php echo base_url(); ?>party">Parties</a></li>
 								<li><a href="<?php echo base_url(); ?>about">About</a></li>
 								<li><a href="<?php echo base_url(); ?>user/signout">Sign out</a></li>
