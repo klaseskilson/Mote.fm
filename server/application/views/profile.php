@@ -73,6 +73,13 @@
 					<h3>
 						Email
 					</h3>
+					<?php
+					if(isset($errors) && isset($errors['email']) && $errors['email'])
+						echo '<div class="alert alert-danger">
+								<strong>POW!</strong> This email is not valid or allready used
+								by an other account.
+							</div>';
+					?>
 					<p>
 						Note: if you change your email adress, you'll need to confirm the new one.
 					</p>
@@ -86,7 +93,7 @@
 					<?php
 					if(isset($errors) && isset($errors['newpwd']) && $errors['newpwd'])
 						echo '<div class="alert alert-danger">
-								<strong>Snap!</strong> The passwords you entered don\'t match. Make sure
+								<strong>Snap!</strong> The passwords you entered don\'t match. Also, make sure
 								you choose a password longer than six characters.
 							</div>';
 					?>

@@ -43,6 +43,7 @@
 						</p>
 						<p>
 							<a href="<?php echo base_url().'user/signin';?>" data-toggle="reset">Sign in instead!</a>
+							<a href="<?php echo base_url().'user/resend';?>" class="pull-right">Need activation link?</a>
 						</p>
 					</form>
 					<?php
