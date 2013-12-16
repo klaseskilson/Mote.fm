@@ -27,7 +27,10 @@ require([
 					for(var i = 0; i < data.result.length; i++)
 					{
 						var track = data.result[i];
-						var section = '<div id="' + track.uri.substr(14,36) + '" class="track row">';  
+						if(i == 0)
+							var section = '<div id="' + track.uri.substr(14,36) + '" class="track row first">';
+						else
+							var section = '<div id="' + track.uri.substr(14,36) + '" class="track row">';  
     					section += '<div class="cover"></div>';
 				    	section += '<div class="row trackmeta">';
 				    	section += '<div class="songName">';

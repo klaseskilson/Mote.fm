@@ -128,64 +128,11 @@ require([
     }
   }
 
-  // var values = {};
-  // values["spotifyuri"] = "spotify:track:4qw6yAygswKYFsO5GMybWu";
-  // values["partyid"] = sessionStorage.partyId;
-  // values["uid"] = sessionStorage.uid;
-  // $.post(constants.SERVER_URL + '/api/party/add_song',values, function(data, textstatus)
-  // { 
-  //   var json = data;
-  //   if(json.status == "success")
-  //   {
-  //     console.log("song added");
-  //     var info = {};
-  //     info["partyid"] = sessionStorage.partyId;
-
-  //     $.post(constants.SERVER_URL + '/api/party/get_party_list',info, function(data, textstatus)
-  //     { 
-  //       var json = data;
-  //         console.log("get party");
-  //       if(json.status == "success")
-  //       {
-  //         for(var i = 0; i < json.size(); i++)
-  //         {
-  //           tracks[i] = new track(json.result.quesong[i]);
-  //         }
-  //       }
-  //       else
-  //       {
-  //         $('#createError').html(json.status + ": " + json.response);
-  //       }
-  //     });
-  //   }
-  //   else
-  //   {
-  //     console.log("song wasn't added");
-  //   }
-  // });
-
   var tracks = new Array(); // Initializes an array of spotify URIs
-
-  // tracks[0] = new track('spotify:track:4qw6yAygswKYFsO5GMybWu');
-  // tracks[1] = new track('spotify:track:3vS2Jsk6g4Y8QMFsYZXr3z');
-  // tracks[2] = new track('spotify:track:3zBgPi9s8iroxNQ5rNYeQR');
-  // tracks[3] = new track('spotify:track:1r9mGafUiSgumJoRqyLrSt');
-  // tracks[4] = new track('spotify:track:3YXUMVKfRy4mwPEAslWg1p');
-  // tracks[5] = new track('spotify:track:2xaNOCsGBhFJ3bp6mvSqXz');
-
-  // models.player.setShuffle(false);
-  // models.player.setRepeat(false);
-  // models.player.playContext(models.Track.fromURI('spotify:track:2xaNOCsGBhFJ3bp6mvSqXz'));
-  // var country = models.session.load('country').done(function(country){
-    // document.getElementById('subheading').innerHTML = country.country.decodeForHtml();
-  // });
-
-  // listUpdate();
 
   // Funktion för att ta bort ett "Track"-elemnent
   // Att göra:
-  // * Funktion som endast ska vara tillgänglig för
-  //   feststartaren.
+  // * ta bort i databasen
   $(document).on('click', '.delete', function() {
     // Simple test to clear other active deletions
     var trackLength = document.getElementsByClassName('track');
@@ -203,7 +150,7 @@ require([
     // end of test
     var pos = $('.delete').index(this); // Wich position the clicked track is in
 
-    var active = document.getElementsByClassName('track')[pos+1]; // Creates objects for easy and neat handling
+    var active = document.getElementsByClassName('track')[pos]; // Creates objects for easy and neat handling
 
     var top = document.getElementsByClassName("trackmeta")[pos].offsetTop; // Gets the correct position for the buttons
     var left = document.getElementsByClassName("trackmeta")[pos].offsetLeft;
@@ -236,11 +183,12 @@ require([
       if(event.target.className == "deleteCheck deleteActive") // Checks if the click was made on the deleteCheck button
       {
         $(active).hide({duration: 200, queue: true}, function() {
-         active.remove();
         });
-        if(pos == 0)
+        $(active).remove();
+        if($('.first').hasClass('blur'))
         {
-          document.getElementsByClassName('track')[1].setAttribute('class', 'track row first');
+          console.log('bajs');
+          $('.first').next().addClass('first');
         }
         $check.remove();
         $cancel.remove();
@@ -253,7 +201,7 @@ require([
       } 
     });
 
-    console.log(pos+1);
+    console.log(pos);
   });
 
 

@@ -119,7 +119,7 @@ html {
 }
 .blur
 {
-	-webkit-filter: blur(10px) !important;
+	-webkit-filter: blur(10px);
 	z-index: 0;
 }
 .deleteCheck, .deleteCancel
