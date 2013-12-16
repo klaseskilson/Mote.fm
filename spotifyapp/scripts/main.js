@@ -185,7 +185,6 @@ require([
   // Att göra:
   // * Funktion som endast ska vara tillgänglig för
   //   feststartaren.
-  var active;
   $(document).on('click', '.delete', function() {
     // Simple test to clear other active deletions
     var trackLength = document.getElementsByClassName('track');
@@ -202,7 +201,7 @@ require([
     }
     // end of test
     var pos = $('.delete').index(this); // Wich position the clicked track is in
-    active = document.getElementsByClassName('track')[pos+1]; // Creates objects for easy and neat handling
+    var active = document.getElementsByClassName('track')[pos+1]; // Creates objects for easy and neat handling
     
     var top = document.getElementsByClassName("trackmeta")[pos].offsetTop; // Gets the correct position for the buttons
     var left = document.getElementsByClassName("trackmeta")[pos].offsetLeft;
@@ -229,16 +228,23 @@ require([
                    'margin-left': w2
     });
 
-    if(pos == 0) // The first track row is a bit special
-      active.setAttribute('class', 'track row first blur');
-    else
-      active.setAttribute('class', 'track row blur');    
+    $(active).addClass('blur');
+
+    // if(pos == 0) // The first track row is a bit special
+    //   active.setAttribute('class', 'track row first blur');
+    // else
+    //   active.setAttribute('class', 'track row blur');    
 
     $(document).click(function(event) { // Activates when a click is done.
       if(event.target.className == "deleteCheck deleteActive") // Checks if the click was made on the deleteCheck button
       {
-        $(active).hide({duration: 200, queue: false});
-        active.remove();
+        $(active).hide({duration: 200, queue: true}, function() {
+         active.remove();
+        });
+        if(pos == 0)
+        {
+          document.getElementsByClassName('track')[1].setAttribute('class', 'track row first');
+        }
         $check.remove();
         $cancel.remove();
       }
