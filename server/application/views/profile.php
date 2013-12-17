@@ -8,19 +8,9 @@
 					</h1>
 				</div>
 			</div>
-
-		</div>
-		<div class="row">
-
-			<div class="col-sm-4">
-				<?php 
-					$gravatarMd5 = md5(strtolower($user['email']));
-					echo("<img src='http://www.gravatar.com/avatar/$gravatarMd5?s=200' width=200 alt=''/>");
-
 			<?php
 			if(isset($sent) && $sent)
 			{
-
 				?>
 				<div class="row">
 					<div class="col-sm-4 col-sm-offset-4">
