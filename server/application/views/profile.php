@@ -8,6 +8,7 @@
 			</div>
 		</div>
 		<div class="row">
+
 			<div class="col-sm-4">
 				<?php 
 					$gravatarMd5 = md5(strtolower($user['email']));

@@ -144,7 +144,7 @@ class User extends CI_Controller {
 		}
 
 	}
-	public function reset()
+	public function recover()
 	{
 		$email = $this->input->post('email');
 		$id = $this->user_model->get_id($email);
@@ -161,6 +161,7 @@ class User extends CI_Controller {
 	}
 	public function forgotPassword($email, $hash)
 	{
+
 		$newPassword = $this->input->post('newPassword');
 		$confirm = $this->input->post('confirm');
 		$id = $this->user_model->get_id($email);
@@ -194,6 +195,12 @@ class User extends CI_Controller {
 		$oldPassword = $this->input->post('oldPassword');
 		$newPassword = $this->input->post('newPassword');
 		$confirmPassword = $this->input->post('confirmPassword');
+		/*
+		$email = 'einars92@gmail.com';
+		$id = 8;
+		$oldPassword = 'penispenis';
+		$newPassword = 'penispenis1';
+		$confirmPassword = 'penispenis1';*/
 
 		if(!($this->user_model->update_password($id, $newPassword, $confirmPassword)))
 		{
