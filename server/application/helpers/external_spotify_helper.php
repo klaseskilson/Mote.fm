@@ -20,7 +20,14 @@
 
 		$json = json_decode($data);
 		$artists = $json->track->artists[0]->name;
-		return $artists;
+		if($artists)
+		{
+			return $artists;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/**
@@ -45,7 +52,15 @@
 		$error = curl_error($ch);
 		curl_close($ch);
 		$json = json_decode($data, true);
-		return $json['thumbnail_url'];
+		$url = $json['thumbnail_url'];
+		if($url)
+		{
+			return $url;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/**

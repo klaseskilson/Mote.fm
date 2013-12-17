@@ -1,8 +1,8 @@
 {
   "AppName": {
-	"en": "Hathor"
+	"en": "Mote.fm"
   },
-  "BundleIdentifier": "hathor",
+  "BundleIdentifier": "mote",
   "BundleType": "Application",
   "BundleVersion": "0.1",
   "Dependencies": {

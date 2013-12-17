@@ -24,12 +24,18 @@ class Party_model extends CI_model
 		if(!$this->user_model->user_exist($uid) && strlen($locale) !== 2)
 			return false;
 
+		$hash = strgen(5, true, false, true); // generate a 5 char long hash, ALPHAnumeric
+
+		// make sure we don't create dublicate hashes
+		while($this->hash_exists($hash))
+			$hash = strgen(5, true, false, true);
+
 		// save data into array
 		$data = array(
 					'uid' => $uid,
 					'name' => $name,
 					'locale' => $locale,
-					'hash' => strgen(5, true, false, true) // generate a 5 char long hash, ALPHAnumeric
+					'hash' => $hash
 				);
 
 		// insert data!
@@ -46,7 +52,8 @@ class Party_model extends CI_model
 	function get_party_from_id($partyid)
 	{
 		// select all columns from parties where partyid=$partyid
-		$this->db->select('*');
+		$this->db->select('*, users.name AS hostname, users.uid');
+		$this->db->join('users', 'users.uid = parties.uid', 'left');
 		$this->db->where('partyid', $partyid);
 		$this->db->limit(1);
 
@@ -72,24 +79,40 @@ class Party_model extends CI_model
 	 */
 	function get_party_from_hash($partyhash)
 	{
+		if(strlen($partyhash) !== 5)
+			return false;
+
 		// select all columns from parties where partyid=$partyid
-		$this->db->select('*');
+		$this->db->select('parties.*, users.name AS hostname, users.uid');
+		$this->db->join('users', 'users.uid = parties.uid', 'left');
 		$this->db->where('hash', $partyhash);
 
 		// run query!
 		$query = $this->db->get('parties');
 		// query worked?
-		if($query)
+		if($query && $query->num_rows() > 0)
 		{
 			// return an array with the first row from the results
 			$result = $query->result_array();
-			if(sizeof($result) > 0)
-			{
-				return $result[0];
-			}
+			return $result[0];
 		}
 
 		// if we got this far, something went wrong
+		return false;
+	}
+
+	function get_party_id_from_hash($hash)
+	{
+		$this->db->select('partyid');
+		$this->db->where('hash', $hash);
+		$query = $this->db->get('parties');
+
+		if($query && $query->num_rows() > 0)
+		{
+			$result = $query->result_array();
+			return $result[0]['partyid'];
+		}
+
 		return false;
 	}
 
@@ -110,21 +133,32 @@ class Party_model extends CI_model
 		return false;
 	}
 
-	function get_party_que($partyid)
+	function get_party_queue($partyid)
 	{
 		if(!$this->party_exists($partyid))
 			return false;
 
-		$this->db->select('quesong.*, COUNT(vote_id) AS vote_count');
+		$this->db->select('quesong.*, COUNT(voteid) AS vote_count');
 		$this->db->from('quesong');
+		$this->db->join('quevote', 'quesong.songid = quevote.songid');
 		$this->db->where('partyid', $partyid);
-		$this->db->join('quevote', 'quesong.songid = quevote.songid', 'left');
-		$this->db->group_by('quesong.songid');
+		$this->db->group_by('songid');
 		$this->db->order_by('vote_count desc, quesong.time');
 
 		$result = $this->db->get();
 
 		return $result->result_array();
+	}
+
+	function get_party_queue_from_hash($hash)
+	{
+		$partyid = $this->get_party_id_from_hash($hash);
+
+		// partyid = false if no party was found
+		if(!$partyid)
+			return $partyid;
+
+		return $this->get_party_queue($partyid);
 	}
 
 	function party_exists($partyid)
@@ -163,7 +197,7 @@ class Party_model extends CI_model
 				);
 
 		if($this->db->insert('quesong', $data))
-			return array('songid' => $this->db->insert_id());
+			return array('songid' => $this->db->insert_id(), 'voted' => $this->add_vote($this->db->insert_id(), $uid));
 
 		return false;
 	}
@@ -177,6 +211,7 @@ class Party_model extends CI_model
 	 */
 	function add_vote($songid, $uid)
 	{
+		//If user already have voted on song
 		if(!$this->vote_exists($uid, $songid))
 		{
 			$data = array(
@@ -190,7 +225,7 @@ class Party_model extends CI_model
 
 			return false;
 		}
-		return array('voteid' => 'vote allready exists');
+		return array('voteid' => 'vote already exists');
 	}
 
 	function song_exists($partyid, $song)
@@ -245,6 +280,98 @@ class Party_model extends CI_model
 
 		if($query) return $query->num_rows();
 
+		return false;
+	}
+
+	/**
+	 * get all parties from a specific user
+	 * @param  int $uid the user id
+	 * @return the parties, array
+	 */
+	function get_all_parties($uid)
+	{
+		$this->db->where('uid', $uid);
+		$this->db->order_by('time', 'desc');
+		$query = $this->db->get('parties');
+
+		// only return true if we have something to show
+		if($query && $query->num_rows() > 0)
+			return $query->result_array();
+
+		// return false
+		return false;
+	}
+
+	/**
+	 * check if it exists a party with a given hash
+	 * @param  string $hash the hash to search for
+	 * @return bool
+	 */
+	function hash_exists($hash)
+	{
+		$this->db->where('hash', $hash);
+		$this->db->limit(1);
+		$query = $this->db->get('parties');
+
+		if($query) return $query->num_rows();
+
+		return false;
+	}
+
+	/**
+	 * get parties the user contributed to, ie voted and added to
+	 * @param  [type] $uid [description]
+	 * @return [type]      [description]
+	 */
+	function contrib_parties($uid)
+	{
+		$this->db->distinct();
+		$this->db->select('quesong.partyid, parties.name, parties.hash, users.name AS hostname');
+		$this->db->from('quevote');
+		$this->db->join('quesong', 'quesong.songid = quevote.songid', 'left');
+		$this->db->join('parties', 'parties.partyid = quesong.partyid', 'left');
+		$this->db->join('users', 'users.uid = parties.uid', 'left');
+		$this->db->where('(quevote.uid = '.$uid.' OR quesong.uid = '.$uid.')');
+		// $this->db->or_where('quesong.uid', $uid);
+		$this->db->where('parties.uid !=', $uid);
+		$this->db->order_by('quevote.time');
+
+		$query = $this->db->get();
+
+		if($query && $query->num_rows() > 0)
+			return $query->result_array();
+
+		return false;
+	}
+
+	function get_voters_from_song($songid)
+	{
+		$this->db->select('users.email, users.name, users.uid');
+		$this->db->from('quevote');
+		$this->db->join('users', 'quevote.uid = users.uid', 'left');
+		$this->db->where('quevote.songid', $songid);
+		$query = $this->db->get();
+
+		if($query && $query->num_rows() > 0)
+			return $query->result_array();
+		return false;
+	}
+
+	function set_track_as_played($partyid, $trackuri)
+	{
+		
+		$data = array( 'played' => 1);
+		$this->db->where('partyid', $partyid);
+		$this->db->where('uri', $trackuri);
+
+		
+		$query = $this->db->update('quesong', $data);
+
+		if($query)
+		{
+			return $query;
+		}
+			
 		return false;
 	}
 }

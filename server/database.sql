@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS `quevote`;
 DROP TABLE IF EXISTS `quesong`;
 DROP TABLE IF EXISTS `parties`;
 DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `spotifycache`;
 
 CREATE TABLE IF NOT EXISTS `users` (
 	`uid` INT(6) NOT NULL AUTO_INCREMENT,
@@ -73,3 +74,14 @@ CREATE TABLE IF NOT EXISTS `nowplaying` (
 
 ALTER TABLE `nowplaying`
 	ADD CONSTRAINT `nowplaying_ibfk_1` FOREIGN KEY (`partyid`) REFERENCES `parties` (`partyid`);
+
+
+CREATE TABLE IF NOT EXISTS `spotifycache` (
+	`cacheid` INT(6) NOT NULL AUTO_INCREMENT,
+	`uri` CHAR(60) NOT NULL,
+	`songname` CHAR(250) NOT NULL,
+	`artistname` CHAR(250) NOT NULL,
+	`albumname` CHAR(250) NOT NULL,
+	`image` TEXT NOT NULL,
+	PRIMARY KEY(`cacheid`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;

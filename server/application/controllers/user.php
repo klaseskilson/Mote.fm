@@ -31,9 +31,194 @@ class User extends CI_Controller {
 
 	public function profile()
 	{
+		// get all user data!
 		$data = array();
 		$data['user'] = $this->login->get_all_info();
+		// set nice page title
 		$data['title'] = 'Edit profile';
+
+		$input = array(
+					'name' => $this->input->post('name'),
+					'email' => $this->input->post('email'),
+					'oldpwd' => $this->input->post('password'),
+					'new_password' => $this->input->post('new_password'),
+					'new_confirm' => $this->input->post('new_confirm')
+				 );
+
+		// save user id
+		$id = $this->login->get_id();
+
+		// is form sent?
+		if($input['oldpwd'])
+		{
+			// tell view we have tried to do something
+			$data['sent'] = true;
+
+			// is the confirmation pwd correct?
+			if($this->user_model->validate($data['user']['email'], $input['oldpwd']))
+			{
+				// prepare array to use to send informatino to view about what has been changed
+				$data['changes'] = array();
+
+				// should we update the password?
+				if(strlen($input['new_password']) > 0)
+				{
+					if($this->user_model->update_password($id, $input['new_password'], $input['new_confirm']))
+						$data['changes']['newpwd'] = true;
+					else
+						$data['errors']['newpwd'] = true;
+				}
+
+				// should we update the email?
+				if($input['email'] !== $data['user']['email'])
+				{
+
+					if(valid_email($input['email']) && !$this->user_model->email_exists($input['email']))
+					{
+						// update email
+						$emailhash = $this->user_model->update_email($id, $input['email']);
+
+						// se if it worked
+						if($emailhash)
+							$data['changes']['email'] = true;
+						else
+							$data['errors']['email'] = true;
+					}
+					else
+						$data['errors']['email'] = true;
+				}
+				// should we update the name?
+				if($input['name'] !== $data['user']['name'])
+				{
+					if(strlen($input['name']) > 1 && $this->user_model->update($id, array('name' => $input['name'])))
+						$data['changes']['name'] = true;
+					else
+						$data['errors']['name'] = true;
+				}
+
+				// prepare sending email!
+				if(count($data['changes']) > 0)
+				{
+					// update session storage
+					$this->login->refresh();
+					$data['newuser'] = $this->login->get_all_info();
+
+					// time to send a email to the user confirmig the changes!
+					// check what has been changed and add something about this to the email
+					$message = '';
+
+					if(isset($data['changes']['newpwd']) && $data['changes']['newpwd'])
+					{
+						$message .= '
+								<p>
+									Your password has been changed. If this wasn\'t done by you,
+									head over to <a href="'.base_url().'user/reset">this page</a>
+									to reclaim control over you account.
+								</p>';
+					}
+					if(isset($data['changes']['email']) && $data['changes']['email'])
+					{
+						$message .= '
+								<p>
+									The email adress linked to you account has been changed. Therefore,
+									you\'ll need to confirm your new email by clicking a link sent
+									to that email, '.$input['email'].'.
+								</p>';
+					}
+					if(isset($data['changes']['name']) && $data['changes']['name'])
+					{
+						$message .= '
+								<p>
+									The name related to you account has been changed.
+								</p>';
+					}
+
+					// set message and stuff, using the format_mail from common_helper
+					$message = '<p>
+									Hi '.$data['newuser']['name'].',
+								</p>
+								<p>
+									There has been some changes made to you account. Please review
+									them below and make sure that everything is in order.
+								</p>
+								'.$message.'
+								<p>
+									If you didn\'t make these changes and you don\'t know who did,
+									contact us immediately.
+								</p>
+								';
+					$sendthis = format_mail('Account changes', $message);
+
+					$this->email->from($this->config->item('noreply_mail'), $this->config->item('noreply_name'));
+					$this->email->to($data['user']['email']);
+
+					$this->email->subject($this->config->item('mail_title').'Changes were made to your Mote.fm account');
+					$this->email->message($sendthis);
+
+					// AWAY!
+					$this->email->send();
+
+					// debug
+					//echo $this->email->print_debugger();
+
+					// now, we'll check if we need to send the activation mail to the user once again
+					if(isset($data['changes']['email']) && $data['changes']['email'])
+					{
+						// clear email class before sending new email
+						$this->email->clear();
+
+						// prepare message
+						$message = '<p>
+									Hi '.$data['newuser']['name'].',
+								</p>
+								<p>
+									The email adress related to you account was just changed.
+									It used to be '.$data['user']['email'].', and was changed to
+									'.$data['newuser']['email'].'. We need you to confirm this
+									address.
+								</p>
+								<p>
+									All you need to do is click this button and follow the instructions:
+									<a href="'.base_url().'user/activate/'.urlencode($data['newuser']['email']).'/'.$emailhash.'"
+										class="button">Activate account!</a>
+								</p>
+								<p>
+									<small>
+										No button? Copy this link into you adress bar and hit enter:
+										'.base_url().'user/activate/'.urlencode($data['newuser']['email']).'/'.$emailhash.'
+									</small>
+								</p>
+								<p>
+									If you didn\'t make these changes and you don\'t know who did,
+									contact us immediately.
+								</p>';
+						$sendthis = format_mail('Confirm new email', $message);
+
+						// to/from prop
+						$this->email->from($this->config->item('noreply_mail'), $this->config->item('noreply_name'));
+						$this->email->to($data['newuser']['email']);
+
+						// set subject and message
+						$this->email->subject($this->config->item('mail_title').'Confirm your new email');
+						$this->email->message($sendthis);
+
+						// AWAY!
+						$this->email->send();
+						// debug
+						// echo $this->email->print_debugger();
+					}
+
+					// we no longer need old info from database, change it
+					$data['user'] = $data['newuser'];
+				}
+			}
+			else
+			{
+				$data['errors']['oldpwd'] = true;
+			}
+		}
+
+		$data['input'] = $input;
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('profile', $data);
@@ -42,14 +227,19 @@ class User extends CI_Controller {
 
 	public function signUp($method = 'web')
 	{
+		$data = array();
+
 		$name = $this->input->post('name');
 		$email = $this->input->post('email');
 		$password = $this->input->post('password');
 
-		// validate email using CI magic && try signup
-		if (valid_email($email) && $this->user_model->create_user($email, $name, $password))
+		if($name)
 		{
-			$this->login->validate($email, $password);
+			// validate email using CI magic && try signup
+			if (valid_email($email) && $this->user_model->create_user($email, $name, $password))
+			{
+				$this->login->validate($email, $password);
+
 
 
 
@@ -62,39 +252,48 @@ class User extends CI_Controller {
 			.base_url().'user/activate/'.urlencode($email).'/'.$hash);
 			$this->email->send();
 
-			// how do we want the response?
-			if($method == 'web') // WEB!
-			{
-				echo "Well done my kuk.";
+				// how do we want the response?
+				if($method == 'web') // WEB!
+				{
+					echo "Well done my kuk.";
+					echo $this->email->print_debugger();
+				}
+				elseif($method == 'json') // return with machine encoded json
+				{
+					$response = array(
+									'status' => 'success',
+									'maildebug' => $this->email->print_debugger()
+							   );
+					echo json_encode($response);
+				}
 			}
-			elseif($method == 'json') // return with machine encoded json
+			else // something wrong!
 			{
-				$response = array(
-								'status' => 'success'
-						   );
-				echo json_encode($response);
+				// how do we want the response?
+				if($method == 'web')
+				{
+					echo "ajaj";
+				}
+				elseif($method == 'json')
+				{
+					// return response using json! prepare data
+					$response = array(
+									'status' => 'error',
+									'errors' => array(
+													'name'	 => (strlen($name) > 2),
+													'email'	 => valid_email($email) && !$this->user_model->email_exists($email),
+													'password' => !(strlen($password) <= 6)
+												)
+							    );
+					echo json_encode($response);
+				}
 			}
-		}
-		else // something wrong!
+		} // if (name)
+		else
 		{
-			// how do we want the response?
-			if($method == 'web')
-			{
-				echo "ajaj";
-			}
-			elseif($method == 'json')
-			{
-				// return response using json! prepare data
-				$response = array(
-								'status' => 'error',
-								'errors' => array(
-												'name'	 => (strlen($name) > 2),
-												'email'	 => valid_email($email) && !$this->user_model->email_exists($email),
-												'password' => !(strlen($password) <= 6)
-											)
-						    );
-				echo json_encode($response);
-			}
+			$this->load->view('templates/header', $data);
+			$this->load->view('signup', $data);
+			$this->load->view('templates/footer', $data);
 		}
 	}
 
@@ -118,74 +317,231 @@ class User extends CI_Controller {
 			$email = $this->input->post('email');
 			$password = $this->input->post('password');
 
+			$logintry = $this->login->validate($email, $password);
+
 			// kolla inloggning mot login lib
-			if($this->login->validate($email, $password))
+			if(is_array($logintry))
+			{
+				// does the user need to activate it's account?
+				$data['activate'] = $logintry;
+			}
+			elseif($this->login->validate($email, $password))
 			{
 				redirect(urldecode($data['redir']), 'location');
+				die();
 			}
-			else
-			{
-				// ajaj, fel!
-				$data['title'] = 'Sign in!';
-				$data['email'] = $email;
 
-				$this->load->view('templates/header', $data);
-				$this->load->view('login', $data);
-				$this->load->view('templates/footer', $data);
-			}
-		}
-		else
-		{
-			$data['title'] = 'Sign in!';
+			// ajaj, fel!
+			$data['email'] = $email;
 
 			$this->load->view('templates/header', $data);
 			$this->load->view('login', $data);
 			$this->load->view('templates/footer', $data);
 		}
-
-	}
-	public function recover()
-	{
-		$email = $this->input->post('email');
-		$id = $this->user_model->get_id($email);
-
-		if ($this->user_model->user_exist($id))
+		else
 		{
+			$this->load->view('templates/header', $data);
+			$this->load->view('login', $data);
+			$this->load->view('templates/footer', $data);
+		}
+	}
+
+	public function reset()
+	{
+		// prepare data to send to view
+		$data = array();
+
+		$data['title'] = 'Reset password!';
+
+		// get email input from post
+		$email = $this->input->post('email');
+
+		if($email)
+		{
+
 			$hash = $this->user_model->reset($email);
 			$this->email->from('noreply@taketkvg.se', 'Einis');
 			$this->email->to($email);
 			$this->email->subject('Password reset');
 			$this->email->message('Fuck you. hathor.se/user/forgotPassword/'.$email.'/'.$hash);
 			$this->email->send();
+
+			// get id from email
+			$id = $this->user_model->get_id($email);
+			// get user info from id
+			$user = $this->user_model->get_all_info($id);
+
+			// did get_all_info return anything? proceed.
+			if ($id)
+			{
+				$hash = $this->user_model->reset($email);
+
+				$this->email->from($this->config->item('noreply_mail'), $this->config->item('noreply_name'));
+				$this->email->to($email);
+
+				// set message and stuff, using the format_mail from common_helper
+				$message = '<p>
+								Hi '.$user['name'].',
+							</p>
+							<p>
+								We heard you forgot your password, and therefore we prepared this awesome link for you, so that
+								you can reset it and access you account again. Nice, right?
+							</p>
+							<p>
+								All you need to do is click this button and follow the instructions:
+								<a href="'.base_url().'user/forgotpassword/'.urlencode($email).'/'.$hash.'" class="button">RESET PASSWORD!</a>
+							</p>
+							<p>
+								<small>
+									No button? Copy this link into you adress bar and hit enter:
+									'.base_url().'user/forgotpassword/'.urlencode($email).'/'.$hash.'
+								</small>
+							</p>
+							';
+				$sendthis = format_mail('Reset password', $message);
+
+				$this->email->subject($this->config->item('mail_title').'Reset password');
+				$this->email->message($sendthis);
+
+				// AWAY!
+				$this->email->send();
+
+				// debug
+				//echo $this->email->print_debugger();
+
+				$data['success'] = true;
+				$data['email'] = $user['email'];
+			}
+			else
+			{
+				$data['success'] = false;
+				$data['email'] = $email;
+
+			}
+
 		}
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('reset', $data);
+		$this->load->view('templates/footer', $data);
 	}
-	public function forgotPassword($email, $hash)
+
+	public function forgotpassword($email, $hash)
 	{
 
-		$newPassword = $this->input->post('newPassword');
-		$confirm = $this->input->post('confirm');
-		$id = $this->user_model->get_id($email);
+		// prepare data array
+		$data = array();
+		$data['email'] = urldecode($email);
+		$data['hash'] = $hash;
+		// get user id from user model using the validate_hash function
+		$id = $this->user_model->validate_hash(urldecode($email), $hash);
 
-		if(!($this->user_model->update_password($id, $newPassword, $confirm)))
+		$newPassword = $this->input->post('password');
+		$confirm = $this->input->post('confirm');
+
+		if($id)
 		{
-			echo "Something went wrong.";
+			if($newPassword && $newPassword == $confirm)
+			{
+				$data['success'] = $this->user_model->update_password($id, $newPassword, $confirm);
+			}
+			else
+			{
+				$data['success'] = false;
+			}
 		}
 		else
 		{
-			echo "Your password has been reset.";
+			$data['user'] = false;
 		}
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('forgotpassword', $data);
+		$this->load->view('templates/footer', $data);
 	}
+
+	public function resend()
+	{
+		// prepare data to send to view
+		$data = array();
+
+		$data['title'] = 'Resend activation link';
+
+		// get email input from post
+		$email = $this->input->post('email');
+
+		if($email)
+		{
+			// get id from email
+			$id = $this->user_model->get_id($email);
+
+			// does the user exist?
+			if ($id)
+			{
+				// get user info from id
+				$user = $this->user_model->get_all_info($id);
+
+				// get new hash for user
+				$hash = $this->user_model->refresh_hash($email);
+
+				$this->email->from($this->config->item('noreply_mail'), $this->config->item('noreply_name'));
+				$this->email->to($email);
+
+				// set message and stuff, using the format_mail from common_helper
+				$message = '<p>
+								Hi '.$user['name'].',
+							</p>
+							<p>
+								We heard you needed a new activation link for your account. Here you go!
+							</p>
+							<p>
+								All you need to do is click this button and follow the instructions:
+								<a href="'.base_url().'user/activate/'.urlencode($email).'/'.$hash.'" class="button">Activate account!</a>
+							</p>
+							<p>
+								<small>
+									No button? Copy this link into you adress bar and hit enter:
+									'.base_url().'user/activate/'.urlencode($email).'/'.$hash.'
+								</small>
+							</p>
+							';
+				$sendthis = format_mail('Activate your account', $message);
+
+				$this->email->subject($this->config->item('mail_title').'Activate you Mote.fm account');
+				$this->email->message($sendthis);
+
+				// AWAY!
+				$this->email->send();
+
+				// debug
+				// echo $this->email->print_debugger();
+
+				$data['success'] = true;
+				$data['email'] = $user['email'];
+			}
+			else
+			{
+				$data['success'] = false;
+				$data['email'] = $email;
+			}
+		}
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('resend', $data);
+		$this->load->view('templates/footer', $data);
+	}
+
 
 	public function activate($email, $hashkey)
 	{
-		if (!($this->user_model->activate(urldecode($email), $hashkey)))
-		{
-			echo "Error";
-		}
-		else
-		{
-			echo "User activated";
-		}
+		$data = array();
+		$data['title'] = 'Activate account';
+
+		$data['success'] = $this->user_model->activate(urldecode($email), $hashkey);
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('activate', $data);
+		$this->load->view('templates/footer', $data);
 	}
 
 	public function changePassword()

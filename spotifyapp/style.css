@@ -7,7 +7,7 @@ html {
 	float: left;
 	margin-top: 40px;
 	font-size: 40px;
-	width: 100%;
+	/*width: 100%;*/
 }
 .title
 {
@@ -17,10 +17,27 @@ html {
 }
 .partylinks
 {
-	margin-top: 60px;
+	margin-top: 52px;
+	margin-left: 18px;
 	float: right;
 	font-size: 25px;
 	cursor: pointer;
+	height: 25px;
+	color: #777;
+	font-size: 20px;
+}
+.partylinks:active, .partylinks:hover
+{
+	color: #777;
+	text-decoration: none;
+}
+.partyContainer
+{
+	margin-top: 5%;
+	height: 50%;
+	background-color: #E8E8E8;
+	padding-bottom: 30px;
+	border-radius: 10px;
 }
 .delete
 {
@@ -98,16 +115,17 @@ html {
 {
 	-webkit-transition:-webkit-filter 0.3s ease-in-out; 
 	-webkit-filter: blur(0px);
+	z-index: 1;
 }
 .blur
 {
-	-webkit-filter: blur(10px) !important;
+	-webkit-filter: blur(10px);
+	z-index: 0;
 }
 .deleteCheck, .deleteCancel
 {
 	position: absolute;
-	background-color: green;
-	width: 30px;
+	width: 50px;
 	height: 30px;
 	display: none;
 	float: right;
@@ -116,12 +134,20 @@ html {
 .deleteActive
 {
 	display: inline;
+	font-size: 15px;
+	font-weight: bold;
+	background-color: #FDDF4D;
+	border-radius: 3px;
+	padding-top: 5px;
+	padding-bottom: 15px;
+	padding-left: 2px;
+	z-index: 1;
 }
-.login
+.rounded
 {
-	margin-top: 15%;
+	margin-top: 30px;
 	height: 50%;
-	background-color: #E8E8E8;
+	background-color: #CEC0B3;
 	padding-bottom: 30px;
 	border-radius: 10px;
 }
@@ -144,4 +170,107 @@ html {
 {
 	float:right;
 	display: inline !important;
+}
+.landingContainer
+{
+	padding-top: 75px;
+} 
+.menuBtn
+{
+	bottom: 0;
+}
+.divider-horizontal
+{
+	width: 100%;
+	height: 2px;
+	background-color: #C7C7C7;
+}
+ul
+{
+	margin-left: -40px;
+}
+li
+{
+	margin-left: 0px;
+	list-style: none;
+	margin-bottom: 10px;
+}
+.pastParty
+{
+	cursor: pointer;
+}
+.navbar-default
+{
+	background-color: transparent;
+	border-color: transparent;
+}
+
+#footer
+{
+	background-color: #514E54;
+	color: #847f89;
+}
+#footer a
+{
+	color: #FDDF4D;
+}
+#footer h3
+{
+	font-size: 100%;
+	border-bottom: 1px solid #6a676e;
+	text-transform: uppercase;
+}
+@media only screen and (max-width: 992px) {
+	#partyNameForm
+	{
+		width: 60%;
+		float: left;
+	}
+	#submit
+	{
+		float: left;
+	}
+}
+@media only screen and (max-width: 800px) {
+	.partyTitle 
+	{ 
+		font-size:32px;
+		margin-top: 48px;
+	}
+	.partylinks
+	{
+		font-size: 18px;
+		margin-left: 10px;
+		margin-top: 54px;
+	}
+	.track>.cover>.sp-image
+	{
+		margin-left: 20px;
+	}
+	.first>.cover>.sp-image
+	{
+		width: 100%;
+		height: 100%;
+		max-width: 130px !important;
+		max-height: 130px !important;
+		margin-left: 0px;
+	}
+}  
+
+@media only screen and (max-width: 500px) {
+	.partyTitle
+	{
+		font-size:25px;
+		margin-top: 55px;
+	}
+	.partylinks
+	{
+		font-size: 14px;
+		margin-left: 7px;
+		margin-top: 58px;
+	}
+	.track>.cover>.sp-image
+	{
+		margin-left: 0px;
+	}
 }

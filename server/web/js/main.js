@@ -4,15 +4,75 @@ $(document).ready(function(){ // boring needed stuff
 		// $('body.fancypane #head').toggleClass('color', ($(this).scrollTop() > $(window).height()*0.1));
 	});
 
+	// nice scroll animation
 	$("a[href*=#]").click(function(e) {
 		e.preventDefault();
-		window.history.pushState("string", "Title", this.hash);
-		$("html, body").animate({ scrollTop: $(this.hash).offset().top }, 1000);
+		if(this.hash)
+		{
+			window.history.pushState("string", "Title", this.hash);
+			$("html, body").animate({ scrollTop: $(this.hash).offset().top }, 1000);
+		}
 	});
 
+	// nice fancy slide look when switching from sign in to sign up
+	$(document).on('click', 'a[data-toggle="signupsignin"]', function(e) {
+		e.preventDefault();
+		if($('#signinarea').is(':hidden'))
+		{
+			// change url!
+			window.history.pushState("string", "Title", BASE_URL+"user/signin");
+
+			// hide/show
+			$('#signuparea').slideUp('slow');
+			$('#signinarea').slideDown('slow', function(){
+				// focus on input field
+				$('#login_email').focus();
+			});
+		}
+		else
+		{
+			// change url!
+			window.history.pushState("string", "Title", BASE_URL+"user/signup/web");
+
+			// hide/show
+			$('#signinarea').slideUp('slow');
+			$('#signuparea').slideDown('slow', function(){
+				// focus on input field
+				$('#name').focus();
+			});
+		}
+	});
+
+	// password change from reset link, validation!
+	$('.newpwd input').on('input', function(){
+		// are the password inputs the same?
+		if($('input#newpwd_confirm').val() !== '' && $('input#newpwd_confirm').val() !== $('input#newpwd_password').val())
+		{
+			// show error message
+			if($(this).closest('.newpwd').children('.alert').is(':hidden'))
+				$(this).closest('.newpwd').children('.alert').slideDown('fast');
+
+			$('input#newpwd_submit').attr('disabled', true);
+		}
+		else
+		{
+			// hide error message!
+			$(this).closest('.newpwd').children('.alert').slideUp('fast');
+			$('input#newpwd_submit').attr('disabled',false);
+		}
+	});
+
+	// bootstrap tooltip hover thingy
+	$('*[data-toggle="tooltip"]').tooltip({html:true});
+	$('*[data-toggle="tooltip-bottom"]').tooltip({html:true, placement:'bottom'});
+
+	/**
+	 * when submitting signup!
+	 */
 	$('form#signupform').submit(function(event){
     	// prevent form from beeing sent
 		event.preventDefault();
+		$('button[type=submit], input[type=submit]').attr('disabled',true);
 		console.log("form sent, default prevented");
 
 		var postdata = {
@@ -22,10 +82,21 @@ $(document).ready(function(){ // boring needed stuff
 		};
 
 		// send postdata to server
-		$.post(BASE_URL + 'user/signup/json', postdata, function(data){
+		$.ajax({
+			type: "POST",
+			url: BASE_URL + 'user/signup/json',
+			data: postdata,
+			dataType: 'json'
+		})
+		.fail(function(errordata){
+			console.log(errordata.responseText);
+		})
+		.done(function(data){
+			console.log(data);
 			// what is the return message from server?
 			if(data.status === 'success')
 			{
+				console.log('Done!');
 				// tell the user about our success!
 				// change sign up title to something nice
 				$('#signuptitle').fadeOut('fast', function() {
@@ -33,7 +104,7 @@ $(document).ready(function(){ // boring needed stuff
 				});
 				// tell the user what to do now
 				$('#signuparea').fadeOut(function(){
-					$(this).html('<h3>You now have an acoount. <a href="'+BASE_URL+'">Continue!</a></h3><p>We sent an email to you confirming this. You\'ll need to activate your account by clicking the link in the email within three days.').fadeIn()
+					$(this).html('<h3>You now have an account. <a href="'+BASE_URL+'">Continue!</a></h3><p>We sent an email to you confirming this. You\'ll need to activate your account by clicking the link in the email within three days.').fadeIn()
 				});
 			}
 			else
@@ -43,13 +114,17 @@ $(document).ready(function(){ // boring needed stuff
 				// create an error div
 				var $errordiv = $("<div>", {id: "signuperror", class: "alert alert-danger"});
 				// prepend it to signup area
-				$errordiv.hide().prependTo('#signuparea');
+				console.log($('#signuparea h3').length);
+				if($('#signuparea h3').length > 0)
+					$errordiv.hide().insertAfter('#signuparea h3');
+				else
+					$errordiv.hide().prependTo('#signuparea');
 
 				// add common error message
 				$errordiv.append('<p><strong>Oh noes!</strong> There are some things you need to check before we continue.</p>');
 				// add specific error messages
 				if(!data.errors.email)
-					$errordiv.append('<p>There is something wrong with that email. Have you entered it correctly? Do you allready have an account, but <a href="'+BASE_URL+'user/recover">forgot your password</a>?</p>');
+					$errordiv.append('<p>There is something wrong with that email. Have you entered it correctly? Do you already have an account, but <a href="'+BASE_URL+'user/reset">forgot your password</a>?</p>');
 				if(!data.errors.name)
 					$errordiv.append('<p>That name is too short. We think you want at least two characters there.</p>');
 				if(!data.errors.password)
@@ -57,6 +132,7 @@ $(document).ready(function(){ // boring needed stuff
 
 				// show message
 				$errordiv.show();
+				$('button[type=submit], input[type=submit]').attr('disabled',false);
 			}
 		}, 'json');
 	});
