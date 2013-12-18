@@ -23,7 +23,22 @@ require([
 	  //if it is, no need to login again
 	  window.location.href = "landing.html";
 	}
+
 	})
+
+  	//Checks if the user has logged in or used the app within
+  	//the last 12 hours
+	var d = new Date();
+	if(localStorage.logintime > (d.getTime() - 43200000)) 
+	{
+		//if it is, no need to login again
+		localStorage.logintime = d.getTime();
+		sessionStorage.uid = localStorage.uid;
+		sessionStorage.useremail = localStorage.useremail;
+		sessionStorage.username = localStorage.username;
+		
+		window.location.href = "landing.html";	
+	}
 
 	var situation = "#signIn";
 
@@ -91,6 +106,13 @@ require([
           sessionStorage.uid = json.result.uid;
           sessionStorage.useremail = json.result.email;
           sessionStorage.username = json.result.name;
+
+          var d = new Date();
+          localStorage.logintime = d.getTime();
+          localStorage.uid = sessionStorage.uid;
+          localStorage.useremail = sessionStorage.useremail;
+          localStorage.username = sessionStorage.username;
+
           window.location.href = "landing.html";
         }
         else

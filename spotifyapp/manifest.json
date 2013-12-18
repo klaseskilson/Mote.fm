@@ -1,4 +1,11 @@
 {
+  "AppIcon": {
+    "18x18": "img/mote_18.png",
+    "32x32": "img/mote_32.png",
+    "64x64": "img/mote_64.png",
+    "128x128": "img/mote_128.png",
+    "300x300": "img/mote_300.png"
+  },
   "AppName": {
 	"en": "Mote.fm"
   },
