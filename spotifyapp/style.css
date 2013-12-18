@@ -220,17 +220,7 @@ li
 	border-bottom: 1px solid #6a676e;
 	text-transform: uppercase;
 }
-@media only screen and (max-width: 992px) {
-	#partyNameForm
-	{
-		width: 60%;
-		float: left;
-	}
-	#submit
-	{
-		float: left;
-	}
-}
+
 @media only screen and (max-width: 800px) {
 	.partyTitle 
 	{ 

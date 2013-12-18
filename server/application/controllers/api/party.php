@@ -395,4 +395,35 @@ class party extends CI_Controller {
 		}
 		echo json_encode($data);
 	}
+
+	/**
+	 * Flips all the 'played' values in the quesong database
+	 * @param  int $partyid partyid in database
+	 */
+	public function reset_playlist()
+	{
+		$data = array();
+		$partyid = $this->input->post('partyid');
+
+		if(!$partyid)
+		{
+			$data['status'] = 'error';
+			$data['response'] = 'partyid was not given';
+		}
+		else
+		{
+			$reset = $this->party_model->reset_playlist($partyid);
+			if($reset)
+			{
+				$data['status'] = 'success';
+				$data['result'] = $reset;
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'Error resetting playlist';
+			}
+		}
+		echo json_encode($data);
+	}
 }
