@@ -192,11 +192,12 @@ class party extends CI_Controller {
 			// wait for update!
 			while($this->party_model->check_if_latest($partyid, $time))
 			{
-				sleep(1);
+				sleep(2);
 
 				$counter++;
 
-				if($counter > 30)
+				// try checking for 30 seconds, then return error and require javascript to refres request
+				if($counter > 15)
 				{
 					$data['status'] = 'error';
 					$data['response'] = 'Party timed out.';
