@@ -5,148 +5,267 @@ require([
 	'scripts/trackInfo',
 	'scripts/jquery.min'
 	], function(models, Image, cover, trackInfo, jquery){
+		var time = 1;
 
-		var startParty = function(partyid, partyqueuehash)
+		/**
+		 * Called when party site is loaded, starts recursive ajaj and register switching of songs
+		 * @param  partyhash the hash of the party
+		 */
+		
+		var startParty = function(partyhash)
 		{
-			getPlaylist(partyid,partyqueuehash);
+			load_party(partyhash);
+			registerPlayback(partyhash);
 		}
-		var getPlaylist = function(partyid, partyqueuehash){
-			var postData = {
-				'partyid' : partyid,
-				'partyqueuehash' : partyqueuehash
-			}
 
-			$.post(constants.SERVER_URL + "/api/party/get_party_list", postData, function (data) {
-				if(data.status == 'error')
+		/**
+		 * Fills play queue with information that there are no songs at the party
+		 * @param  the object to fill
+		 */
+		function fill_empty(theobject)
+		{
+			theobject.slideUp('fast');
+
+			theobject.append('<p>This party seems to be empty! Add some songs straight away, and start dancing!</p>');
+
+			theobject.slideDown('fast');
+		}
+
+		/**
+		 * Fills play queue with information about queue
+		 * @param  the object to fill
+		 */
+		var redraw = function(queue, theobject)
+		{
+			if(Array.isArray(queue))
+			{
+				theobject.empty();
+				theobject.slideUp('fast');
+
+				for(var i = 0; i < queue.length; i++)
 				{
-					//something went wrong
-					console.log(data);	
-					playNextSong(partyid, sessionStorage.queuehash, false);	
+					var song = queue[i];
+					var img = cover.insertImage(song.uri);
+					var $section = $('<div></div>').addClass('row').attr('id', song.uri.substr(14,36));
+					$('<div></div>').addClass('col-xs-4 col-sm-3').appendTo($section);
+					
+					var $middlecolon = $('<div></div>').addClass('col-xs-8 col-sm-5').appendTo($section);
+					$('<div></div>').addClass('hidden-xs').appendTo($middlecolon)
+					.append('<h3>'+song.songname+'</h3>')
+					.append('<h4>'+song.artistname+'</h4>')
+
+					var $xscontent = $('<div></div>').addClass('visible-xs').appendTo($middlecolon)
+					.append('<h4>'+song.songname+'</h4>')
+					.append('<h5>'+song.artistname+'</h5>')
+					
+					$('<h5></h5>').appendTo($xscontent)
+					.append(' <span><strong>'+song.vote_count+'</strong> '+(song.vote_count == 1 ? 'vote' : 'votes' )+'</span>');
+					var $rightcolon = $('<div></div>').addClass('col-sm-4 hidden-xs').appendTo($section);
+					$rightcolon.append('<h3></h3>').children('h3')
+
+					.append('<span><strong>'+song.vote_count+'</strong> '+(song.vote_count == 1 ? 'vote' : 'votes' )+'</span> ');
+					var thevoters = song.voters;
+					var $images = $('<div></div>').appendTo($rightcolon);
+
+					for(var k = 0; k < thevoters.length; k++)
+					{
+						$('<img class="img-circle">').appendTo($images)
+							.attr('src', 'http://www.gravatar.com/avatar/' + song.voters[k].mailhash + '?s=25&d=mm')
+							.attr('alt', song.voters[k].name)
+							.attr('title', song.voters[k].name)
+							.attr('data-toggle', 'tooltip');
+					}
+
+					if(song.played == "1")
+					{
+						$section.css('background-color', '#878A75');
+						$('#pastqueue').append($section);
+					}
+					else
+					{
+						theobject.append($section);	
+					}
+					
+					cover.insertImage(song.uri);
+				}
+
+				theobject.slideDown('slow');
+			}
+		}
+
+		/**
+		 * ajaj loop to get partqueue
+		 * @param  partyhash the hash of the party
+		 * @param  recursive this flag is used to avoid double recursive when
+		 *         we want to get the playlist directly, like at a playlist reset.
+		 */
+		var load_party = function(partyhash, recursive){
+
+			recursive = typeof recursive !== 'undefined' ? recursive : true;
+			var postData = {
+				'time' : time,
+				'partyhash' : partyhash
+			}
+			time = Math.floor(new Date().getTime() / 1000);
+			$.ajax({
+				type: "POST",
+				url: constants.SERVER_URL + "/api/party/load_party",
+				data: postData, 
+				dataType: 'json'
+			})
+			.fail(function(data) {
+				console.log(errordata.responseText);
+			})
+			.done(function(answer){
+				if(answer.status === 'success')
+				{
+					redraw(answer.response.result, $('#queue'));
+					playNextSong(partyhash);					
+				}
+				else if(answer.status === 'empty')
+				{
+					console.log('No songs found');
+					fill_empty($('#queue'));
 				}
 				else
 				{
-					if(data.result.length == 0)
-					{
-						//divs doesnt work here?!
-						$('#queue').html("<div class='track row'>No songs at party, what a boring party!</div>");
-						resetPlaylist(partyid);
-						
-						return;
-					}
-					$('#queue').html("");
-					for(var i = 0; i < data.result.length; i++)
-					{
-						var track = data.result[i];
-						if(i == 0)
-							var section = '<div id="' + track.uri.substr(14,36) + '" class="track row first">';
-						else
-							var section = '<div id="' + track.uri.substr(14,36) + '" class="track row">';
-    					section += '<div class="cover"></div>';
-				    	section += '<div class="row trackmeta">';
-				    	section += '<div class="songName">';
-				    	section += '</div>';
-				    	section += '<div class="songArtist">';
-				    	section += '</div>';
-				    	section += '<div class="numberOfVotes">'+ track.vote_count + '</div>';
-				    	section += '<div class="voters">';
-				    	for(var j = 0; j < track.voter.length; j++)
-				    	{
-				    		var voter = track.voter[j];
-				    		var gravatarurl = 'http://www.gravatar.com/avatar/' + voter.email + '?s=25&d=mm"';
-				    		section+= '<img src="'+ gravatarurl + '"alt="' + voter.name + '" title="'+ voter.name + '">';
-				    	}
-
-				    	section += '</div>';
-					    section += '<div class="delete glyphicon glyphicon-remove"></div>';
-					    section += '<div class="vote glyphicon glyphicon-chevron-up"></div>';
-					    section += '</div>';
-					    section += '</div>';
-					    $('#queue').append(section);
-
-					    cover.insertImage(track.uri);
-					    trackInfo.insertSongInfo(track.uri);
-					}
-					//store queuehash on sesionsstorage
-					sessionStorage.queuehash = data.hash;	
-					playNextSong(partyid, sessionStorage.queuehash, true);	
+					console.log('failed');
+					console.log(answer);
+					
 				}
-				
+				if(recursive)
+				{
+					load_party(partyhash, recursive);
+				}
 			});
 		}
+
 		/**
 		 * Will play next song in the queue list
 		 */
-		var playNextSong = function(partyid, partyhash, playlistchanged)
+		var playNextSong = function(partyhash)
 		{
-			if(!playlistchanged)
-			{
-				$('#queue').children('div')[0].remove();							
-			}
-			if($('#queue').children('div').length != 0)
-			{
-				var child = $('#queue').children('div')[0];
-				var track = child.id;
-				$('#queue').children('div').eq(0).css('background-color', '#CEC0B3');
-					
-				track = 'spotify:track:' + track;
-				var spTrack = models.Track.fromURI(track);
-				models.player.playTrack(spTrack);
-				registerSong(partyid);
-				
-				spTrack.load('duration').done(function(spTrack){
-					setTimeout(function(){
-						getPlaylist(partyid, partyhash);												
-					},  spTrack.duration);
-				});
-			}
-			else
-			{
-				console.log("no tracks!!");
-				resetPlaylist(partyid);
-			}
+            if($('#queue').children('div').length != 0)
+            {
+                    var child = $('#queue').children('div')[0];
+                    var track = child.id;
+                    $('#queue').children('div').eq(0).css('background-color', '#CEC0B3');
+                            
+                    track = 'spotify:track:' + track;
+                    var spTrack = models.Track.fromURI(track);
+                    models.player.playTrack(spTrack);
+                    registerSong(partyhash);
+            }
+            else
+            {
+                    console.log("no tracks!!");
+                    $('#pastqueue').empty();
+                    resetPlaylist(partyhash);
+            }
 		}
 
-		var resetPlaylist = function(partyid){
+		/**
+		 * Remove played song from queue
+		 */
+		var removeSong = function()
+		{
+			$('#queue').children('div').eq(0).css('background-color', '#878A75');
+			$('#pastqueue').prepend($('#queue').children('div').eq(0));
+		}
+
+		/**
+		 * checks if spotify start or stops playing. If track is null, then a song
+		 * has finished playing, if track is not null, user paused the track.
+		 * @param  partyhash the hash of the party
+		 */
+		var registerPlayback = function(partyhash)
+		{
+			models.player.addEventListener('change:playing', function(data)
+			{
+				models.player.load('track').done(function(){
+					if(models.player.track)
+					{
+						console.log("report played")
+						console.log(models.player.track.uri);
+						setAsPlayed(partyhash, models.player.track.uri);
+					}
+					setTimeout(function() {
+						if(!models.player.track)
+						{
+							console.log(models.player.track);
+							removeSong();
+							playNextSong(partyhash);						
+						}
+						else
+						{
+							console.log("report start")
+							console.log(models.player.track.uri);
+							registerSong(partyhash);
+						}
+					}, 1); // <--- lol @ spotify
+				});
+			});
+		}
+
+		/**
+		 * Resets the playlist server-side, the queue will start from the beginning again
+		 * @param  partyhash the hash of the party
+		 */
+		var resetPlaylist = function(partyhash){
 			var post = {
-				'partyid' : partyid
+				'partyhash' : partyhash
 			}
 			$.post(constants.SERVER_URL + '/api/party/reset_playlist', post, function (data){
 				console.log("restarting playlist");
 				if(data.status == "error")
 				{
-					//longpolling here!
-					console.log("long polling!");
+					console.log(data);
+					console.log("Playlist empty!!");
 				}
 				else
 				{
-					getPlaylist(partyid,sessionStorage.queuehash);
+					time = 1;
+					load_party(partyhash,false);
 				}
 			});
 		}
 
 		/**
-		 * Register a callback to report playing song to Hathor server
-		 * @param  {[type]} partyID The partyID that the callback should relates to
+		 *  report playing song to mote.fm server
+		 * @param  partyhash the hash of the party
 		 */
-		var registerSong = function(partyID) {
-				models.player.load('track').done(function(){
+		var registerSong = function(partyhash) {
+			models.player.load('track').done(function(){
 
-					//Spotify is a retard, we have to wait one second to get correct song
-					setTimeout(function() { 
+				//Spotify is a retard, we have to wait one second to get correct song
+				setTimeout(function() { 
 
-						var musicTrack = {
-							'partyid' : 0,
-							'trackuri' : ''
-						}
+					var musicTrack = {
+						'partyhash' : partyhash,
+						'trackuri' : ''
+					}
 
-						var track = models.player.track;
-
-						musicTrack.partyid = partyID;
+					var track = models.player.track;
+					if(track)
+					{
 						musicTrack.trackuri = track.uri;
 						$.post(constants.SERVER_URL + '/api/party/spotify_song', musicTrack , function (data) {
-							console.log(data);
+							//console.log(data);
 						});
-					}, 1000);
+					}
+				}, 1000);
+			});
+		}
+
+		var setAsPlayed = function(partyhash, trackURI)
+		{
+			var musicTrack = {
+				'partyhash' : partyhash,
+				'trackuri' : trackURI
+					}
+
+				$.post(constants.SERVER_URL + '/api/party/set_song_as_played', musicTrack , function (data) {
+					console.log(data);
 				});
 		}
 		exports.startParty = startParty;

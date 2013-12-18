@@ -52,7 +52,7 @@ class Party_model extends CI_model
 	function get_party_from_id($partyid)
 	{
 		// select all columns from parties where partyid=$partyid
-		$this->db->select('*, users.name AS hostname, users.uid');
+		$this->db->select('parties.*, users.name AS hostname, users.uid');
 		$this->db->join('users', 'users.uid = parties.uid', 'left');
 		$this->db->where('partyid', $partyid);
 		$this->db->limit(1);

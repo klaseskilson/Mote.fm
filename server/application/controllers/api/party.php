@@ -265,6 +265,7 @@ class party extends CI_Controller {
 		echo json_encode($data);
 	}
 
+
 	/**
 	 * Post playing song in spotify at the party
 	 */
@@ -274,10 +275,11 @@ class party extends CI_Controller {
 		$data = array();
 
 		//get Post data
-		$partyid = $this->input->post('partyid');
+		$partyhash = $this->input->post('partyhash');
 		$trackuri = $this->input->post('trackuri');
 
-		if(!$partyid || !$trackuri)
+		$partyid = $this->party_model->get_party_id_from_hash($partyhash); 
+		if(!$partyhash || !$trackuri)
 		{
 			$data['status'] = 'error';
 			$data['response'] = 'Missing post data, Not all needed fields were sent';
@@ -294,78 +296,109 @@ class party extends CI_Controller {
 
 			$data['status'] = 'success';
 			$data['result'] = $query;
-
-			$data['vote'] = $this->party_model->set_track_as_played($partyid, $trackuri);
 		}
 
 		echo json_encode($data);
 	}
 
-	/**
-	 * get the playlist for the party
-	 */
-	public function get_party_list()
+	public function set_song_as_played()
 	{
-		$partyid = $this->input->post('partyid');
-		$partyqueuehash = $this->input->post('partyqueuehash');
+		//prepare data
 		$data = array();
 
-		if(!$partyid)
+		//get Post data
+		$partyhash = $this->input->post('partyhash');
+		$trackuri = $this->input->post('trackuri');
+		if(!$partyhash || !$trackuri)
 		{
 			$data['status'] = 'error';
-			$data['response'] = 'Missing post data, Not all needed fields were sent';
-		}
-		elseif(!$this->party_model->party_exists($partyid))
-		{
-			$data['status'] = 'error';
-			$data['response'] = 'Party not found';
+			$data['response'] = 'missing post data';
 		}
 		else
 		{
-			$queue = $this->party_model->get_party_queue($partyid);
-			$hashdata = array();
-			$hashdata['partyid'] = $partyid;
-			$hashdata['songcount'] = sizeof($queue);
-			$hashdata['votecount'] = 0;
-			for($i = 0; $i < sizeof($queue); $i++)
+			$partyid = $this->party_model->get_party_id_from_hash($partyhash); 
+			if($partyid)
 			{
-				$hashdata['votecount'] += sizeof($this->party_model->get_voters_from_song($queue[$i]['songid']));
-				if($queue[$i]['played'] == 1)
-				{
-					array_splice($queue, $i, 1);
-					$i--;
-				}
-			}
-			for($i = 0; $i < sizeof($queue); $i++)
-			{
-				$voters = $this->party_model->get_voters_from_song($queue[$i]['songid']);
-				for($j = 0; $j < sizeof($voters); $j++)
-				{
-					//we md5hash it here since we cant do it easy in javascript
-					$voters[$j]['email'] = md5(strtolower($voters[$j]['email']));
-				}
-				$queue[$i]['voter'] = $voters;
-			}
-
-			$data['hashdata'] = $hashdata;
-			$queuehash = md5(serialize($hashdata));
-			// $queuehash = md5(serialize($queue));
-
-			if($queuehash == $partyqueuehash)
-			{
-				$data['status'] = 'error';
-				$data['result'] = 'No need to update the queue, its the same!';
+				$data['status'] = 'success';
+				$data['result'] = $this->party_model->set_track_as_played($partyid, $trackuri);
 			}
 			else
 			{
-				$data['status'] = 'success';
-				$data['result'] = $queue;
-			}
-			$data['hash'] = $queuehash;
-
+				$data['status'] = 'error';
+				$data['response'] = 'no such party';
+			}	
 		}
+		echo json_encode($data);
+	}
 
-		// write array json encoded
+	/**
+	 * get the playlist for the party - obsolete use load party
+	 */
+	public function get_party_list()
+	{
+		$data = array();
+		$data['status'] = 'error';
+		$data['response'] = 'obsolete function, use load_party';
+	// 	$partyid = $this->input->post('partyid');
+	// 	$partyqueuehash = $this->input->post('partyqueuehash');
+	// 	$data = array();
+
+	// 	if(!$partyid)
+	// 	{
+	// 		$data['status'] = 'error';
+	// 		$data['response'] = 'Missing post data, Not all needed fields were sent';
+	// 	}
+	// 	elseif(!$this->party_model->party_exists($partyid))
+	// 	{
+	// 		$data['status'] = 'error';
+	// 		$data['response'] = 'Party not found';
+	// 	}
+	// 	else
+	// 	{
+	// 		$queue = $this->party_model->get_party_queue($partyid);
+	// 		$hashdata = array();
+	// 		$hashdata['partyid'] = $partyid;
+	// 		$hashdata['songcount'] = sizeof($queue);
+	// 		$hashdata['votecount'] = 0;
+	// 		for($i = 0; $i < sizeof($queue); $i++)
+	// 		{
+	// 			$hashdata['votecount'] += sizeof($this->party_model->get_voters_from_song($queue[$i]['songid']));
+	// 			if($queue[$i]['played'] == 1)
+	// 			{
+	// 				array_splice($queue, $i, 1);
+	// 				$i--;
+	// 			}
+	// 		}
+	// 		for($i = 0; $i < sizeof($queue); $i++)
+	// 		{
+	// 			$voters = $this->party_model->get_voters_from_song($queue[$i]['songid']);
+	// 			for($j = 0; $j < sizeof($voters); $j++)
+	// 			{
+	// 				//we md5hash it here since we cant do it easy in javascript
+	// 				$voters[$j]['email'] = md5(strtolower($voters[$j]['email']));
+	// 			}
+	// 			$queue[$i]['voter'] = $voters;
+	// 		}
+
+	// 		$data['hashdata'] = $hashdata;
+	// 		$queuehash = md5(serialize($hashdata));
+	// 		// $queuehash = md5(serialize($queue));
+
+	// 		if($queuehash == $partyqueuehash)
+	// 		{
+	// 			$data['status'] = 'error';
+	// 			$data['result'] = 'No need to update the queue, its the same!';
+	// 		}
+	// 		else
+	// 		{
+	// 			$data['status'] = 'success';
+	// 			$data['result'] = $queue;
+	// 		}
+	// 		$data['hash'] = $queuehash;
+
+	// 	}
+
+	// 	// write array json encoded
 		echo json_encode($data);
 	}
 
@@ -501,12 +534,13 @@ class party extends CI_Controller {
 	public function reset_playlist()
 	{
 		$data = array();
-		$partyid = $this->input->post('partyid');
+		$partyhash = $this->input->post('partyhash');
+		$partyid = $this->party_model->get_party_id_from_hash($partyhash);
 
-		if(!$partyid)
+		if(!$partyhash)
 		{
 			$data['status'] = 'error';
-			$data['response'] = 'partyid was not given';
+			$data['response'] = 'partyhash was not given';
 		}
 		else
 		{
