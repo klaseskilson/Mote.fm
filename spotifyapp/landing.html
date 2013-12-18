@@ -54,11 +54,12 @@
         {
             margin-bottom: 20px;
         }
-        #pastPartyCol
-        {
-            padding: 10px;
-        }        
-
+        @media only screen and (max-width: 768px) {
+            .partiesContainer
+            {
+                margin-top: 40px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -97,11 +98,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6" id="pastPartyCol">
-                        <h3 class="contentTitle">Past parties</h3>
-                        <ul id="pastParties">
-                        </ul>
-                    </div>
+                </div>
+                <div class="col-md-4 partiesContainer">
+                    <h3 class="contentTitle">Past parties</h3>
+                    <ul id="pastParties">
+                    </ul id="pastParties"> 
                 </div>
             </div>
         </div>

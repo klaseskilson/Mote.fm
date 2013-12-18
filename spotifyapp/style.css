@@ -105,8 +105,10 @@ html {
 {
 	font-size: 14px;
 	font-weight: bold;
+	width: auto;
+	
 }
-.first>.trackmeta>.songName
+.first>#trackmeta>.row>#trackText>.row>#title>.songName
 {
 	font-size: 30px;
 	padding-bottom: 10px;
@@ -204,7 +206,20 @@ li
 	background-color: transparent;
 	border-color: transparent;
 }
-
+.votes
+{
+	margin-top: 10px;
+}
+.numberOfVotes
+{
+	float: right;
+	width: 25px;
+	text-align: center;
+}
+.voters
+{
+	float: right;
+}
 #footer
 {
 	background-color: #514E54;
