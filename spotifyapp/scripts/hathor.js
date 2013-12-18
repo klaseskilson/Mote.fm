@@ -56,11 +56,13 @@ require([
 					var $middlecolon = $('<div></div>').addClass('col-xs-8 col-sm-5').appendTo($section);
 					$('<div></div>').addClass('hidden-xs').appendTo($middlecolon)
 					.append('<h3>'+song.songname+'</h3>')
-					.append('<h4>'+song.artistname+'</h4>');
-					
+					.append('<h4>'+song.artistname+'</h4>')
+					.append('<h6>'+song.uri+'</h6>');
+
 					var $xscontent = $('<div></div>').addClass('visible-xs').appendTo($middlecolon)
 					.append('<h4>'+song.songname+'</h4>')
-					.append('<h5>'+song.artistname+'</h5>');
+					.append('<h5>'+song.artistname+'</h5>')
+					.append('<h6>'+song.uri+'</h6>');
 					$('<h5></h5>').appendTo($xscontent)
 					.append(' <span><strong>'+song.vote_count+'</strong> '+(song.vote_count == 1 ? 'vote' : 'votes' )+'</span>');
 					var $rightcolon = $('<div></div>').addClass('col-sm-4 hidden-xs').appendTo($section);
@@ -175,8 +177,16 @@ require([
 		{
 			models.player.addEventListener('change:playing', function(data)
 			{
-				models.player.load('track').done(function(){	
-					setTimeout(function() { 
+				models.player.load('track').done(function(){
+					if(!models.player.track)
+					{
+						console.log(models.player.track.uri);
+					}
+					else
+					{
+						console.log(models.player.track);
+					}
+					setTimeout(function() {
 						if(!models.player.track)
 						{
 							removeSong();
@@ -230,7 +240,7 @@ require([
 					{
 						musicTrack.trackuri = track.uri;
 						$.post(constants.SERVER_URL + '/api/party/spotify_song', musicTrack , function (data) {
-							console.log(data);
+							//console.log(data);
 						});
 					}
 				}, 1000);
