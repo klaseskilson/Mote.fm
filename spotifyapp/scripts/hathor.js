@@ -178,19 +178,24 @@ require([
 			models.player.addEventListener('change:playing', function(data)
 			{
 				models.player.load('track').done(function(){
-					if(!models.player.track)
+					if(models.player.track)
 					{
+						console.log("report played")
 						console.log(models.player.track.uri);
-					}
-					else
-					{
-						console.log(models.player.track);
+						setAsPlayed(partyhash, models.player.track.uri);
 					}
 					setTimeout(function() {
 						if(!models.player.track)
 						{
+							console.log(models.player.track);
 							removeSong();
-							playNextSong(partyhash);							
+							playNextSong(partyhash);						
+						}
+						else
+						{
+							console.log("report start")
+							console.log(models.player.track.uri);
+							registerSong(partyhash);
 						}
 					}, 1); // <--- lol @ spotify
 				});
@@ -245,6 +250,18 @@ require([
 					}
 				}, 1000);
 			});
+		}
+
+		var setAsPlayed = function(partyhash, trackURI)
+		{
+			var musicTrack = {
+				'partyhash' : partyhash,
+				'trackuri' : trackURI
+					}
+
+				$.post(constants.SERVER_URL + '/api/party/set_song_as_played', musicTrack , function (data) {
+					console.log(data);
+				});
 		}
 		exports.startParty = startParty;
 	});

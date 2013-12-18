@@ -295,10 +295,38 @@ class party extends CI_Controller {
 
 			$data['status'] = 'success';
 			$data['result'] = $query;
-
-			$data['vote'] = $this->party_model->set_track_as_played($partyid, $trackuri);
 		}
 
+		echo json_encode($data);
+	}
+
+	public function set_song_as_played()
+	{
+		//prepare data
+		$data = array();
+
+		//get Post data
+		$partyhash = $this->input->post('partyhash');
+		$trackuri = $this->input->post('trackuri');
+		if(!$partyhash || !$trackuri)
+		{
+			$data['status'] = 'error';
+			$data['response'] = 'missing post data';
+		}
+		else
+		{
+			$partyid = $this->party_model->get_party_id_from_hash($partyhash); 
+			if($partyid)
+			{
+				$data['status'] = 'success';
+				$data['result'] = $this->party_model->set_track_as_played($partyid, $trackuri);
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'no such party';
+			}	
+		}
 		echo json_encode($data);
 	}
 
