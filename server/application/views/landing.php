@@ -58,6 +58,7 @@
 							</div>
 							<div class="col-xs-4">
 								<a href="<?php echo base_url(); ?>user/signin" class="pull-right btn btn-default">Sign in</a>
+								<a href="<?php echo base_url(); ?>about" class="pull-right btn btn-ordinary">About</a>
 							</div>
 						</div>
 						<div class="row fit-to-bottom">
