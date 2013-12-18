@@ -8,7 +8,7 @@
 								Mote.fm
 							</h3>
 							<p>
-								Mote.fm is an awesome way to democratize Spotify's play que. You can read more about
+								Mote.fm is an awesome way to democratize Spotify's play queue. You can read more about
 								this project and who's behind <a href="<?php echo base_url(); ?>about">here</a>.
 							</p>
 						</div>

@@ -110,6 +110,38 @@ li
 {
 	cursor: pointer;
 }
+
+#pastqueue
+{
+	-webkit-filter: saturate(0.7);
+}
+
+.songrow
+{
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+.songrow>.cover>.sp-image
+{
+        width: 100%;
+        height: 100%;
+        max-width: 80px;
+        max-height: 80px;
+        margin-left: 70px;
+}
+.first
+{
+	background-color: #CEC0B3;
+}
+.first>.cover>.sp-image
+{
+        width: 100%;
+        height: 100%;
+        max-width: 150px !important;
+        max-height: 150px !important;
+        margin-left: 0px;
+}
+
 /*
  *	VART TOG LÄNKEN VÄGEN?
  */
@@ -167,8 +199,4 @@ li
 	font-size: 100%;
 	border-bottom: 1px solid #6a676e;
 	text-transform: uppercase;
-}
-#pastqueue
-{
-	-webkit-filter: saturate(0.7);
 }
