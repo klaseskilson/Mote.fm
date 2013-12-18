@@ -138,9 +138,11 @@ class Party_model extends CI_model
 		if(!$this->party_exists($partyid))
 			return false;
 
-		$this->db->select('quesong.*, COUNT(voteid) AS vote_count');
+		$this->db->select('quesong.*, quesong.uri AS songuri, COUNT(voteid) AS vote_count, spotifycache.*, GROUP_CONCAT(users.email ORDER BY quevote.time) AS votersmail, GROUP_CONCAT(users.name ORDER BY quevote.time) AS votersname, GROUP_CONCAT(quevote.time ORDER BY quevote.time) AS voterstime');
 		$this->db->from('quesong');
 		$this->db->join('quevote', 'quesong.songid = quevote.songid');
+		$this->db->join('users', 'users.uid = quevote.uid');
+		$this->db->join('spotifycache', 'quesong.uri = spotifycache.uri', 'left');
 		$this->db->where('partyid', $partyid);
 		$this->db->group_by('songid');
 		$this->db->order_by('vote_count desc, quesong.time');
@@ -325,6 +327,7 @@ class Party_model extends CI_model
 	 */
 	function contrib_parties($uid)
 	{
+		// we want unique results!
 		$this->db->distinct();
 		$this->db->select('quesong.partyid, parties.name, parties.hash, users.name AS hostname');
 		$this->db->from('quevote');
@@ -359,19 +362,52 @@ class Party_model extends CI_model
 
 	function set_track_as_played($partyid, $trackuri)
 	{
-		
+
 		$data = array( 'played' => 1);
 		$this->db->where('partyid', $partyid);
 		$this->db->where('uri', $trackuri);
 
-		
+
 		$query = $this->db->update('quesong', $data);
 
 		if($query)
 		{
 			return $query;
 		}
-			
+
+		return false;
+	}
+
+	/**
+	 * see if something has happend to a specific party later than the given time
+	 * @return bool 	is a bit wierd, since the question is asked in a negative way.
+	 *					if there is no newer entry since time, it returns true. perfect use
+	 *					in a long polling loop!
+	 */
+	function check_if_latest($partyid, $time)
+	{
+		// convert from unix time to a string with the time
+		if(is_numeric($time))
+			$time = date('Y-m-d H:i:s', $time);
+
+		// select what we want
+		$this->db->select('parties.partyid, quesong.songid, quevote.voteid');
+		$this->db->from('parties');
+		// join tables. what we want is the time from quevote
+		$this->db->join('quesong', 'quesong.partyid = parties.partyid', 'left');
+		$this->db->join('quevote', 'quevote.songid = quesong.songid', 'left');
+		$this->db->where('parties.partyid', $partyid);
+		// find votes newer than $time
+		// we only need to look at the votes since every time someone adds a song,
+		// a new vote is added to that song.
+		$this->db->where('quevote.time >', $time);
+		$this->db->limit(1);
+		// BAM. run query.
+		$query = $this->db->get();
+
+		if($query && $query->num_rows() == 0)
+			return true;
+
 		return false;
 	}
 }

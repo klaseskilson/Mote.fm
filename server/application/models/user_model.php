@@ -300,7 +300,11 @@ class User_model extends CI_model
 	function createHash($email)
 	{
 		$data = array('hashkey' => strgen(20));
-		return $data['hashkey'];
+
+		if($this->db->update('users', $data, array('email' => $email)));
+			return $data['hashkey'];
+
+		return false;
 	}
 
 	function validate_hash($email, $hash)

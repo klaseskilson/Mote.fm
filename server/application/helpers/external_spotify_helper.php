@@ -33,7 +33,7 @@
 	/**
 	 * Get thumbnail for album related to track
 	 * @param  string $trackURI Spotify uri
-	 * @return string url to thumbnail           
+	 * @return string url to thumbnail
 	 */
 	function get_album_art($trackURI)
 	{
@@ -64,7 +64,7 @@
 	}
 
 	/**
-	 * Get name of track 
+	 * Get name of track
 	 * @param  string $trackURI Spotify uri
 	 * @return string name of song
 	 */
