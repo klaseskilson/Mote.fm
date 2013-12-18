@@ -17,14 +17,11 @@ require([
 			}
 
 			$.post(constants.SERVER_URL + "/api/party/get_party_list", postData, function (data) {
-				console.log(data.hashdata);
-				console.log(data.hash);
 				if(data.status == 'error')
 				{
 					//something went wrong
 					console.log(data);	
 					playNextSong(partyid, sessionStorage.queuehash, false);	
-
 				}
 				else
 				{
@@ -32,14 +29,18 @@ require([
 					{
 						//divs doesnt work here?!
 						$('#queue').html("<div class='track row'>No songs at party, what a boring party!</div>");
+						resetPlaylist(partyid);
+						
 						return;
 					}
 					$('#queue').html("");
 					for(var i = 0; i < data.result.length; i++)
 					{
 						var track = data.result[i];
-
-						var section = '<div id="' + track.uri.substr(14,36) + '" class="track row">';  
+						if(i == 0)
+							var section = '<div id="' + track.uri.substr(14,36) + '" class="track row first">';
+						else
+							var section = '<div id="' + track.uri.substr(14,36) + '" class="track row">';
     					section += '<div class="cover"></div>';
 				    	section += '<div class="row trackmeta">';
 				    	section += '<div class="songName">';
@@ -101,9 +102,28 @@ require([
 			else
 			{
 				console.log("no tracks!!");
-				//
+				resetPlaylist(partyid);
 			}
 		}
+
+		var resetPlaylist = function(partyid){
+			var post = {
+				'partyid' : partyid
+			}
+			$.post(constants.SERVER_URL + '/api/party/reset_playlist', post, function (data){
+				console.log("restarting playlist");
+				if(data.status == "error")
+				{
+					//longpolling here!
+					console.log("long polling!");
+				}
+				else
+				{
+					getPlaylist(partyid,sessionStorage.queuehash);
+				}
+			});
+		}
+
 		/**
 		 * Register a callback to report playing song to Hathor server
 		 * @param  {[type]} partyID The partyID that the callback should relates to
@@ -123,7 +143,7 @@ require([
 
 						musicTrack.partyid = partyID;
 						musicTrack.trackuri = track.uri;
-						$.post(constants.SERVER_URL + '/api/party/spotify_song', musicTrack , function (data, textStatus) {
+						$.post(constants.SERVER_URL + '/api/party/spotify_song', musicTrack , function (data) {
 							console.log(data);
 						});
 					}, 1000);

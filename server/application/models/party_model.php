@@ -410,4 +410,20 @@ class Party_model extends CI_model
 
 		return false;
 	}
+
+	function reset_playlist($partyid)
+	{
+
+		$data = array( 'played' => 0);
+		$this->db->where('partyid', $partyid);
+		
+		$query = $this->db->update('quesong', $data);
+		$affected = $this->db->affected_rows();
+		if($query)
+		{
+			return $affected;
+		}
+			
+		return false;
+	}
 }
