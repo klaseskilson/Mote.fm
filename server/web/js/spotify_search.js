@@ -16,9 +16,10 @@ function parsespotify(query, theobject)
 			if(data.info.num_results > 0)
 			{
 				var limit = Math.min(data.tracks.length,10);
+				var counter = 0;
 
 				// loop through the results
-				for(var i = 0; i < limit; i++)
+				for(var i = 0; counter < limit; i++)
 				{
 					//FIXME - hardcoded territory!
 					if(data.tracks[i].album.availability.territories.indexOf("SE") == -1)
@@ -30,7 +31,8 @@ function parsespotify(query, theobject)
 					// save string with artists
 					var artists = '',
 						name = data.tracks[i].name,
-						uri = data.tracks[i].href;
+						uri = data.tracks[i].href,
+						album = data.tracks[i].album.name;
 
 					var track = data.tracks[i];
 
@@ -39,11 +41,14 @@ function parsespotify(query, theobject)
 						artists += (k !== 0 ? ', ' : '' ) + track.artists[k].name;
 
 					// create object and append to search results
-					$('<a></a>').attr('href', '#').attr('data-uri', uri)
-						.html(name + " <span>" + artists +"</span>").appendTo(searchresults);
+					$('<a></a>').attr('href', '#').attr('data-uri', uri).html(name + " <span>" + artists +"</span>")
+						.attr('data-artist', encodeURI(artists))
+						.attr('data-name', encodeURI(name))
+						.attr('data-album', encodeURI(album))
+						.appendTo(searchresults);
 
 					// take a step in the loop
-					// i++;
+					counter++;
 				}
 
 				console.log("Nr of results: " + data.info.num_results);
@@ -74,12 +79,18 @@ function parsespotify(query, theobject)
 function addsong(theobject)
 {
 	var uri = theobject.attr('data-uri'),
+		artist = decodeURI(theobject.attr('data-artist')),
+		songname = decodeURI(theobject.attr('data-name')),
+		album = decodeURI(theobject.attr('data-album')),
 		searchresults = theobject.closest('.spotifysearch');
 
 	// prepare post data
 	var postdata = {
 		'spotifyuri': uri,
-		'partyid': searchresults.children('input.partyid').val()
+		'partyid': searchresults.children('input.partyid').val(),
+		'artist': artist,
+		'songname': songname,
+		'album': album
 	};
 
 	// send post request
@@ -107,9 +118,9 @@ function addsong(theobject)
 			}
 			else
 			{
-				$('#partyqueue').append(answer.html);	
+				$('#partyqueue').append(answer.html);
 			}
-			
+
 		}
 		else
 			console.log("Failed. Message: " + answer.response);
