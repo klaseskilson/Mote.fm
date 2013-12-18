@@ -8,20 +8,25 @@
 								Mote.fm
 							</h3>
 							<p>
-								Who da bes? <a href="iam">I am!</a>
+								Democratize music
 							</p>
 						</div>
 						<div class="col-sm-4">
 							<h3>
 								Contact us
 							</h3>
-							yo
+							<p>theteam@mote.fm</p>
 						</div>
 						<div class="col-sm-4">
 							<h3>
 								Mote.fm
 							</h3>
-							yo
+		                    <ul>
+			                    <li>Klas Eskilson</li>
+			                    <li>Erik Larsson</li>
+			                    <li>Daniel Rönnkvist</li>
+			                    <li>Einar Sandberg</li>
+		                    </ul>
 						</div>
 					</div>
 				</div>
