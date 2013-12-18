@@ -31,6 +31,7 @@ function load_party(partyhash, theobject)
 	.done(function(answer){
 		if(answer.status === 'success')
 		{
+			console.log(answer);
 			redraw(answer.response.result, theobject);
 			load_party(partyhash, theobject);
 		}

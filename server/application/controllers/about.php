@@ -15,9 +15,10 @@ class About extends CI_Controller {
 	{
 		$data['user'] = $this->login->get_all_info();
 		$data['user']['names'] = explode(" ", $data['user']['name']);
-		$this->load->view('templates/header', $data);		
-		$this->load->view('about', $data);		
-		$this->load->view('templates/footer', $data);		
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('about', $data);
+		$this->load->view('templates/footer', $data);
 	}
 }
 

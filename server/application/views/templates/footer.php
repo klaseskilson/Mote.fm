@@ -3,30 +3,37 @@
 			<footer id="footer">
 				<div class="container">
 					<div class="row">
-						<div class="col-sm-4">
+						<div class="col-sm-6">
 							<h3>
 								Mote.fm
 							</h3>
 							<p>
-								Democratize music
+								Mote.fm is an awesome way to democratize Spotify's play que. You can read more about
+								this project and who's behind <a href="<?php echo base_url(); ?>about">here</a>.
 							</p>
 						</div>
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							<h3>
-								Contact us
+								Support
 							</h3>
-							<p>theteam@mote.fm</p>
+							<p>
+								Need help? Hit us up on <a href="https://twitter.com/motefm" target="_blank">Twitter</a>
+								or <a href="https://facebook.com/motefm" target="_blank">Facebook</a>, and we'll answer every
+								question.
+							</p>
 						</div>
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							<h3>
-								Mote.fm
+								Follow Mote.fm
 							</h3>
-		                    <ul>
-			                    <li>Klas Eskilson</li>
-			                    <li>Erik Larsson</li>
-			                    <li>Daniel Rönnkvist</li>
-			                    <li>Einar Sandberg</li>
-		                    </ul>
+							<ul class="list-unstyled">
+								<li>
+									<a href="https://facebook.com/motefm" target="_blank">Facebook</a>
+								</li>
+								<li>
+									<a href="https://twitter.com/motefm" target="_blank">Twitter</a>
+								</li>
+							</ul>
 						</div>
 					</div>
 				</div>

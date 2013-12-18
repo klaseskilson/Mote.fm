@@ -60,7 +60,8 @@
 							<span class="icon-bar"></span>
 						</button>
 						<a class="navbar-brand" href="<?php echo base_url(); ?>">
-							Mote.fm
+							<img src="<?php echo base_url(); ?>web/img/logo/color_small.png" alt="Logo">
+							<!-- mote.fm -->
 						</a>
 					</div>
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

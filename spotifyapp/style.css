@@ -132,14 +132,10 @@ li
     margin-left: 56px;
     width: 25px;
 }
-#linkBox, #linkListBox
+#linkBox
 {
     background-color: transparent;
     border-color: transparent;
-}
-.linkList, #linkListBox
-{
-    display: none;
 }
 /* --END OF LINKMADNESS-- */
 
@@ -171,4 +167,8 @@ li
 	font-size: 100%;
 	border-bottom: 1px solid #6a676e;
 	text-transform: uppercase;
+}
+#pastqueue
+{
+	-webkit-filter: saturate(0.7);
 }

@@ -7,7 +7,7 @@ Don't go deeper than three levels, man. Follow http://css-tricks.com/sass-style-
 @first-color: #7A9E85;
 @second-color: #2C2A40; // marine
 @third-color: #FDDF4D; // yellow
-@fourth-color: #CEC0B3;
+@fourth-color: #CEC0B3; // green
 @fifth-color: #514E54; // gray
 @sixth-color: #F1F0EB; // light gray
 
@@ -15,6 +15,16 @@ Don't go deeper than three levels, man. Follow http://css-tricks.com/sass-style-
 @headbackground: @second-color;
 @bodybackground: @sixth-color;
 @footerbackground: @fifth-color;
+
+/************************************************
+ * MIXINS
+ ***********************************************/
+.transition (@time: 2s) {
+	-webkit-transition: @time all ease-in-out;
+	   -moz-transition: @time all ease-in-out;
+		 -o-transition: @time all ease-in-out;
+			transition: @time all ease-in-out;
+}
 
 /************************************************
  * FONTS
@@ -61,22 +71,24 @@ html, body, #container {
 	margin: 0;
 	padding: 0;
 	height: 100%;
+	width: auto !important;
+	overflow-x: hidden !important;
 }
 
 #head {
 	width: 100%;
-	background-color: @headbackground;
+	.transition(.2s);
+	background: @headbackground;
 
 	.container {
-		background: inherit;
+		background: none;
 		color: #fff;
 	}
-	&.color .container {
-		background: @second-color;
+	&.color {
 	}
 
 	.navbar-hathor {
-		background: inherit;
+		background: none;
 		border: 0;
 		border-radius: 0;
 		margin-top: 20px;
@@ -132,55 +144,91 @@ h1, h2, h3, h4, p, body {
 /*
  * LANDING PAGE
  */
-.pane {
-	height: 100%;
-	width: 100%;
-	margin: 0 auto;
-	overflow: hidden;
-	position: relative;
-	background-size: cover !important;
-	background-repeat: no-repeat;
-	background-position: center;
-	color: #fff;
-	padding: 10% 0;
 
 
-	a {
-		color: rgba(0, 255, 255, 0.7);
+/*
+Photo credit:
+1: http://www.flickr.com/photos/31355686@N00/4701196608
+2: http://www.flickr.com/photos/stignygaard/12630269/
+3: http://www.flickr.com/photos/marfis75/3272901126/
+4: http://www.flickr.com/photos/marfis75/6089815305/
+5: http://www.flickr.com/photos/marfis75/7968954274/
+6: http://www.flickr.com/photos/morphomir/2407451929/
+*/
+.landing {
+	#main {
+		padding-top: 0;
+		padding-bottom: 0;
 	}
-	a:hover {
+
+	h2 {
+		font-family: 'latoreg', 'Helvetica', sans-serif;
+	}
+
+	#first {
+		background: url('../img/landing/party_6.jpg');
+		background-size: cover;
+		background-position: center;
+		height: 200px;
+		position: relative;
 		color: #fff;
-	}
-	.bottom {
-		position: absolute;
-		bottom: 0;
-	}
-	/*
-	Photo credit:
-	1: http://www.flickr.com/photos/31355686@N00/4701196608
-	2: http://www.flickr.com/photos/stignygaard/12630269/
-	3: http://www.flickr.com/photos/marfis75/3272901126/
-	4: http://www.flickr.com/photos/marfis75/6089815305/
-	5: http://www.flickr.com/photos/marfis75/7968954274/
-	*/
-	&#first {
-		background: url('../img/landing/party_1.jpg');
-	}
-	&#second {
-		background: url('../img/landing/party_4.jpg');
-		text-shadow: rgba(0, 0, 0, 0.8) 0 0 10px;
 
-		.alert{
+		a.btn-ordinary {
+			color: @sixth-color;
+
+			&:hover {
+				color: @fourth-color;
+			}
+		}
+		h2 {
+			text-shadow: rgba(0, 0, 0, 0.8) 0 0 10px;
+		}
+		img {
+			-webkit-filter: drop-shadow(0 0 5px rgb(0,0,0));
+			filter: drop-shadow(0 0 5px rgb(0,0,0));
+		}
+		.margintop
+		{
+			margin-top: 40px;
+		}
+	}
+
+	#second {
+		background: url('../img/landing/party_1.jpg');
+		background-size: cover;
+		background-position: center;
+		position: relative;
+		color: #fff;
+		text-shadow: rgba(0, 0, 0, 0.8) 0 0 10px;
+		padding: 100px 0;
+
+		h2 {
+			font-size: 300%;
+		}
+
+		a {
+			color: rgba(0, 255, 255, 0.7);
+		}
+		a:hover {
+			color: #fff;
+		}
+
+		.alert {
 			text-shadow: none;
+
 			a {
 				color: rgba(0, 0, 0, 0.7);
 			}
 		}
 	}
+
+	#first, .row {
+		margin-bottom: 30px;
+	}
+
 }
 
 .screamer {
-	text-shadow: rgba(0, 0, 0, 0.8) 0 0 10px;
 	font-family: 'latolight', 'Helvetica', sans-serif;
 
 	h2 {
@@ -195,13 +243,6 @@ h1, h2, h3, h4, p, body {
 
 	h1 {
 		text-align: center;
-	}
-}
-
-.fancypane {
-	#main {
-		padding-top: 0;
-		padding-bottom: 0;
 	}
 }
 
@@ -268,6 +309,18 @@ span.miniinfo {
 	border-bottom-left-radius: 0;
 }
 
+.center-text {
+	text-align: center;
+}
+
+.fit-to-bottom {
+	margin-bottom: 0 !important;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
 .btn-lg {
 	background-color: @third-color;
 	color: @fifth-color;
@@ -278,16 +331,29 @@ span.miniinfo {
 		border-color: darken(@third-color, 40%);
 	}
 }
-
+::selection {
+	background: rgba(51,51,51,0.7); /* Safari */
+	color: #fff;
+}
+::-moz-selection {
+	background: rgba(51,51,51,0.7); /* Firefox */
+	color: #fff;
+}
 /***********************************************
  * WESPONSIVE
  ***********************************************/
 @media (min-width: 768px) {
-	.screamer {
-		h2 {
-			font-size: 500%;
+	.landing {
+		#first h2 {
+			font-size: 700%;
 		}
-		p {
+		h2 {
+			font-family: 'latohairline', 'Helvetica', sans-serif;
+		}
+		#first {
+			height: 350px;
+		}
+		.big p {
 			font-size: 200%;
 		}
 	}
