@@ -79,9 +79,9 @@ ALTER TABLE `nowplaying`
 CREATE TABLE IF NOT EXISTS `spotifycache` (
 	`cacheid` INT(6) NOT NULL AUTO_INCREMENT,
 	`uri` CHAR(60) NOT NULL,
-	`songname` CHAR(250) NOT NULL,
-	`artistname` CHAR(250) NOT NULL,
-	`albumname` CHAR(250) NOT NULL,
+	`songname` TEXT NOT NULL,
+	`artistname` TEXT NOT NULL,
+	`albumname` TEXT NOT NULL,
 	`image` TEXT NOT NULL,
 	PRIMARY KEY(`cacheid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8;

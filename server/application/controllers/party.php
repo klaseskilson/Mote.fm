@@ -48,24 +48,13 @@ class Party extends CI_controller
 		}
 
 		// load the extra js needed for our spotify search
-		$data['extra_js'] = array('spotify_search.js');
+		$data['extra_js'] = array('spotify_search.js', 'partyload.js');
 
 		// save user in handy variable
 		$data['user'] = $this->login->get_all_info();
 		$data['user']['names'] = explode(" ", $data['user']['name']);
 
 		$data['party'] = $this->party_model->get_party_from_hash($hash);
-
-		$queue =  $this->party_model->get_party_queue_from_hash($hash);
-
-		for($i = 0; $i < sizeof($queue); $i++)
-		{
-			$queue[$i]['artistname'] = get_artist_name($queue[$i]['uri']);
-			$queue[$i]['trackname'] = get_track_name($queue[$i]['uri']);
-			$queue[$i]['albumart'] = get_album_art($queue[$i]['uri']);
-			$queue[$i]['voters'] = $this->party_model->get_voters_from_song($queue[$i]['songid']);
-		}
-		$data['party_queue'] = $queue;
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('party', $data);

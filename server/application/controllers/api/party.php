@@ -14,6 +14,8 @@ class party extends CI_Controller {
 		$this->load->model('party_model');
 		// load user model
 		$this->load->model('user_model');
+		// load spotify cahce model
+		$this->load->model('spotify_model');
 
 		$this->load->helper('external_spotify');
 	}
@@ -174,6 +176,94 @@ class party extends CI_Controller {
 		echo json_encode($data);
 	}
 
+
+	function load_party()
+	{
+		$time = $this->input->post('time');
+		$partyhash = $this->input->post('partyhash');
+
+		$data = array();
+
+		if($time && $partyhash)
+		{
+			$partyid = $this->party_model->get_party_id_from_hash($partyhash);
+
+			$counter = 0;
+			// wait for update!
+			while($this->party_model->check_if_latest($partyid, $time))
+			{
+				sleep(1);
+
+				$counter++;
+
+				if($counter > 30)
+				{
+					$data['status'] = 'error';
+					$data['response'] = 'Party timed out.';
+					echo json_encode($data);
+					die();
+				}
+			}
+
+			sleep(1);
+
+			$partydata = $this->party_model->get_party_queue_from_hash($partyhash);
+			if($partydata)
+			{
+				// loop through result and save voters
+				for($i = 0; $i < count($partydata); $i++)
+				{
+					// prepare voters array
+					$partydata[$i]['voters'] = array();
+
+					// explode result strings into arrays
+					$votename = explode(',', $partydata[$i]['votersname']);
+					$votemail = explode(',', $partydata[$i]['votersmail']);
+					$votetime = explode(',', $partydata[$i]['voterstime']);
+
+					for($j = 0; $j < $partydata[$i]['vote_count']; $j ++)
+					{
+						// add array with email and name to array with voters.
+						$partydata[$i]['voters'][] = array(
+														'time' => $votetime[$j],
+														'name' => $votename[$j],
+														'mail' => $votemail[$j],
+														'mailhash' => md5(strtolower($votemail[$j]))
+												   );
+					}
+
+					// remove not needed elements from array
+					unset($partydata[$i]['votersname']);
+					unset($partydata[$i]['votersmail']);
+				}
+
+				$data['status'] = 'success';
+				$data['response'] = array(
+										'time' => date('Y-m-d H:i:s', $time),
+										'partyhash' => $partyhash,
+										'result' => $partydata
+									);
+			}
+			elseif($this->party_model->hash_exists($partyhash))
+			{
+				$data['status'] = 'empty';
+				$data['response'] = 'No party data found.';
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'Party load failed.';
+			}
+		}
+		else
+		{
+			$data['status'] = 'error';
+			$data['response'] = 'Missing post data.';
+		}
+
+		echo json_encode($data);
+	}
+
 	/**
 	 * Post playing song in spotify at the party
 	 */
@@ -285,6 +375,10 @@ class party extends CI_Controller {
 
 		// get spotify song uri sent via post
 		$trackuri = $this->input->post("spotifyuri");
+		// get song info
+		$album = $this->input->post("album");
+		$artist = $this->input->post("artist");
+		$songname = $this->input->post("songname");
 		// get user id sent via post
 		$uid = $this->login->get_id();
 		// get party id sent via post
@@ -299,9 +393,11 @@ class party extends CI_Controller {
 				$data['status'] = 'success';
 				$data['response'] = $songid;
 
-				$artist = get_artist_name($trackuri);
-				$trackname = get_track_name($trackuri);
 				$albumart = get_album_art($trackuri);
+
+				// add this song to the cache. it won't create a dublicate.
+				$this->spotify_model->insert_cache($trackuri, $songname, $artist, $album, $albumart);
+
 				$voters = $this->party_model->get_voters_from_song($trackuri);
 
 				$user = $this->user_model->get_all_info($uid);
@@ -309,9 +405,10 @@ class party extends CI_Controller {
 
 				$html ='<div>';
 				$html .='<img src="'. $albumart .'" alt="" width="50">';
-				$html .= $artist . ' - ' . $trackname . ', 1 votes ';
+				$html .= $artist . ' - ' . $songname . ', 1 votes ';
 				$html .= '<a href="#" class="vote" data-songid="' . (isset($songid['songid']) ? $songid['songid'] : '') . '">vote!</a>';
-				$html .= '<img class="voteavatar" src="http://www.gravatar.com/avatar/' . $gravatarMd5 . '?s=25&d=mm" alt="'. $user['name'] . '" title="'. $user['name'] . '">';
+				$html .= '<img class="voteavatar" src="http://www.gravatar.com/avatar/' . $gravatarMd5 . '?s=25&d=mm"
+					alt="'. $user['name'] . '" title="'. $user['name'] . '">';
 				$html .='</div>';
 				$data['html'] = $html;
 			}
