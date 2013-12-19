@@ -87,11 +87,27 @@ $(document).ready(function(){ // boring needed stuff
 
 		var redir = $(this).attr('data-redir');
 
+		console.log('redir: ' + redir);
+
 		var postdata = {
 			'email': $('#email').val(),
 			'name': $('#name').val(),
 			'password': $('#password').val()
 		};
+
+				console.log('redir: ' + redir);
+
+
+				console.log('typeof redir: ' + typeof redir);
+
+				var link = '';
+
+				if(typeof redir === 'undefined' || redir === '')
+					link = BASE_URL;
+				else
+					link = redir;
+
+				console.log('link: ' + link);
 
 		// send postdata to server
 		$.ajax({
@@ -114,9 +130,24 @@ $(document).ready(function(){ // boring needed stuff
 				$('#signuptitle').fadeOut('fast', function() {
 					$(this).text('All right!').fadeIn();
 				});
+
+				console.log('redir: ' + redir);
+
+
+				console.log('typeof redir: ' + typeof redir);
+
+				var link = '';
+
+				if(typeof redir === 'undefined' || redir === '')
+					link = BASE_URL;
+				else
+					link = BASE_URL + redir;
+
+				console.log('link: ' + link);
+
 				// tell the user what to do now
 				$('#signuparea').fadeOut(function(){
-					$(this).html('<h3>You now have an account. <a href="'+((redir === '' || typeof redir == undefined) ? BASE_URL : redir)+'">Continue!</a></h3><p>We sent an email to you confirming this. You\'ll need to activate your account by clicking the link in the email within three days.').fadeIn()
+					$(this).html('<h3>You now have an account. <a href="'+link+'">Continue!</a></h3><p>We sent an email to you confirming this. You\'ll need to activate your account by clicking the link in the email within three days.').fadeIn()
 				});
 			}
 			else
@@ -126,7 +157,6 @@ $(document).ready(function(){ // boring needed stuff
 				// create an error div
 				var $errordiv = $("<div>", {id: "signuperror", class: "alert alert-danger"});
 				// prepend it to signup area
-				console.log($('#signuparea h3').length);
 				if($('#signuparea h3').length > 0)
 					$errordiv.hide().insertAfter('#signuparea h3');
 				else

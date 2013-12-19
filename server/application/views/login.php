@@ -56,7 +56,7 @@
 					<p>
 						Sign up by entering the fields below. You'll need to confirm your email within three days.
 					</p>
-					<form action="<?php echo base_url(); ?>user/signup/" method="post" id="signupform">
+					<form action="<?php echo base_url(); ?>user/signup/" method="post" id="signupform" data-redir="<?php echo $redir ? $redir : ''; ?>">
 						<p>
 							<input type="text" name="name" id="name" class="form-control input-lg square-bottom" placeholder="Full name" required>
 							<input type="email" name="email" id="email" class="form-control input-lg square-bottom square-top" placeholder="Email" required>

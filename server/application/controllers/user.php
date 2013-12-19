@@ -278,14 +278,14 @@ class User extends CI_Controller {
 				$this->email->message($sendthis);
 
 				// AWAY!
-				$this->email->send();
+				// $this->email->send();
 				// debug
 				// echo $this->email->print_debugger();
 
 				// how do we want the response?
 				if($method == 'web') // WEB!
 				{
-					echo "Well done my kuk.";
+					echo "All right.";
 					echo $this->email->print_debugger();
 				}
 				elseif($method == 'json') // return with machine encoded json
