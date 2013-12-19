@@ -138,7 +138,7 @@ class Party_model extends CI_model
 		if(!$this->party_exists($partyid))
 			return false;
 
-		$this->db->select('quesong.*, quesong.uri AS songuri, COUNT(voteid) AS vote_count, spotifycache.*, GROUP_CONCAT(users.email ORDER BY quevote.time) AS votersmail, GROUP_CONCAT(users.name ORDER BY quevote.time) AS votersname, GROUP_CONCAT(quevote.time ORDER BY quevote.time) AS voterstime');
+		$this->db->select('quesong.*, quesong.uri AS songuri, COUNT(voteid) AS vote_count, spotifycache.*, GROUP_CONCAT(users.email ORDER BY quevote.time) AS votersmail, GROUP_CONCAT(users.name ORDER BY quevote.time) AS votersname, GROUP_CONCAT(quevote.time ORDER BY quevote.time) AS voterstime, GROUP_CONCAT(quevote.uid ORDER BY quevote.time) AS votersuid');
 		$this->db->from('quesong');
 		$this->db->join('quevote', 'quesong.songid = quevote.songid');
 		$this->db->join('users', 'users.uid = quevote.uid');
@@ -416,14 +416,14 @@ class Party_model extends CI_model
 
 		$data = array( 'played' => 0);
 		$this->db->where('partyid', $partyid);
-		
+
 		$query = $this->db->update('quesong', $data);
 		$affected = $this->db->affected_rows();
 		if($query)
 		{
 			return $affected;
 		}
-			
+
 		return false;
 	}
 }

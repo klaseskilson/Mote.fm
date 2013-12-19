@@ -19,6 +19,8 @@ $(document).ready(function(){ // boring needed stuff
 		}
 	});
 
+	$('.landing').closest('html').css({'overflow-x':'auto'});
+
 	// nice fancy slide look when switching from sign in to sign up
 	$(document).on('click', 'a[data-toggle="signupsignin"]', function(e) {
 		e.preventDefault();

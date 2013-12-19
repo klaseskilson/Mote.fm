@@ -221,6 +221,7 @@ class party extends CI_Controller {
 					$votename = explode(',', $partydata[$i]['votersname']);
 					$votemail = explode(',', $partydata[$i]['votersmail']);
 					$votetime = explode(',', $partydata[$i]['voterstime']);
+					$voteuid = explode(',', $partydata[$i]['votersuid']);
 
 					for($j = 0; $j < $partydata[$i]['vote_count']; $j ++)
 					{
@@ -228,6 +229,7 @@ class party extends CI_Controller {
 						$partydata[$i]['voters'][] = array(
 														'time' => $votetime[$j],
 														'name' => $votename[$j],
+														'uid' => $voteuid[$j],
 														'mail' => $votemail[$j],
 														'mailhash' => md5(strtolower($votemail[$j]))
 												   );
@@ -278,7 +280,7 @@ class party extends CI_Controller {
 		$partyhash = $this->input->post('partyhash');
 		$trackuri = $this->input->post('trackuri');
 
-		$partyid = $this->party_model->get_party_id_from_hash($partyhash); 
+		$partyid = $this->party_model->get_party_id_from_hash($partyhash);
 		if(!$partyhash || !$trackuri)
 		{
 			$data['status'] = 'error';
@@ -316,7 +318,7 @@ class party extends CI_Controller {
 		}
 		else
 		{
-			$partyid = $this->party_model->get_party_id_from_hash($partyhash); 
+			$partyid = $this->party_model->get_party_id_from_hash($partyhash);
 			if($partyid)
 			{
 				$data['status'] = 'success';
@@ -326,7 +328,7 @@ class party extends CI_Controller {
 			{
 				$data['status'] = 'error';
 				$data['response'] = 'no such party';
-			}	
+			}
 		}
 		echo json_encode($data);
 	}

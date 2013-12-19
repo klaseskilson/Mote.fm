@@ -30,7 +30,7 @@
 			</div>
 			<div class="col-sm-8 col-sm-pull-4">
 				<h4>Play queue</h4>
-				<div id="newpartyque" data-partyhash="<?php echo $party['hash']; ?>">
+				<div id="newpartyque" data-uid="<?php echo $user['uid']; ?>" data-partyhash="<?php echo $party['hash']; ?>">
 					<div class="well loader">Loading party...</div>
 				</div>
 			</div>
