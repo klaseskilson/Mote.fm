@@ -121,6 +121,12 @@ li
 	height: auto;
 	overflow: visible;
 }
+#partyname, #partyname:hover
+{
+	cursor: default;
+	text-decoration: none;
+	color: #777;
+}
 #linkButton
 {
 	cursor: pointer;
@@ -156,10 +162,6 @@ li
         max-height: 150px !important;
         margin-left: 0px;
 }
-
-/*
- *	VART TOG LÄNKEN VÄGEN?
- */
 .link
 {
     background-color: #FDDF4D;
@@ -184,8 +186,6 @@ li
     background-color: transparent;
     border-color: transparent;
 }
-/* --END OF LINKMADNESS-- */
-
 @media (max-width: 768px){
 	.nav
 	{

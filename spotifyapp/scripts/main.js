@@ -18,7 +18,7 @@ require([
 
   var facebooklink = "http://www.facebook.com/sharer/sharer.php?s=100&p[url]=";
   facebooklink += partyadress;
-  facebooklink += "&p[images][0]=https://pbs.twimg.com/profile_images/378800000858096968/BsKG4Iy_.png&p[title]=Join%20my%20party%20on%20Mote.fm&p[summary]=I%20have%20a%20party%20on%20Mote.fm,%20together%20we%20will%20create%20an%20awesome%20party.";
+  facebooklink += "&p[images][0]=http://mote.fm/web/img/logo/nobg_256.png&p[title]=Join%20my%20party%20on%20Mote.fm&p[summary]=I%20have%20a%20party%20on%20Mote.fm,%20together%20we%20will%20create%20an%20awesome%20party.";
   $('#facebookButton').attr('href', facebooklink);
 
   var tweetlink = "https://twitter.com/intent/tweet?url=";
