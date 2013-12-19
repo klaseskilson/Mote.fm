@@ -38,14 +38,27 @@ require([
 		{
 			var html = "";
 			var numOfParties = Math.min(5,json.result.length);
-			for(var i = 0; i < numOfParties; i++)
+			console.log(numOfParties);
+			if(numOfParties == 0)
 			{
-				var party = json.result[i];
-				//add parties to the list
+				for(var i = 0; i < numOfParties; i++)
+				{
+					var party = json.result[i];
+					//add parties to the list
+					html += '<li>';
+	                html += '   <span id="' + party.partyid + '" class="pastParty">';
+	                html += '      <div class="glyphicon glyphicon-chevron-right"></div>';
+					html += ' ' + party.name;
+	                html += '   </span>';
+	                html += '</li>';
+				}
+			}
+			else
+			{
 				html += '<li>';
-                html += '   <span id="' + party.partyid + '" class="pastParty">';
+                html += '   <span id="noParties" class="pastParty">';
                 html += '      <div class="glyphicon glyphicon-chevron-right"></div>';
-				html += ' ' + party.name;
+				html += ' You have no old parties!';
                 html += '   </span>';
                 html += '</li>';
 			}
@@ -60,7 +73,7 @@ require([
 			html += '<li>';
             html += '   <span class="pastParty" style="cursor:default;">';
             html += '      <div class="glyphicon glyphicon-chevron-right"></div>';
-			html += ' ' + json.response;
+			html += ' You have no old parties!';
             html += '   </span>';
             html += '</li>';
             $('#pastParties').html(html);
