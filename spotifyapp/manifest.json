@@ -24,6 +24,6 @@
     "http://spotify.com",
     "http://127.0.0.1/*",
     "http://localhost/*",
-    "http://*mote.fm/*"
+    "http://*.mote.fm/*"
     ]
 }
