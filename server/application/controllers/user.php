@@ -240,17 +240,47 @@ class User extends CI_Controller {
 			{
 				$this->login->validate($email, $password);
 
+				$hash = $this->user_model->createHash($email);
 
+				//send activation email
+				// prepare message
+				$message = '<p>
+							Hello!
+						</p>
+						<p>
+							You just created a Mote.fm account. Awesome, you\'re one step closer
+							to host the best, democratized party the world has ever seen. You can
+							use your account for three days, but after that we need you to activate
+							you account. Deal?
+						</p>
+						<p>
+							All you need to do to activate you account is to click this button and follow the instructions:
+							<a href="'.base_url().'user/activate/'.urlencode($email).'/'.$hash.'"
+								class="button">Activate account!</a>
+						</p>
+						<p>
+							<small>
+								No button? Copy this link into you adress bar and hit enter:
+								'.base_url().'user/activate/'.urlencode($email).'/'.$hash.'
+							</small>
+						</p>
+						<p>
+							If you didn\'t create this account, and don\'t know who did – please contact us!
+						</p>';
+				$sendthis = format_mail('Welcome!', $message);
 
+				// to/from prop
+				$this->email->from($this->config->item('noreply_mail'), $this->config->item('noreply_name'));
+				$this->email->to($email);
 
-			//send activation email
-			$hash = $this->user_model->createHash($email);
-			$this->email->from('noreply@taketkvg.se', 'The Hathor crew');
-			$this->email->to($email);
-			$this->email->subject('Activate your Hathor account');
-			$this->email->message('Hey '.$name.'! Follow this link to activate your Hathor account. '
-			.base_url().'user/activate/'.urlencode($email).'/'.$hash);
-			$this->email->send();
+				// set subject and message
+				$this->email->subject($this->config->item('mail_title').'Welcome! Activate your account.');
+				$this->email->message($sendthis);
+
+				// AWAY!
+				$this->email->send();
+				// debug
+				// echo $this->email->print_debugger();
 
 				// how do we want the response?
 				if($method == 'web') // WEB!

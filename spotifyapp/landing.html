@@ -16,101 +16,48 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom -->
     <link rel="stylesheet" type="text/css" href="style.css">
-    <style type="text/css">
-        html, body
-        {
-            margin: 0;
-            height: 100%;
-            width: 100%;
-            background-color: #514e54;
-        }
-        .head
-        {
-            background-color: #2c2a40;
-            height: 200px;
-            padding-top: 130px;
-            text-align: center;
-        }
-        .content
-        {
-            background-color: #f1f0eb;
-            width: 100%;
-            padding-top: 20px;
-            padding-bottom: 30px;
-        }
-        #user
-        {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .content>h3
-        {
-            margin-top: -20px;
-        }
-        .contentTitle
-        {
-            margin-top: 0px;
-        }
-        #pastParties
-        {
-            margin-bottom: 20px;
-        }
-        /*@media only screen and (max-width: 992px) {
-            .col-md-10,
-            .col-md-8,
-            .col-md-6,
-            .col-md-2
-            {
-                float: left;
-            }
-            .col-lg-2 {
-               width: 16.666666666666664%;
-            }
-            .col-lg-6 {
-                width: 50%;
-           }
-        }*/
-    </style>
 </head>
 <body>
     <div class="head"></div>
     <div class="container content">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="row">
-                <h2 id="user" style="text-align:center;"></h2>
+        <div class="row">
+            <div class="col-xs-8 col-xs-offset-2">
+                <h2 id="user"></h2>
             </div>
         </div>
-        <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
-            <div class="row">
-                <div class="col-md-8 col-sm-8">
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12">
-                            <p>
-                                Create a party through Mote.fm, lock your computer and let everyone decide through their smartphones.
-                            </p>
-                            <p>
-                                Just type the name of your party and hit go!
-                            </p>
+        <div class="row">
+            <div class="col-xs-8 col-xs-offset-2">
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-2">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <p>
+                                    Create a party through Mote.fm, lock your computer and let everyone decide through their smartphones.
+                                </p>
+                                <p>
+                                    Just type the name of your party and hit go!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span id="createError"></span>
+                                <form action="?redir=/home/" method="post" id="partyNameForm">
+                                    <div class="col-xs-8">
+                                        <input type="text" class="form-control input-lg" name="name" id="name" placeholder="Name of party">
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <input type="submit" class="btn btn-default form-control input-lg" name="submit" id="submit" value="Go!">
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
-                            <span id="createError"></span>
-                            <form action="?redir=/home/" method="post" id="partyNameForm">
-                                <div class="col-md-10 col-sm-10 col-xs-10">
-                                    <input type="text" name="name" id="name" class="form-control input-lg square-bottom partyName" placeholder="This awesome party">
-                                </div>
-                                <div class="col-md-2 col-sm-2 col-xs-2">
-                                    <input type="submit" name="submit" id="submit" value="Go!" class="btn btn-default btn-lg">
-                                </div>
-                            </form>
-                        </div>
+                    <div class="col-md-4 partiesContainer">
+                        <h3 class="contentTitle">Past parties</h3>
+                        <ul id="pastParties">
+                        </ul id="pastParties"> 
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <h3 class="contentTitle">Past parties</h3>
-                    <ul id="pastParties">
-                    </ul id="pastParties">                    
                 </div>
             </div>
         </div>
@@ -118,25 +65,37 @@
     <footer id="footer">
         <div class="container">
             <div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <h3>
                         Mote.fm
                     </h3>
                     <p>
-                        Who da bes? <a href="iam">I am!</a>
+                        Mote.fm is an awesome way to democratize Spotify's play que. You can read more about
+                        this project and who's behind <a href="<?php echo base_url(); ?>about">here</a>.
                     </p>
-                    </div>
-                    <div class="col-sm-4">
-                        <h3>
-                            Contact us
-                        </h3>
-                        yo
-                    </div>
-                    <div class="col-sm-4">
+                </div>
+                <div class="col-sm-3">
                     <h3>
-                        Mote.fm
+                        Support
                     </h3>
-                    yo
+                    <p>
+                        Need help? Hit us up on <a href="https://twitter.com/motefm" target="_blank">Twitter</a>
+                        or <a href="https://facebook.com/motefm" target="_blank">Facebook</a>, and we'll answer every
+                        question.
+                    </p>
+                </div>
+                <div class="col-sm-3">
+                    <h3>
+                        Follow Mote.fm
+                    </h3>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="https://facebook.com/motefm" target="_blank">Facebook</a>
+                        </li>
+                        <li>
+                            <a href="https://twitter.com/motefm" target="_blank">Twitter</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

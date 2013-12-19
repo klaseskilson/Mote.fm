@@ -1,7 +1,8 @@
 $(document).ready(function(){ // boring needed stuff
 	// change the background color of the header when scrolling
 	$(document).scroll(function(){
-		// $('body.fancypane #head').toggleClass('color', ($(this).scrollTop() > $(window).height()*0.1));
+		var show = ($(this).scrollTop() > $('body.landing #first').height());
+		$('body.landing #head').toggleClass('visible', show);
 	});
 
 	// nice scroll animation
@@ -9,10 +10,16 @@ $(document).ready(function(){ // boring needed stuff
 		e.preventDefault();
 		if(this.hash)
 		{
+			var hash = this.hash;
 			window.history.pushState("string", "Title", this.hash);
-			$("html, body").animate({ scrollTop: $(this.hash).offset().top }, 1000);
+			$("html, body").animate({ scrollTop: $(this.hash).offset().top }, 700, 'swing', function(){
+				if(hash == '#second')
+					$('input#name').focus();
+			});
 		}
 	});
+
+	$('.landing').closest('html').css({'overflow-x':'auto'});
 
 	// nice fancy slide look when switching from sign in to sign up
 	$(document).on('click', 'a[data-toggle="signupsignin"]', function(e) {
@@ -63,8 +70,11 @@ $(document).ready(function(){ // boring needed stuff
 	});
 
 	// bootstrap tooltip hover thingy
-	$('*[data-toggle="tooltip"]').tooltip({html:true});
 	$('*[data-toggle="tooltip-bottom"]').tooltip({html:true, placement:'bottom'});
+	$('body').tooltip({
+		selector: '[data-toggle=tooltip]',
+		html: true
+	});
 
 	/**
 	 * when submitting signup!

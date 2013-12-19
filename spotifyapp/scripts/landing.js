@@ -2,6 +2,10 @@ require([
   '$api/models',
   'scripts/jquery.min'
 ], function(models, jquery) {
+	$(document).ready(function() {
+		var d = new Date();
+		localStorage.logintime = d.getTime();
+	});
 	$("#user").html("Welcome back " + sessionStorage.username);
 	function part_party_callback()
 	{
