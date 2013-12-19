@@ -46,8 +46,8 @@ require([
 				{
 					var song = queue[i];
 					var img = cover.insertImage(song.uri);
-					var $section = $('<div></div>').addClass('row').attr('id', song.uri.substr(14,36));
-					$('<div></div>').addClass('col-xs-4 col-sm-3').appendTo($section);
+					var $section = $('<div></div>').addClass('row songrow').attr('id', song.uri.substr(14,36));
+					$('<div></div>').addClass('col-xs-4 col-sm-3 cover').appendTo($section);
 					
 					var $middlecolon = $('<div></div>').addClass('col-xs-8 col-sm-5').appendTo($section);
 					$('<div></div>').addClass('hidden-xs').appendTo($middlecolon)
@@ -79,7 +79,7 @@ require([
 					if(song.played == "1")
 					{
 						$section.css('background-color', '#878A75');
-						$('#pastqueue').append($section);
+						$('#pastqueue').prepend($section);
 					}
 					else
 					{
@@ -147,14 +147,13 @@ require([
 		{
             if($('#queue').children('div').length != 0)
             {
-                    var child = $('#queue').children('div')[0];
-                    var track = child.id;
-                    $('#queue').children('div').eq(0).css('background-color', '#CEC0B3');
+                    var $child = $('#queue').children('div').eq(0);
+                    var track = $child.attr('id');
+                    $child.addClass('first');
                             
                     track = 'spotify:track:' + track;
                     var spTrack = models.Track.fromURI(track);
                     models.player.playTrack(spTrack);
-                    registerSong(partyhash);
             }
             else
             {
@@ -169,6 +168,7 @@ require([
 		 */
 		var removeSong = function()
 		{
+			$('#queue').children('div').eq(0).removeClass('first');
 			$('#queue').children('div').eq(0).css('background-color', '#878A75');
 			$('#pastqueue').prepend($('#queue').children('div').eq(0));
 		}
@@ -185,21 +185,16 @@ require([
 				models.player.load('track').done(function(){
 					if(models.player.track)
 					{
-						console.log("report played")
-						console.log(models.player.track.uri);
 						setAsPlayed(partyhash, models.player.track.uri);
 					}
 					setTimeout(function() {
 						if(!models.player.track)
 						{
-							console.log(models.player.track);
 							removeSong();
 							playNextSong(partyhash);						
 						}
 						else
 						{
-							console.log("report start")
-							console.log(models.player.track.uri);
 							registerSong(partyhash);
 						}
 					}, 1); // <--- lol @ spotify
@@ -250,7 +245,7 @@ require([
 					{
 						musicTrack.trackuri = track.uri;
 						$.post(constants.SERVER_URL + '/api/party/spotify_song', musicTrack , function (data) {
-							//console.log(data);
+							console.log(data);
 						});
 					}
 				}, 1000);
@@ -259,14 +254,23 @@ require([
 
 		var setAsPlayed = function(partyhash, trackURI)
 		{
-			var musicTrack = {
-				'partyhash' : partyhash,
-				'trackuri' : trackURI
-					}
-
-				$.post(constants.SERVER_URL + '/api/party/set_song_as_played', musicTrack , function (data) {
-					console.log(data);
-				});
+			models.player.load('track').done(function(){
+				var musicTrack = {
+					'partyhash' : partyhash,
+					'trackuri' : trackURI
+						}
+				
+				if(models.player.position/models.player.track.duration < 0.5)
+				{
+					console.log("user pause");
+				}
+				else
+				{
+					$.post(constants.SERVER_URL + '/api/party/set_song_as_played', musicTrack , function (data) {
+						console.log(data);
+					});
+				}
+			});
 		}
 		exports.startParty = startParty;
 	});
