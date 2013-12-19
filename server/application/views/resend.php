@@ -40,7 +40,7 @@
 								   placeholder="Email" <?php echo isset($email) ? ' value="'.$email.'"' : ''; ?>required autofocus>
 						</p>
 						<p>
-							<input type="submit" name="submit" id="reset_submit" value="Reset password!" class="btn btn-default btn-lg btn-block">
+							<input type="submit" name="submit" id="reset_submit" value="Go!" class="btn btn-default btn-lg btn-block">
 						</p>
 						<p>
 							<a href="<?php echo base_url().'user/signin';?>">Sign in instead!</a>

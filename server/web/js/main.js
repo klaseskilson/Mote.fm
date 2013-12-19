@@ -85,6 +85,8 @@ $(document).ready(function(){ // boring needed stuff
 		$('button[type=submit], input[type=submit]').attr('disabled',true);
 		console.log("form sent, default prevented");
 
+		var redir = $(this).attr('data-redir');
+
 		var postdata = {
 			'email': $('#email').val(),
 			'name': $('#name').val(),
@@ -114,7 +116,7 @@ $(document).ready(function(){ // boring needed stuff
 				});
 				// tell the user what to do now
 				$('#signuparea').fadeOut(function(){
-					$(this).html('<h3>You now have an account. <a href="'+BASE_URL+'">Continue!</a></h3><p>We sent an email to you confirming this. You\'ll need to activate your account by clicking the link in the email within three days.').fadeIn()
+					$(this).html('<h3>You now have an account. <a href="'+((redir === '' || typeof redir == undefined) ? BASE_URL : redir)+'">Continue!</a></h3><p>We sent an email to you confirming this. You\'ll need to activate your account by clicking the link in the email within three days.').fadeIn()
 				});
 			}
 			else
