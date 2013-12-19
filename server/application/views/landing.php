@@ -14,25 +14,28 @@
 		<meta http-equiv="cleartype" content="on">
 
 		<!-- iOS Touch Icons -->
-		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="web/img/touch/apple-touch-icon-144x144-precomposed.png">
-		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="web/img/touch/apple-touch-icon-114x114-precomposed.png">
-		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="web/img/touch/apple-touch-icon-72x72-precomposed.png">
-		<link rel="apple-touch-icon-precomposed" href="web/img/touch/apple-touch-icon-57x57-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" sizes="144x144"
+			href="<?php echo base_url(); ?>web/img/touch/apple-touch-icon-144x144-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" sizes="114x114"
+			href="<?php echo base_url(); ?>web/img/touch/apple-touch-icon-114x114-precomposed.png">
+		<link rel="apple-touch-icon-precomposed" sizes="72x72"
+			href="<?php echo base_url(); ?>web/img/touch/apple-touch-icon-72x72-precomposed.png">
+		<link rel="apple-touch-icon-precomposed"
+			href="<?php echo base_url(); ?>web/img/touch/apple-touch-icon-57x57-precomposed.png">
 		<!-- Uncomment to include a launch screen for iOS
 		<link rel="apple-touch-startup-image" href="image.jpg"> -->
 
 		<!-- Tile icon for Win8 (144x144 + tile color) -->
-		<meta name="msapplication-TileImage" content="web/img/touch/apple-touch-icon-144x144-precomposed.png">
-		<meta name="msapplication-TileColor" content="#333333">
+		<meta name="msapplication-TileImage" content="<?php echo base_url(); ?>web/img/touch/apple-touch-icon-144x144-precomposed.png">
+		<meta name="msapplication-TileColor" content="#2C2A40">
 
 		<!-- Browser favicon -->
-		<link rel="shortcut icon" href="web/img/favicon.png">
+		<link rel="shortcut icon" href="<?php echo base_url(); ?>web/img/favicon.png">
 
-		<!-- For iOS web apps. Delete if not needed.
+		<!-- For iOS web apps. -->
 		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<meta name="apple-mobile-web-app-title" content="">
-		-->
+		<meta name="apple-mobile-web-app-status-bar-style" content="#2C2A40">
+		<meta name="apple-mobile-web-app-title" content="Mote.fm">
 
 		<!-- CSS files -->
 		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" />
@@ -54,7 +57,7 @@
 					<div class="container">
 						<div class="row margintop">
 							<div class="col-xs-4 col-xs-offset-4 center-text">
-								<img src="<?php echo base_url(); ?>web/img/logo/color_medium.png" alt="Mote.fm">
+								<img src="<?php echo base_url(); ?>web/img/logo/dark_color_medium.png" alt="Mote.fm">
 							</div>
 							<div class="col-xs-4">
 								<a href="<?php echo base_url(); ?>user/signin" class="pull-right btn btn-default">Sign in</a>

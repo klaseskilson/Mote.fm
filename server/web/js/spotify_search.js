@@ -146,6 +146,10 @@ $(document).ready(function(){
 			songid: songid,
 		};
 
+		var link = $(this);
+
+		link.text('...');
+
 		$.ajax({
 			type: "POST",
 			url: BASE_URL + "api/party/add_vote",
@@ -157,6 +161,7 @@ $(document).ready(function(){
 		})
 		.done(function(answer){
 			console.log(answer);
+			link.text('OK!').fadeOut(1000);
 		});
 	});
 

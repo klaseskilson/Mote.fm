@@ -1,4 +1,5 @@
 var time = 1;
+var partyarray = new Array();
 
 // run things when page is ready
 $(document).ready(function(){
@@ -32,6 +33,7 @@ function load_party(partyhash, theobject)
 		if(answer.status === 'success')
 		{
 			console.log(answer);
+			// partyarray = answer.response.result;
 			redraw(answer.response.result, theobject);
 			load_party(partyhash, theobject);
 		}
@@ -57,6 +59,20 @@ function fill_empty(theobject)
 	theobject.append('<p>This party seems to be empty! Add some songs straight away, and start dancing!</p>');
 
 	theobject.slideDown('fast');
+}
+
+function has_voted(users, uid)
+{
+	if(Array.isArray(users))
+	{
+		for(var k = 0; k < users.length; k++)
+		{
+			if(users[k].uid == uid)
+				return true;
+		}
+	}
+
+	return false;
 }
 
 function redraw(queue, theobject)
@@ -99,21 +115,22 @@ function redraw(queue, theobject)
 
 			var $rightcolon = $('<div></div>').addClass('col-sm-4 hidden-xs').appendTo($songelement);
 
+			var thevoters = song.voters;
+			var uid = theobject.attr('data-uid');
+
 			$rightcolon.append('<h3></h3>').children('h3')
 				.append('<span><strong>'+song.vote_count+'</strong> '+(song.vote_count == 1 ? 'vote' : 'votes' )+'</span> ')
-				.append('<a href="#" class="vote label label-success" data-toggle="tooltip" title="Add your vote to this song!">+1</a>')
+				.append('<a href="#" class="vote label label-success '+ (has_voted(thevoters, uid) ? 'hidden' : '')+'" data-toggle="tooltip" title="Add your vote to this song!">+1</a>')
 				.children('a').attr('data-songid', song.songid);
 
 			$images = $('<div></div>').appendTo($rightcolon);
-
-			var thevoters = song.voters;
 
 			for(var k = 0; k < thevoters.length; k++)
 			{
 				$('<img class="img-circle">').appendTo($images)
 					.attr('src', 'http://www.gravatar.com/avatar/' + song.voters[k].mailhash + '?s=25&d=mm')
-					.attr('alt', song.voters[k].name)
-					.attr('title', song.voters[k].name)
+					.attr('alt', song.voters[k].name + (uid == song.voters[k].uid ? ' &mdash; you!' : ''))
+					.attr('title', song.voters[k].name + (uid == song.voters[k].uid ? ' &mdash; you!' : ''))
 					.attr('data-toggle', 'tooltip');
 			}
 

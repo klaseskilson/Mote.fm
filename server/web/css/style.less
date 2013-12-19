@@ -67,12 +67,12 @@ body {
 	background-color: @footerbackground;
 }
 
-html, body, #container {
+body, html, #container {
 	margin: 0;
 	padding: 0;
 	height: 100%;
 	width: auto !important;
-	overflow-x: hidden !important;
+	overflow-x: hidden;
 }
 
 #head {
@@ -347,9 +347,6 @@ span.miniinfo {
 		#first h2 {
 			font-size: 700%;
 		}
-		h2 {
-			font-family: 'latohairline', 'Helvetica', sans-serif;
-		}
 		#first {
 			height: 350px;
 		}
@@ -360,5 +357,12 @@ span.miniinfo {
 
 	.fancypane #main {
 		height: 100%;
+	}
+}
+@media (min-width: 992px) {
+	.landing {
+		h2 {
+			font-family: 'latohairline', 'Helvetica', sans-serif;
+		}
 	}
 }
