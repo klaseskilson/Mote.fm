@@ -278,7 +278,7 @@ class User extends CI_Controller {
 				$this->email->message($sendthis);
 
 				// AWAY!
-				// $this->email->send();
+				$this->email->send();
 				// debug
 				// echo $this->email->print_debugger();
 
@@ -388,6 +388,14 @@ class User extends CI_Controller {
 
 		if($email)
 		{
+
+			$hash = $this->user_model->reset($email);
+			$this->email->from('noreply@taketkvg.se', 'Einis');
+			$this->email->to($email);
+			$this->email->subject('Password reset');
+			$this->email->message('Fuck you. hathor.se/user/forgotPassword/'.$email.'/'.$hash);
+			$this->email->send();
+
 			// get id from email
 			$id = $this->user_model->get_id($email);
 			// get user info from id
@@ -440,6 +448,7 @@ class User extends CI_Controller {
 				$data['email'] = $email;
 
 			}
+
 		}
 
 		$this->load->view('templates/header', $data);
@@ -449,6 +458,7 @@ class User extends CI_Controller {
 
 	public function forgotpassword($email, $hash)
 	{
+
 		// prepare data array
 		$data = array();
 		$data['email'] = urldecode($email);
@@ -571,6 +581,12 @@ class User extends CI_Controller {
 		$oldPassword = $this->input->post('oldPassword');
 		$newPassword = $this->input->post('newPassword');
 		$confirmPassword = $this->input->post('confirmPassword');
+		/*
+		$email = 'einars92@gmail.com';
+		$id = 8;
+		$oldPassword = 'penispenis';
+		$newPassword = 'penispenis1';
+		$confirmPassword = 'penispenis1';*/
 
 		if(!($this->user_model->update_password($id, $newPassword, $confirmPassword)))
 		{
