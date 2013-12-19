@@ -23,13 +23,17 @@ require([
 	  //if it is, no need to login again
 	  window.location.href = "landing.html";
 	}
+	
+	setTimeout(function(){$('#loading').hide()},1500);
+	
 
-	})
+	});
 
   	//Checks if the user has logged in or used the app within
   	//the last 12 hours
 	var d = new Date();
-	if(localStorage.logintime > (d.getTime() - 43200000)) 
+	var time = d.getTime();
+	if(localStorage.logintime > (d.getTime() - 43200000) && localStorage.logintime != undefined) 
 	{
 		//if it is, no need to login again
 		localStorage.logintime = d.getTime();
