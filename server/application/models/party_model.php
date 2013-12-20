@@ -145,7 +145,7 @@ class Party_model extends CI_model
 		$this->db->join('spotifycache', 'quesong.uri = spotifycache.uri', 'left');
 		$this->db->where('partyid', $partyid);
 		$this->db->group_by('songid');
-		$this->db->order_by('vote_count desc, quesong.time');
+		$this->db->order_by('quesong.played asc, vote_count desc, quesong.time');
 
 		$result = $this->db->get();
 
@@ -424,6 +424,22 @@ class Party_model extends CI_model
 			return $affected;
 		}
 
+		return false;
+	}
+
+	function is_played_song($partyid, $songid)
+	{
+		$this->db->select('played');
+		$this->db->where('played', '1');
+		$this->db->where('partyid', $partyid);
+		$this->db->where('songid', $songid);
+		$this->db->from('quesong');
+
+		$query = $this->db->get();
+		if($query && $query->num_rows() == 1)
+		{
+				return true;	
+		}
 		return false;
 	}
 }

@@ -29,10 +29,13 @@
 				</form>
 			</div>
 			<div class="col-sm-8 col-sm-pull-4">
-				<h4>Play queue</h4>
-				<div id="newpartyque" data-uid="<?php echo $user['uid']; ?>" data-partyhash="<?php echo $party['hash']; ?>">
-					<div class="well loader">Loading party...</div>
+				<div class="col-sm-12">
+					<div id="nowPlaying" data-uid="<?php echo $user['uid']; ?>" data-partyhash="<?php echo $party['hash']; ?>">
+						<div class="well loader">Loading party...</div>
+					</div>
 				</div>
+				<div id="newpartyque" data-uid="<?php echo $user['uid']; ?>" data-partyhash="<?php echo $party['hash']; ?>"></div>
+				<div id="playedqueue" data-uid="<?php echo $user['uid']; ?>" data-partyhash="<?php echo $party['hash']; ?>"></div>
 			</div>
 		</div>
 	</div>

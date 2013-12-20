@@ -1,13 +1,16 @@
 var time = 1;
 var partyarray = new Array();
-
+var firstrun = false;
 // run things when page is ready
 $(document).ready(function(){
 	load_party($('#newpartyque').attr('data-partyhash'), $('#newpartyque'));
+	get_played_song($('#nowPlaying').attr('data-partyhash'), $('#nowPlaying').children('div').eq(0).attr('data-songid'));
 });
 
-function load_party(partyhash, theobject)
+function load_party(partyhash, theobject, recursive)
 {
+	recursive = typeof recursive !== 'undefined' ? recursive : true;
+
 	console.log('running load_party("'+partyhash+'","'+theobject+'");');
 	console.log('Filling ' + theobject + ' with party stuff from ' + partyhash);
 
@@ -33,8 +36,15 @@ function load_party(partyhash, theobject)
 		if(answer.status === 'success')
 		{
 			console.log(answer);
-			// partyarray = answer.response.result;
-			redraw(answer.response.result, theobject);
+			var i = 0;
+			while(answer.response.result[i] && answer.response.result[i].played === '0')
+			{
+				i += 1;
+			}
+			redraw(answer.response.result.slice(1,i), theobject);
+			redraw(answer.response.result.slice(i), $('#playedqueue')); 
+			redraw(answer.response.result.slice(0,1), $('#nowPlaying'));
+			firstrun = true;
 			load_party(partyhash, theobject);
 		}
 		else if(answer.status === 'empty')
@@ -61,6 +71,40 @@ function fill_empty(theobject)
 	theobject.slideDown('fast');
 }
 
+function get_played_song(partyhash, songid)
+{
+	var postdata = {
+		partyhash : partyhash,
+		songid : songid
+	}
+	console.log('check if played!');
+
+	$.ajax({
+		type: "POST",
+		url: BASE_URL + 'api/party/is_song_played',
+		data: postdata,
+		dataType: 'json'
+	})
+	.fail(function(errordata){
+		console.log('errordata!!!');
+		console.log(errordata);
+	})
+	.done(function(answer){
+		if(answer.status === 'success')
+		{
+			time = 1;
+			console.log('many calls!');
+			load_party($('#newpartyque').attr('data-partyhash'), $('#newpartyque'), false);
+			console.log(answer);
+		}
+		else
+		{
+			console.log(answer);
+		}
+		get_played_song(partyhash, $('#nowPlaying').children('div').eq(0).attr('data-songid'))
+	});
+}
+
 function has_voted(users, uid)
 {
 	if(Array.isArray(users))
@@ -84,9 +128,7 @@ function redraw(queue, theobject)
 
 		theobject.empty();
 		theobject.slideUp('fast');
-		// theobject.children('.loader').slideUp({duration: 'fast', queue: false}, function(){
-		// });
-
+	
 		for(var i = 0; i < queue.length; i++)
 		{
 			console.log('song: ');
@@ -94,9 +136,9 @@ function redraw(queue, theobject)
 
 			var song = queue[i];
 
-			var $songelement = $('<div></div>').addClass('row');
+			var $songelement = $('<div></div>').addClass('row track').attr('data-songid', song.songid);
 			$('<div></div>').addClass('col-xs-4 col-sm-3').appendTo($songelement)
-				.append('<img class="img-responsive">').children('img').attr('src', song.image);
+				.append('<img class="img-responsive pull-right cover">').children('img').attr('src', song.image).attr('width', '60%');
 
 			var $middlecolon = $('<div></div>').addClass('col-xs-8 col-sm-5').appendTo($songelement);
 
@@ -133,8 +175,7 @@ function redraw(queue, theobject)
 					.attr('title', song.voters[k].name + (uid == song.voters[k].uid ? ' &mdash; you!' : ''))
 					.attr('data-toggle', 'tooltip');
 			}
-
-			$songelement.appendTo(theobject);
+			$songelement.appendTo(theobject);	
 		}
 
 		theobject.slideDown('slow');

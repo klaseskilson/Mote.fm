@@ -27,51 +27,51 @@ class party extends CI_Controller {
 	{
 		//FIXME: skall detta hämtas via post istället?
 		//get session data
-		$partyID = $this->session->userdata('partyid');
+		$partyhash = $this->input->post('partyhash');
 		//What track do we think spotify is playing?
-		$expectedTrack = $this->session->userdata('trackuri');
+		// $expectedTrack = $this->session->userdata('trackuri');
 
 		$data = array();
 
-		if(!$partyID || !$expectedTrack)
-		{
-			$data['status'] = 'error';
-			$data['response'] = 'Unable to get partyid or expected track for party';
-		}
-		else
-		{
-			//What track is spotify playing?
-			$track = $this->party_model->get_current_track_at_party($partyID)['trackuri'];
-			if (!$track)
-			{
-				$data['status'] = 'error';
-				$data['response'] = 'Unable to get current track at party';
-			}
-			else
-			{
-				//continue querying database while both spotify and us say the same track is playing
-				$startTime = time();
-				$currentTime = time();
-				while(($currentTime - $startTime) < 280 && $track == $expectedTrack)
-				{
-					$track = $this->party_model->get_current_track_at_party($partyID)['trackuri'];
-					$currentTime = time();
-					sleep(1);
-				}
+		// if(!$partyID || !$expectedTrack)
+		// {
+		// 	$data['status'] = 'error';
+		// 	$data['response'] = 'Unable to get partyid or expected track for party';
+		// }
+		// else
+		// {
+		// 	//What track is spotify playing?
+		// 	$track = $this->party_model->get_current_track_at_party($partyID)['trackuri'];bbbb
+		// 	if (!$track)
+		// 	{
+		// 		$data['status'] = 'error';
+		// 		$data['response'] = 'Unable to get current track at party';
+		// 	}
+		// 	else
+		// 	{
+		// 		//continue querying database while both spotify and us say the same track is playing
+		// 		$startTime = time();
+		// 		$currentTime = time();
+		// 		while(($currentTime - $startTime) < 280 && $track == $expectedTrack)
+		// 		{
+		// 			$track = $this->party_model->get_current_track_at_party($partyID)['trackuri'];
+		// 			$currentTime = time();
+		// 			sleep(1);
+		// 		}
 
-				//store new track in session data and return the answer
-				$this->session->set_userdata('trackuri', $track);
+		// 		//store new track in session data and return the answer
+		// 		$this->session->set_userdata('trackuri', $track);
 
-				$status = array();
-				$status['track'] = $track;
-				$status['trackname'] = get_track_name($track);
-				$status['artistname'] = get_artist_name($track);
-				$status['albumart']	= get_album_art($track);
+		// 		$status = array();
+		// 		$status['track'] = $track;
+		// 		$status['trackname'] = get_track_name($track);
+		// 		$status['artistname'] = get_artist_name($track);
+		// 		$status['albumart']	= get_album_art($track);
 
-				$data['status'] = 'success';
-				$data['result'] = $status;
-			}
-		}
+		// 		$data['status'] = 'success';
+		// 		$data['result'] = $status;
+		// 	}
+		// }
 
 		echo json_encode($data);
 	}
@@ -206,7 +206,7 @@ class party extends CI_Controller {
 				}
 			}
 
-			sleep(1);
+			sleep(5);
 
 			$partydata = $this->party_model->get_party_queue_from_hash($partyhash);
 			if($partydata)
@@ -556,8 +556,55 @@ class party extends CI_Controller {
 			{
 				$data['status'] = 'error';
 				$data['response'] = 'Error resetting playlist';
+				$data['result'] = $reset;
 			}
 		}
 		echo json_encode($data);
+	}
+
+	public function is_song_played()
+	{
+		$data = array();
+		$partyhash = $this->input->post('partyhash');
+		$songid = $this->input->post('songid');
+
+		if(!$partyhash || !$songid)
+		{
+			$data['status'] = 'error';
+			$data['response'] = 'Missing post data ' . $songid;
+		}
+		else
+		{
+			$partyid = $this->party_model->get_party_id_from_hash($partyhash);
+			if($partyid)
+			{
+				$counter = 0;
+				// wait for update!
+				while(!$this->party_model->is_played_song($partyid, $songid))
+				{
+					sleep(2);
+					$counter++;
+
+					// try checking for 30 seconds, then return error and require javascript to refres request
+					if($counter > 15)
+					{
+						$data['status'] = 'error';
+						$data['response'] = 'Party timed out.';
+						echo json_encode($data);
+						die();
+					}
+				}
+				$data['status'] = 'success';
+				$data['result'] = true;
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'Party timed out.';
+			}
+		}
+		sleep(5);
+		echo json_encode($data);
+
 	}
 }
