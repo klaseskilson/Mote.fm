@@ -3,9 +3,33 @@ var partyarray = new Array();
 var firstrun = false;
 // run things when page is ready
 $(document).ready(function(){
+	song_count($('#newpartyque').attr('data-partyhash'), $('#nowPlaying'));
 	load_party($('#newpartyque').attr('data-partyhash'), $('#newpartyque'));
 	get_played_song($('#nowPlaying').attr('data-partyhash'), $('#nowPlaying').children('div').eq(0).attr('data-songid'));
 });
+
+function song_count(partyhash, theobject)
+{
+ 	var postData = {
+		'partyhash' : partyhash
+	}
+	$.ajax({
+		type: "POST",
+		url: BASE_URL + "api/party/get_song_count",
+		data: postData, 
+		dataType: 'json'
+	})
+	.fail(function (data){})
+	.done(function (data){
+		if(data.status === 'success')
+		{
+			if(data.result === '0')
+			{
+				fill_empty(theobject);
+			}
+		}
+	});
+}
 
 function load_party(partyhash, theobject, recursive)
 {
@@ -64,6 +88,8 @@ function load_party(partyhash, theobject, recursive)
 
 function fill_empty(theobject)
 {
+	theobject.empty();
+
 	theobject.slideUp('fast');
 
 	theobject.append('<p>This party seems to be empty! Add some songs straight away, and start dancing!</p>');

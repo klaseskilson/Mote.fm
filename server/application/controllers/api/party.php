@@ -25,8 +25,7 @@ class party extends CI_Controller {
 	 */
 	public function get_playing_song()
 	{
-		//FIXME: skall detta hämtas via post istället?
-		//get session data
+
 		$partyhash = $this->input->post('partyhash');
 		//What track do we think spotify is playing?
 		// $expectedTrack = $this->session->userdata('trackuri');
@@ -102,7 +101,42 @@ class party extends CI_Controller {
 		}
 		echo json_encode($data);
 	}
+	function get_song_count()
+	{
+		$partyhash = $this->input->post('partyhash');
+		$data = array();
 
+		if(!$partyhash)
+		{
+			$data['status'] = 'error';
+			$data['response'] = 'missing post data';
+		}
+		else
+		{
+			$partyid = $this->party_model->get_party_id_from_hash($partyhash);
+			if($partyid)
+			{
+				$songCount = $this->party_model->get_song_count($partyid);
+
+				if($songCount)
+				{
+					$data['status'] = 'success';
+					$data['result'] = $songCount['song_count'];
+				}
+				else
+				{
+					$data['status'] = 'error';
+					$data['response'] = 'Error getting song count';					
+				}
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'No party related to partyhash';
+			}
+		}
+		echo json_encode($data);
+	}
 	/**
 	 * Get list of parties register to the user
 	 * @return list of parties own by user
@@ -169,7 +203,7 @@ class party extends CI_Controller {
 			else
 			{
 				$data['status'] = 'error';
-				$data['response'] = 'Could not create party';
+				$data['§'] = 'Could not create party';
 			}
 		}
 		// write array json encoded

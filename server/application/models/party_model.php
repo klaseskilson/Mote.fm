@@ -442,4 +442,19 @@ class Party_model extends CI_model
 		}
 		return false;
 	}
+
+	function get_song_count($partyid)
+	{
+		$this->db->select('COUNT(*) as song_count');
+		$this->db->where('partyid', $partyid);
+		$this->db->from('quesong');
+
+		$query = $this->db->get();
+		if($query && $query->num_rows() == 1)
+		{
+			$result = $query->result_array();
+			return $result[0];
+		}
+		return false;
+	}
 }

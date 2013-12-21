@@ -15,8 +15,6 @@ header
 {
 	width: 100%;
 	background-color: #f1f0eb;
-	padding-top: 20px;
-	padding-bottom: 20px;
 }
 
 /*
@@ -134,7 +132,11 @@ li
 
 #pastqueue
 {
-	-webkit-filter: saturate(0.7);
+	-webkit-filter:saturate(0.7);
+}
+#pastqueue >div
+{
+	opacity: .4;
 }
 
 .songrow
@@ -152,7 +154,7 @@ li
 }
 .first
 {
-	background-color: #CEC0B3;
+	background-color: rgba(253, 223, 77, 0.8);
 }
 .first>.cover>.sp-image
 {
@@ -214,4 +216,5 @@ li
 	font-size: 100%;
 	border-bottom: 1px solid #6a676e;
 	text-transform: uppercase;
+}
 }

@@ -6,6 +6,7 @@ require([
 	'scripts/jquery.min'
 	], function(models, Image, cover, trackInfo, jquery){
 		var time = 1;
+		var firstLoad = true;
 
 		/**
 		 * Called when party site is loaded, starts recursive ajaj and register switching of songs
@@ -14,8 +15,32 @@ require([
 		
 		var startParty = function(partyhash)
 		{
+			check_song_count(partyhash);
 			load_party(partyhash);
 			registerPlayback(partyhash);
+		}
+
+		var check_song_count = function(partyhash)
+		{
+			var postData = {
+				'partyhash' : partyhash
+			}
+			$.ajax({
+				type: "POST",
+				url: constants.SERVER_URL + "/api/party/get_song_count",
+				data: postData, 
+				dataType: 'json'
+			})
+			.fail(function (data){})
+			.done(function (data){
+				if(data.status === 'success')
+				{
+					if(data.result === '0')
+					{
+						fill_empty($('#queue'));
+					}
+				}
+			});
 		}
 
 		/**
@@ -24,6 +49,8 @@ require([
 		 */
 		function fill_empty(theobject)
 		{
+			theobject.empty();
+
 			theobject.slideUp('fast');
 
 			theobject.append('<p>This party seems to be empty! Add some songs straight away, and start dancing!</p>');
@@ -78,7 +105,6 @@ require([
 
 					if(song.played == "1")
 					{
-						$section.css('background-color', '#878A75');
 						$('#pastqueue').prepend($section);
 					}
 					else
@@ -114,18 +140,17 @@ require([
 				dataType: 'json'
 			})
 			.fail(function(data) {
-				console.log(errordata.responseText);
+				console.log(data.responseText);
 			})
 			.done(function(answer){
 				if(answer.status === 'success')
 				{
 					redraw(answer.response.result, $('#queue'));
-					playNextSong(partyhash);					
-				}
-				else if(answer.status === 'empty')
-				{
-					console.log('No songs found');
-					fill_empty($('#queue'));
+					if(firstLoad)
+					{
+						firstLoad = false;
+						playNextSong(partyhash);
+					}					
 				}
 				else
 				{
