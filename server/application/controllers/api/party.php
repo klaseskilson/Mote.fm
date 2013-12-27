@@ -327,11 +327,25 @@ class party extends CI_Controller {
 		}
 		else
 		{
-			$data = array('partyid' => $partyid, 'trackuri' => $trackuri);
-			$query = $this->db->insert('nowplaying', $data);
+			$songid = $this->party_model->get_song_id_from_uri($trackuri, $partyid);
+			if($songid)
+			{
+				$result = $this->party_model->set_song_as_playing($songid);
+				if(result)
+				{
+					$data['status'] = 'success';
+					$data['result'] = $result;
+				}
+				else
+				{
+					$data['status'] = 'error';
+					$data['response'] = 'Error setting song as playing';
+				}
+			}
+			else
+			{
 
-			$data['status'] = 'success';
-			$data['result'] = $query;
+			}
 		}
 
 		echo json_encode($data);

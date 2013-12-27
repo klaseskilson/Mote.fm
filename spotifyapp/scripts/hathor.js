@@ -2,17 +2,17 @@ require([
 	'$api/models',
 	'$views/image#Image',
 	'scripts/cover',
-	'scripts/trackInfo',
-	'scripts/jquery.min'
-	], function(models, Image, cover, trackInfo, jquery){
+	'scripts/trackInfo'
+	], function(models, Image, cover, trackInfo){
+		'use strict';
+
 		var time = 1;
 		var firstLoad = true;
-
+		
 		/**
 		 * Called when party site is loaded, starts recursive ajaj and register switching of songs
 		 * @param  partyhash the hash of the party
-		 */
-		
+		 */		
 		var startParty = function(partyhash)
 		{
 			check_song_count(partyhash);
@@ -25,13 +25,16 @@ require([
 			var postData = {
 				'partyhash' : partyhash
 			}
+
 			$.ajax({
 				type: "POST",
 				url: constants.SERVER_URL + "/api/party/get_song_count",
 				data: postData, 
 				dataType: 'json'
 			})
-			.fail(function (data){})
+			.fail(function (data){
+				console.log(data);
+			})
 			.done(function (data){
 				if(data.status === 'success')
 				{
@@ -39,6 +42,11 @@ require([
 					{
 						fill_empty($('#queue'));
 					}
+				}
+				else
+				{
+					console.log(data);
+
 				}
 			});
 		}
@@ -103,15 +111,7 @@ require([
 							.attr('data-toggle', 'tooltip');
 					}
 
-					if(song.played == "1")
-					{
-						$('#pastqueue').prepend($section);
-					}
-					else
-					{
-						theobject.append($section);	
-					}
-					
+					theobject.append($section);
 					cover.insertImage(song.uri);
 				}
 
@@ -145,12 +145,18 @@ require([
 			.done(function(answer){
 				if(answer.status === 'success')
 				{
-					redraw(answer.response.result, $('#queue'));
+					var i = 0;
+					while(answer.response.result[i] && answer.response.result[i].played !== '1')
+					{
+						i += 1;
+					}
+					redraw(answer.response.result.slice(0,i), $('#queue'));
+					redraw(answer.response.result.slice(i), $('#pastqueue')); 
 					if(firstLoad)
 					{
+						playNextSong(partyhash);		
 						firstLoad = false;
-						playNextSong(partyhash);
-					}					
+					}
 				}
 				else
 				{
@@ -194,7 +200,6 @@ require([
 		var removeSong = function()
 		{
 			$('#queue').children('div').eq(0).removeClass('first');
-			$('#queue').children('div').eq(0).css('background-color', '#878A75');
 			$('#pastqueue').prepend($('#queue').children('div').eq(0));
 		}
 
@@ -205,26 +210,26 @@ require([
 		 */
 		var registerPlayback = function(partyhash)
 		{
-			models.player.addEventListener('change:playing', function(data)
-			{
+			models.player.addEventListener('change', callback); //<--- FIXME: Bug that came from nowhere!
+			var callback = function(){
 				models.player.load('track').done(function(){
 					if(models.player.track)
 					{
 						setAsPlayed(partyhash, models.player.track.uri);
 					}
-					setTimeout(function() {
+					setTimeout(function(){
 						if(!models.player.track)
 						{
 							removeSong();
-							playNextSong(partyhash);						
+							playNextSong(partyhash);
 						}
 						else
 						{
 							registerSong(partyhash);
 						}
-					}, 1); // <--- lol @ spotify
-				});
-			});
+					},1);
+				});	
+			}
 		}
 
 		/**
@@ -259,7 +264,7 @@ require([
 
 				//Spotify is a retard, we have to wait one second to get correct song
 				setTimeout(function() { 
-
+					console.log('Registering');
 					var musicTrack = {
 						'partyhash' : partyhash,
 						'trackuri' : ''
@@ -285,7 +290,7 @@ require([
 					'trackuri' : trackURI
 						}
 				
-				if(models.player.position/models.player.track.duration < 0.5)
+				if(models.player.position/models.player.track.duration < 0.5) //<--- high number beacause the api i slower than the UI
 				{
 					console.log("user pause");
 				}

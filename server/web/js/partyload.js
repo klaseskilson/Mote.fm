@@ -1,4 +1,5 @@
 var time = 1;
+var successTime = 1;
 var partyarray = new Array();
 var firstrun = false;
 // run things when page is ready
@@ -8,6 +9,9 @@ $(document).ready(function(){
 	get_played_song($('#nowPlaying').attr('data-partyhash'), $('#nowPlaying').children('div').eq(0).attr('data-songid'));
 });
 
+/**
+ *	Get the number of songs related to this party, if its zero, then we show fill_empty()
+ */
 function song_count(partyhash, theobject)
 {
  	var postData = {
@@ -31,6 +35,11 @@ function song_count(partyhash, theobject)
 	});
 }
 
+
+/**
+ *	Load party data async via ajaj. Can be recursive or called once
+ *  TODO: Some bugs causes function to load multiple tipmes.
+ */
 function load_party(partyhash, theobject, recursive)
 {
 	recursive = typeof recursive !== 'undefined' ? recursive : true;
@@ -61,14 +70,19 @@ function load_party(partyhash, theobject, recursive)
 		{
 			console.log(answer);
 			var i = 0;
-			while(answer.response.result[i] && answer.response.result[i].played === '0')
+			while(answer.response.result[i] && answer.response.result[i].played !== '1')
 			{
 				i += 1;
 			}
+			// Song to be played
 			redraw(answer.response.result.slice(1,i), theobject);
+			//Song that already has been played
 			redraw(answer.response.result.slice(i), $('#playedqueue')); 
+			//Currently playing track
 			redraw(answer.response.result.slice(0,1), $('#nowPlaying'));
+			
 			firstrun = true;
+
 			load_party(partyhash, theobject);
 		}
 		else if(answer.status === 'empty')
@@ -85,6 +99,10 @@ function load_party(partyhash, theobject, recursive)
 		}
 	});
 }
+
+/**
+ * Fills object with text saying that there is no songs at the party
+ */
 
 function fill_empty(theobject)
 {
@@ -119,7 +137,6 @@ function get_played_song(partyhash, songid)
 		if(answer.status === 'success')
 		{
 			time = 1;
-			console.log('many calls!');
 			load_party($('#newpartyque').attr('data-partyhash'), $('#newpartyque'), false);
 			console.log(answer);
 		}
@@ -131,6 +148,9 @@ function get_played_song(partyhash, songid)
 	});
 }
 
+/**
+ * test if user already has voted on the current song
+ */
 function has_voted(users, uid)
 {
 	if(Array.isArray(users))
@@ -145,6 +165,9 @@ function has_voted(users, uid)
 	return false;
 }
 
+/**
+ * Redraws theobject with the queue inside of it
+ */
 function redraw(queue, theobject)
 {
 	if(Array.isArray(queue))
