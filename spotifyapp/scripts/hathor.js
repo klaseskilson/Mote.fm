@@ -2,8 +2,9 @@ require([
 	'$api/models',
 	'$views/image#Image',
 	'scripts/cover',
-	'scripts/trackInfo'
-	], function(models, Image, cover, trackInfo){
+	'scripts/trackInfo',
+	'scripts/jquery.min'
+	], function(models, Image, cover, trackInfo, jquery){
 		'use strict';
 
 		var time = 1;
@@ -154,8 +155,12 @@ require([
 					redraw(answer.response.result.slice(i), $('#pastqueue')); 
 					if(firstLoad)
 					{
-						playNextSong(partyhash);		
+						playNextSong(partyhash);
 						firstLoad = false;
+					}
+					else
+					{
+						highlightFirst();
 					}
 				}
 				else
@@ -170,7 +175,15 @@ require([
 				}
 			});
 		}
-
+		var highlightFirst = function()
+		{
+            if($('#queue').children('div').length != 0)
+			{
+				var $child = $('#queue').children('div').eq(0);
+            	var track = $child.attr('id');
+            	$child.addClass('first');
+			}
+		}
 		/**
 		 * Will play next song in the queue list
 		 */
@@ -178,10 +191,9 @@ require([
 		{
             if($('#queue').children('div').length != 0)
             {
-                    var $child = $('#queue').children('div').eq(0);
-                    var track = $child.attr('id');
-                    $child.addClass('first');
-                            
+					highlightFirst();    
+					var $child = $('#queue').children('div').eq(0);
+            		var track = $child.attr('id');                        
                     track = 'spotify:track:' + track;
                     var spTrack = models.Track.fromURI(track);
                     models.player.playTrack(spTrack);
@@ -210,26 +222,29 @@ require([
 		 */
 		var registerPlayback = function(partyhash)
 		{
-			models.player.addEventListener('change', callback); //<--- FIXME: Bug that came from nowhere!
-			var callback = function(){
+			models.player.addEventListener('change:playing', function(){
+				console.log("Callback!");
 				models.player.load('track').done(function(){
 					if(models.player.track)
 					{
+						console.log('end of song or user paused');
 						setAsPlayed(partyhash, models.player.track.uri);
 					}
 					setTimeout(function(){
 						if(!models.player.track)
 						{
+							console.log('end of song');
 							removeSong();
 							playNextSong(partyhash);
 						}
 						else
 						{
+							console.log('start of song');
 							registerSong(partyhash);
 						}
 					},1);
 				});	
-			}
+			});
 		}
 
 		/**
@@ -264,7 +279,6 @@ require([
 
 				//Spotify is a retard, we have to wait one second to get correct song
 				setTimeout(function() { 
-					console.log('Registering');
 					var musicTrack = {
 						'partyhash' : partyhash,
 						'trackuri' : ''
@@ -274,6 +288,7 @@ require([
 					if(track)
 					{
 						musicTrack.trackuri = track.uri;
+						console.log('Registering');
 						$.post(constants.SERVER_URL + '/api/party/spotify_song', musicTrack , function (data) {
 							console.log(data);
 						});

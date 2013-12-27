@@ -330,8 +330,8 @@ class party extends CI_Controller {
 			$songid = $this->party_model->get_song_id_from_uri($trackuri, $partyid);
 			if($songid)
 			{
-				$result = $this->party_model->set_song_as_playing($songid);
-				if(result)
+				$result = $this->party_model->set_song_as_playing($partyid, $songid);
+				if($result)
 				{
 					$data['status'] = 'success';
 					$data['result'] = $result;
@@ -344,7 +344,8 @@ class party extends CI_Controller {
 			}
 			else
 			{
-
+				$data['status'] = 'error';
+				$data['response'] = 'Song not found at party';
 			}
 		}
 

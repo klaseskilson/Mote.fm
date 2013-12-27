@@ -504,7 +504,6 @@ class Party_model extends CI_model
 		$this->db->where('songid', $songid);
 
 		$query = $this->db->update('quesong', $data);
-
 		//create new entry in playedsongs
 		$data = array(
 					'songid' => $songid
