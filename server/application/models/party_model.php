@@ -431,7 +431,7 @@ class Party_model extends CI_model
 		$query = $this->db->get();
 
 		if($query && $query->num_rows() == 0)
-			return true;
+			return $query;
 
 		return false;
 	}

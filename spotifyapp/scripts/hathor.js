@@ -123,17 +123,13 @@ require([
 		/**
 		 * ajaj loop to get partqueue
 		 * @param  partyhash the hash of the party
-		 * @param  recursive this flag is used to avoid double recursive when
-		 *         we want to get the playlist directly, like at a playlist reset.
 		 */
-		var load_party = function(partyhash, recursive){
+		var load_party = function(partyhash){
 
-			recursive = typeof recursive !== 'undefined' ? recursive : true;
 			var postData = {
 				'time' : time,
 				'partyhash' : partyhash
 			}
-			time = Math.floor(new Date().getTime() / 1000);
 			$.ajax({
 				type: "POST",
 				url: constants.SERVER_URL + "/api/party/load_party",
@@ -144,6 +140,8 @@ require([
 				console.log(data.responseText);
 			})
 			.done(function(answer){
+				time = Math.floor(new Date().getTime() / 1000);
+
 				if(answer.status === 'success')
 				{
 					var i = 0;
@@ -162,16 +160,16 @@ require([
 					{
 						highlightFirst();
 					}
+					console.log('Success!');
+					console.log(answer);
+					load_party(partyhash);
+
 				}
 				else
 				{
 					console.log('failed');
 					console.log(answer);
-					
-				}
-				if(recursive)
-				{
-					load_party(partyhash, recursive);
+					load_party(partyhash);
 				}
 			});
 		}

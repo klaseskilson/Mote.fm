@@ -40,10 +40,8 @@ function song_count(partyhash, theobject)
  *	Load party data async via ajaj. Can be recursive or called once
  *  TODO: Some bugs causes function to load multiple tipmes.
  */
-function load_party(partyhash, theobject, recursive)
+function load_party(partyhash, theobject)
 {
-	recursive = typeof recursive !== 'undefined' ? recursive : true;
-
 	console.log('running load_party("'+partyhash+'","'+theobject+'");');
 	console.log('Filling ' + theobject + ' with party stuff from ' + partyhash);
 
@@ -53,8 +51,6 @@ function load_party(partyhash, theobject, recursive)
 		'time': time,
 		'partyhash': partyhash
 	};
-
-	time = Math.floor(new Date().getTime() / 1000);
 
 	$.ajax({
 		type: "POST",
@@ -66,6 +62,7 @@ function load_party(partyhash, theobject, recursive)
 		console.log(errordata.responseText);
 	})
 	.done(function(answer){
+		time = Math.floor(new Date().getTime() / 1000);
 		if(answer.status === 'success')
 		{
 			console.log(answer);
