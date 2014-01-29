@@ -240,8 +240,6 @@ class party extends CI_Controller {
 				}
 			}
 
-			sleep(5);
-
 			$partydata = $this->party_model->get_party_queue_from_hash($partyhash);
 			if($partydata)
 			{
@@ -327,11 +325,26 @@ class party extends CI_Controller {
 		}
 		else
 		{
-			$data = array('partyid' => $partyid, 'trackuri' => $trackuri);
-			$query = $this->db->insert('nowplaying', $data);
-
-			$data['status'] = 'success';
-			$data['result'] = $query;
+			$songid = $this->party_model->get_song_id_from_uri($trackuri, $partyid);
+			if($songid)
+			{
+				$result = $this->party_model->set_song_as_playing($partyid, $songid);
+				if($result)
+				{
+					$data['status'] = 'success';
+					$data['result'] = $result;
+				}
+				else
+				{
+					$data['status'] = 'error';
+					$data['response'] = 'Error setting song as playing';
+				}
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['response'] = 'Song not found at party';
+			}
 		}
 
 		echo json_encode($data);

@@ -85,3 +85,13 @@ CREATE TABLE IF NOT EXISTS `spotifycache` (
 	`image` TEXT NOT NULL,
 	PRIMARY KEY(`cacheid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+CREATE TABLE IF NOT EXISTS `playedsongs` (
+	`playid` INT(6) NOT NULL AUTO_INCREMENT,
+	`songid` INT(6) NOT NULL,
+	`time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY(`playid`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+
+ALTER TABLE `playedsongs`
+	add CONSTRAINT `playedsongs_ibfk_1`FOREIGN KEY (`songid`) REFERENCES `quesong` (`songid`)

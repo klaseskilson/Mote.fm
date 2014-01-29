@@ -39,7 +39,7 @@ require([
 			var html = "";
 			var numOfParties = Math.min(5,json.result.length);
 			console.log(numOfParties);
-			if(numOfParties == 0)
+			if(numOfParties != 0)
 			{
 				for(var i = 0; i < numOfParties; i++)
 				{
