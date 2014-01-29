@@ -240,8 +240,6 @@ class party extends CI_Controller {
 				}
 			}
 
-			sleep(5);
-
 			$partydata = $this->party_model->get_party_queue_from_hash($partyhash);
 			if($partydata)
 			{
