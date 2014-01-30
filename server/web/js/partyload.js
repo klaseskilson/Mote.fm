@@ -196,7 +196,7 @@ function redraw(queue, theobject)
 				.append('<h5>'+song.artistname+'</h5>');
 
 			$('<h5></h5>').appendTo($xscontent)
-				.append('<a href="#" class="vote btn btn-success" data-toggle="tooltip" title="Add your vote to this song!">Vote!</a>')
+				.append('<a href="#" class="vote btn btn-success ' + (has_voted(thevoters, uid) ? 'hidden' : '') +'" data-toggle="tooltip" title="Add your vote to this song!">Vote!</a>')
 				.children('a').attr('data-songid', song.songid)
 				.parent()
 					.append(' <span><strong>'+song.vote_count+'</strong> '+(song.vote_count == 1 ? 'vote' : 'votes' )+'</span>');
