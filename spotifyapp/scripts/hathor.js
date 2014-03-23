@@ -154,6 +154,8 @@ require([
 					if(firstLoad)
 					{
 						playNextSong(partyhash);
+						registerSong(partyhash);
+
 						firstLoad = false;
 					}
 					else
@@ -163,6 +165,7 @@ require([
 					console.log('Success!');
 					console.log(answer);
 					load_party(partyhash);
+					penis();
 
 				}
 				else
@@ -195,12 +198,16 @@ require([
                     track = 'spotify:track:' + track;
                     var spTrack = models.Track.fromURI(track);
                     models.player.playTrack(spTrack);
+                    return true;
             }
             else
             {
                     console.log("no tracks!!");
                     $('#pastqueue').empty();
                     resetPlaylist(partyhash);
+                    firstLoad = true;
+                    load_party(partyhash);
+                    return false;
             }
 		}
 
@@ -221,26 +228,39 @@ require([
 		var registerPlayback = function(partyhash)
 		{
 			models.player.addEventListener('change:playing', function(){
-				console.log("Callback!");
+				var currentSong;
 				models.player.load('track').done(function(){
-					if(models.player.track)
-					{
-						console.log('end of song or user paused');
-						setAsPlayed(partyhash, models.player.track.uri);
-					}
+						if(models.player.track)
+					 	{
+					 		//we need this to know if its a new song, or user paused
+					 		currentSong = models.player.track.uri;
+						 }
 					setTimeout(function(){
 						if(!models.player.track)
 						{
 							console.log('end of song');
 							removeSong();
-							playNextSong(partyhash);
+							if(playNextSong(partyhash))
+							{
+								setAsPlayed(partyhash, currentSong);
+							}
 						}
 						else
 						{
-							console.log('start of song');
-							registerSong(partyhash);
+							if(currentSong == models.player.track.uri)
+							{
+								//the user paused the song
+								console.log("user pause, do nothing");
+							}
+							else
+							{
+								//Its a new song
+								console.log("Start of new song, register as playing");
+								registerSong(partyhash);
+							}
 						}
 					},1);
+	
 				});	
 			});
 		}
@@ -297,23 +317,14 @@ require([
 
 		var setAsPlayed = function(partyhash, trackURI)
 		{
-			models.player.load('track').done(function(){
 				var musicTrack = {
 					'partyhash' : partyhash,
 					'trackuri' : trackURI
 						}
-				
-				if(models.player.position/models.player.track.duration < 0.5) //<--- high number beacause the api i slower than the UI
-				{
-					console.log("user pause");
-				}
-				else
-				{
-					$.post(constants.SERVER_URL + '/api/party/set_song_as_played', musicTrack , function (data) {
-						console.log(data);
-					});
-				}
-			});
+				console.log("setting song as played");
+				$.post(constants.SERVER_URL + '/api/party/set_song_as_played', musicTrack , function (data) {
+					console.log(data);
+				});
 		}
 		exports.startParty = startParty;
 	});
