@@ -394,10 +394,6 @@ class Party_model extends CI_model
 
 
 		$query = $this->db->update('quesong', $data);
-		//create new entry in playedsongs
-		$data = array(
-					'songid' => $songid
-				);
 
 		if($query)
 		{
@@ -508,7 +504,15 @@ class Party_model extends CI_model
 		$this->db->where('songid', $songid);
 
 		$query = $this->db->update('quesong', $data);
-		return $this->db->affected_rows();
+		//create new entry in playedsongs
+		$data = array(
+					'songid' => $songid
+				);
+
+		// insert data!
+		if($this->db->insert('playedsongs', $data))
+			// did it work? return the created id.
+			return $this->db->insert_id();
 
 		// if we got this far, something went wrong
 		return false;

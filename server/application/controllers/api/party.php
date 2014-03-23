@@ -239,8 +239,7 @@ class party extends CI_Controller {
 					die();
 				}
 			}
-			sleep(2);
-			
+
 			$partydata = $this->party_model->get_party_queue_from_hash($partyhash);
 			if($partydata)
 			{
