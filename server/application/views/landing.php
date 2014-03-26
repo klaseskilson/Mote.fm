@@ -79,19 +79,19 @@
 								Mote.fm helps you to easily let your guest control what's playing.
 							</p>
 							<p>
-								<a href="#second" class="btn btn-default btn-lg btn-block">Get mote.fm!</a>
+								<a href="#second" class="btn btn-default btn-lg btn-block">Notify me!</a>
 							</p>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-sm-4 col-sm-offset-2">
+						<div class="col-sm-4 col-sm-offset-4">
 							<p>
 								No more skipped songs halfway through, and no more fighting over the play queue.
 							</p>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-sm-4 col-sm-offset-6">
+						<div class="col-sm-4 col-sm-offset-4">
 							<p>
 								Use Spotify's extensive library to let people select what to listen to. Together.
 							</p>
@@ -103,23 +103,27 @@
 					<div class="container">
 						<div class="row">
 							<div class="col-sm-4 col-sm-offset-4">
-								<h2 id="signuptitle">Sign up today</h2>
+								<h2 id="signuptitle">Notify me!</h2>
+
+								<p>
+									Currently, Mote.fm is in closed alpha testing. If you want to get notified when
+									you can try it out by yourself, add your email below!
+								</p>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-sm-4 col-sm-offset-4">
+								<div id="submsg">
+
+								</div>
 								<div id="signuparea">
-									<form action="<?php echo base_url(); ?>user/signup/" method="post" id="signupform">
+									<form action="<?php echo base_url(); ?>user/subscribe/" method="post" id="subform">
 										<p>
 											<input type="text" name="name" id="name" class="form-control input-lg square-bottom" placeholder="Full name" required>
-											<input type="email" name="email" id="email" class="form-control input-lg square-bottom square-top" placeholder="Email" required>
-											<input type="password" name="password" id="password" class="form-control input-lg square-top" placeholder="Password" required>
+											<input type="email" name="email" id="email" class="form-control input-lg square-top" placeholder="Email" required>
 										</p>
 										<p>
 											<input type="submit" name="submit" id="submit" value="Go!" class="btn btn-default btn-lg btn-block">
-										</p>
-										<p>
-											By creating a account you accept our <a href="#">terms of service</a>. We never share your information with anybody.
 										</p>
 									</form>
 								</div><!-- /#signuparea -->

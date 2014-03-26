@@ -225,7 +225,7 @@ class User extends CI_Controller {
 		$this->load->view('templates/footer', $data);
 	}
 
-	public function subscribe($method = 'ajax')
+	public function subscribe($method = 'json')
 	{
 		$data = array();
 
@@ -234,17 +234,25 @@ class User extends CI_Controller {
 
 		if($email)
 		{
+			$response = '';
+
 			if(valid_email($email) && $this->user_model->subscribe_user($name, $email))
 			{
-				//OK, notify user
-				echo "All right.";
-
+				$response = array(
+						'status' => 'success',
+						'email' => $email
+					);
 			}
 			else
 			{
 				//something went wrong
-				echo "ajaj";
+				$response = array(
+						'status' => 'fail',
+						'email' => valid_email($email)
+					);
 			}
+
+			echo json_encode($response);
 		}
 		else
 		{

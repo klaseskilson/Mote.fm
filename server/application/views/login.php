@@ -52,26 +52,14 @@
 				</div><!-- /#signinarea -->
 				<div id="signuparea" style="display:none;">
 					<h2 id="signuptitle"></h2>
-					<h3>Sign up!</h3>
+					<h3>Sign up, soon!</h3>
 					<p>
-						Sign up by entering the fields below. You'll need to confirm your email within three days.
+						Currently, Mote.fm is in closed alpha testing. If you want to get notified when
+						you can try it out by yourself, <?php echo anchor('/', 'add your email here'); ?>!
 					</p>
-					<form action="<?php echo base_url(); ?>user/signup/" method="post" id="signupform" data-redir="<?php echo $redir ? $redir : ''; ?>">
-						<p>
-							<input type="text" name="name" id="name" class="form-control input-lg square-bottom" placeholder="Full name" required>
-							<input type="email" name="email" id="email" class="form-control input-lg square-bottom square-top" placeholder="Email" required>
-							<input type="password" name="password" id="password" class="form-control input-lg square-top" placeholder="Password" required>
-						</p>
-						<p>
-							<input type="submit" name="submit" id="submit" value="Go!" class="btn btn-default btn-lg btn-block">
-						</p>
-						<p>
-							By creating a account you accept our <a href="#">terms of service</a>. We never share your information with anybody.
-						</p>
-						<p>
-							<a href="#" data-toggle="signupsignin">Sign in instead!</a>
-						</p>
-					</form>
+					<p>
+						<a href="#" data-toggle="signupsignin">I want to sign in!</a>
+					</p>
 				</div><!-- /#signuparea -->
 			</div>
 		</div>

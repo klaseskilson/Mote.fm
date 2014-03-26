@@ -76,6 +76,40 @@ $(document).ready(function(){ // boring needed stuff
 		html: true
 	});
 
+	$('form#subform').submit(function(event){
+		event.preventDefault();
+
+		var postdata = {
+			'email': $('#email').val(),
+			'name': $('#name').val()
+		};
+
+		console.log(postdata);
+
+		$.ajax({
+			type: 'POST',
+			url: BASE_URL + 'user/subscribe/json',
+			data: postdata,
+			dataType: 'json'
+		})
+		.done(function(data){
+			console.log(data);
+
+			if(data.status === 'success')
+			{
+				$('form#subform').slideUp(300);
+				$('#submsg').html('<p>Awesome! Thanks! We\'ll let you know when Mote.fm is available for testing, or if we want to tell you something funny.</p>');
+			}
+			else
+			{
+				$('#submsg').html('<p class="alert alert-danger">Oh no! Something is not right. Double check that email, please.</p>');
+			}
+		})
+		.fail(function(errordata){
+			console.log(errordata.responseText);
+		})
+	});
+
 	/**
 	 * when submitting signup!
 	 */
@@ -96,7 +130,6 @@ $(document).ready(function(){ // boring needed stuff
 		};
 
 				console.log('redir: ' + redir);
-
 
 				console.log('typeof redir: ' + typeof redir);
 
