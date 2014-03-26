@@ -225,7 +225,7 @@ class User extends CI_Controller {
 		$this->load->view('templates/footer', $data);
 	}
 
-	public function subscribe()
+	public function subscribe($method = 'ajax')
 	{
 		$data = array();
 
@@ -244,15 +244,12 @@ class User extends CI_Controller {
 			{
 				//something went wrong
 				echo "ajaj";
-				
 			}
 		}
 		else
 		{
 			//no email adress
 		}
-
-
 	}
 
 	public function signUp($method = 'web')

@@ -113,6 +113,14 @@ class User_model extends CI_model
 		return false;
 	}
 
+	function user_is_subscribed($email)
+	{
+		$this->db->where('email', $email);
+		$q = $this->db->get('newsletter');
+
+		return $q->num_rows();
+	}
+
 	/**
 	 * create a new user
 	 */
