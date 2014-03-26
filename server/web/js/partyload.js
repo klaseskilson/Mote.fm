@@ -1,16 +1,47 @@
 var time = 1;
+var successTime = 1;
 var partyarray = new Array();
 var firstrun = false;
 // run things when page is ready
 $(document).ready(function(){
+	song_count($('#newpartyque').attr('data-partyhash'), $('#nowPlaying'));
 	load_party($('#newpartyque').attr('data-partyhash'), $('#newpartyque'));
 	get_played_song($('#nowPlaying').attr('data-partyhash'), $('#nowPlaying').children('div').eq(0).attr('data-songid'));
 });
 
-function load_party(partyhash, theobject, recursive)
+/**
+ *	Get the number of songs related to this party, if its zero, then we show fill_empty()
+ */
+function song_count(partyhash, theobject)
 {
-	recursive = typeof recursive !== 'undefined' ? recursive : true;
+ 	var postData = {
+		'partyhash' : partyhash
+	}
+	$.ajax({
+		type: "POST",
+		url: BASE_URL + "api/party/get_song_count",
+		data: postData, 
+		dataType: 'json'
+	})
+	.fail(function (data){})
+	.done(function (data){
+		if(data.status === 'success')
+		{
+			if(data.result === '0')
+			{
+				fill_empty(theobject);
+			}
+		}
+	});
+}
 
+
+/**
+ *	Load party data async via ajaj. Can be recursive or called once
+ *  TODO: Some bugs causes function to load multiple tipmes.
+ */
+function load_party(partyhash, theobject)
+{
 	console.log('running load_party("'+partyhash+'","'+theobject+'");');
 	console.log('Filling ' + theobject + ' with party stuff from ' + partyhash);
 
@@ -20,8 +51,6 @@ function load_party(partyhash, theobject, recursive)
 		'time': time,
 		'partyhash': partyhash
 	};
-
-	time = Math.floor(new Date().getTime() / 1000);
 
 	$.ajax({
 		type: "POST",
@@ -33,18 +62,24 @@ function load_party(partyhash, theobject, recursive)
 		console.log(errordata.responseText);
 	})
 	.done(function(answer){
+		time = Math.floor(new Date().getTime() / 1000);
 		if(answer.status === 'success')
 		{
 			console.log(answer);
 			var i = 0;
-			while(answer.response.result[i] && answer.response.result[i].played === '0')
+			while(answer.response.result[i] && answer.response.result[i].played !== '1')
 			{
 				i += 1;
 			}
+			// Song to be played
 			redraw(answer.response.result.slice(1,i), theobject);
+			//Song that already has been played
 			redraw(answer.response.result.slice(i), $('#playedqueue')); 
+			//Currently playing track
 			redraw(answer.response.result.slice(0,1), $('#nowPlaying'));
+			
 			firstrun = true;
+
 			load_party(partyhash, theobject);
 		}
 		else if(answer.status === 'empty')
@@ -62,8 +97,14 @@ function load_party(partyhash, theobject, recursive)
 	});
 }
 
+/**
+ * Fills object with text saying that there is no songs at the party
+ */
+
 function fill_empty(theobject)
 {
+	theobject.empty();
+
 	theobject.slideUp('fast');
 
 	theobject.append('<p>This party seems to be empty! Add some songs straight away, and start dancing!</p>');
@@ -93,7 +134,6 @@ function get_played_song(partyhash, songid)
 		if(answer.status === 'success')
 		{
 			time = 1;
-			console.log('many calls!');
 			load_party($('#newpartyque').attr('data-partyhash'), $('#newpartyque'), false);
 			console.log(answer);
 		}
@@ -105,6 +145,9 @@ function get_played_song(partyhash, songid)
 	});
 }
 
+/**
+ * test if user already has voted on the current song
+ */
 function has_voted(users, uid)
 {
 	if(Array.isArray(users))
@@ -119,6 +162,9 @@ function has_voted(users, uid)
 	return false;
 }
 
+/**
+ * Redraws theobject with the queue inside of it
+ */
 function redraw(queue, theobject)
 {
 	if(Array.isArray(queue))
@@ -150,7 +196,7 @@ function redraw(queue, theobject)
 				.append('<h5>'+song.artistname+'</h5>');
 
 			$('<h5></h5>').appendTo($xscontent)
-				.append('<a href="#" class="vote btn btn-success" data-toggle="tooltip" title="Add your vote to this song!">Vote!</a>')
+				.append('<a href="#" class="vote btn btn-success ' + (has_voted(thevoters, uid) ? 'hidden' : '') +'" data-toggle="tooltip" title="Add your vote to this song!">Vote!</a>')
 				.children('a').attr('data-songid', song.songid)
 				.parent()
 					.append(' <span><strong>'+song.vote_count+'</strong> '+(song.vote_count == 1 ? 'vote' : 'votes' )+'</span>');

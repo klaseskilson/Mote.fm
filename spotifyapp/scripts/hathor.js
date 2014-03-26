@@ -5,17 +5,51 @@ require([
 	'scripts/trackInfo',
 	'scripts/jquery.min'
 	], function(models, Image, cover, trackInfo, jquery){
-		var time = 1;
+		'use strict';
 
+		var time = 1;
+		var firstLoad = true;
+		
 		/**
 		 * Called when party site is loaded, starts recursive ajaj and register switching of songs
 		 * @param  partyhash the hash of the party
-		 */
-		
+		 */		
 		var startParty = function(partyhash)
 		{
+			check_song_count(partyhash);
 			load_party(partyhash);
 			registerPlayback(partyhash);
+		}
+
+		var check_song_count = function(partyhash)
+		{
+			var postData = {
+				'partyhash' : partyhash
+			}
+
+			$.ajax({
+				type: "POST",
+				url: constants.SERVER_URL + "/api/party/get_song_count",
+				data: postData, 
+				dataType: 'json'
+			})
+			.fail(function (data){
+				console.log(data);
+			})
+			.done(function (data){
+				if(data.status === 'success')
+				{
+					if(data.result === '0')
+					{
+						fill_empty($('#queue'));
+					}
+				}
+				else
+				{
+					console.log(data);
+
+				}
+			});
 		}
 
 		/**
@@ -24,6 +58,8 @@ require([
 		 */
 		function fill_empty(theobject)
 		{
+			theobject.empty();
+
 			theobject.slideUp('fast');
 
 			theobject.append('<p>This party seems to be empty! Add some songs straight away, and start dancing!</p>');
@@ -76,16 +112,7 @@ require([
 							.attr('data-toggle', 'tooltip');
 					}
 
-					if(song.played == "1")
-					{
-						$section.css('background-color', '#878A75');
-						$('#pastqueue').prepend($section);
-					}
-					else
-					{
-						theobject.append($section);	
-					}
-					
+					theobject.append($section);
 					cover.insertImage(song.uri);
 				}
 
@@ -96,17 +123,13 @@ require([
 		/**
 		 * ajaj loop to get partqueue
 		 * @param  partyhash the hash of the party
-		 * @param  recursive this flag is used to avoid double recursive when
-		 *         we want to get the playlist directly, like at a playlist reset.
 		 */
-		var load_party = function(partyhash, recursive){
+		var load_party = function(partyhash){
 
-			recursive = typeof recursive !== 'undefined' ? recursive : true;
 			var postData = {
 				'time' : time,
 				'partyhash' : partyhash
 			}
-			time = Math.floor(new Date().getTime() / 1000);
 			$.ajax({
 				type: "POST",
 				url: constants.SERVER_URL + "/api/party/load_party",
@@ -114,32 +137,51 @@ require([
 				dataType: 'json'
 			})
 			.fail(function(data) {
-				console.log(errordata.responseText);
+				console.log(data.responseText);
 			})
 			.done(function(answer){
+				time = Math.floor(new Date().getTime() / 1000);
+
 				if(answer.status === 'success')
 				{
-					redraw(answer.response.result, $('#queue'));
-					playNextSong(partyhash);					
-				}
-				else if(answer.status === 'empty')
-				{
-					console.log('No songs found');
-					fill_empty($('#queue'));
+					var i = 0;
+					while(answer.response.result[i] && answer.response.result[i].played !== '1')
+					{
+						i += 1;
+					}
+					redraw(answer.response.result.slice(0,i), $('#queue'));
+					redraw(answer.response.result.slice(i), $('#pastqueue')); 
+					if(firstLoad)
+					{
+						playNextSong(partyhash);
+						firstLoad = false;
+					}
+					else
+					{
+						highlightFirst();
+					}
+					console.log('Success!');
+					console.log(answer);
+					load_party(partyhash);
+
 				}
 				else
 				{
 					console.log('failed');
 					console.log(answer);
-					
-				}
-				if(recursive)
-				{
-					load_party(partyhash, recursive);
+					load_party(partyhash);
 				}
 			});
 		}
-
+		var highlightFirst = function()
+		{
+            if($('#queue').children('div').length != 0)
+			{
+				var $child = $('#queue').children('div').eq(0);
+            	var track = $child.attr('id');
+            	$child.addClass('first');
+			}
+		}
 		/**
 		 * Will play next song in the queue list
 		 */
@@ -147,10 +189,9 @@ require([
 		{
             if($('#queue').children('div').length != 0)
             {
-                    var $child = $('#queue').children('div').eq(0);
-                    var track = $child.attr('id');
-                    $child.addClass('first');
-                            
+					highlightFirst();    
+					var $child = $('#queue').children('div').eq(0);
+            		var track = $child.attr('id');                        
                     track = 'spotify:track:' + track;
                     var spTrack = models.Track.fromURI(track);
                     models.player.playTrack(spTrack);
@@ -169,7 +210,6 @@ require([
 		var removeSong = function()
 		{
 			$('#queue').children('div').eq(0).removeClass('first');
-			$('#queue').children('div').eq(0).css('background-color', '#878A75');
 			$('#pastqueue').prepend($('#queue').children('div').eq(0));
 		}
 
@@ -180,25 +220,28 @@ require([
 		 */
 		var registerPlayback = function(partyhash)
 		{
-			models.player.addEventListener('change:playing', function(data)
-			{
+			models.player.addEventListener('change:playing', function(){
+				console.log("Callback!");
 				models.player.load('track').done(function(){
 					if(models.player.track)
 					{
+						console.log('end of song or user paused');
 						setAsPlayed(partyhash, models.player.track.uri);
 					}
-					setTimeout(function() {
+					setTimeout(function(){
 						if(!models.player.track)
 						{
+							console.log('end of song');
 							removeSong();
-							playNextSong(partyhash);						
+							playNextSong(partyhash);
 						}
 						else
 						{
+							console.log('start of song');
 							registerSong(partyhash);
 						}
-					}, 1); // <--- lol @ spotify
-				});
+					},1);
+				});	
 			});
 		}
 
@@ -234,7 +277,6 @@ require([
 
 				//Spotify is a retard, we have to wait one second to get correct song
 				setTimeout(function() { 
-
 					var musicTrack = {
 						'partyhash' : partyhash,
 						'trackuri' : ''
@@ -244,6 +286,7 @@ require([
 					if(track)
 					{
 						musicTrack.trackuri = track.uri;
+						console.log('Registering');
 						$.post(constants.SERVER_URL + '/api/party/spotify_song', musicTrack , function (data) {
 							console.log(data);
 						});
@@ -260,7 +303,7 @@ require([
 					'trackuri' : trackURI
 						}
 				
-				if(models.player.position/models.player.track.duration < 0.5)
+				if(models.player.position/models.player.track.duration < 0.5) //<--- high number beacause the api i slower than the UI
 				{
 					console.log("user pause");
 				}

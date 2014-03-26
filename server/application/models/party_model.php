@@ -13,7 +13,9 @@ class Party_model extends CI_model
 		$CI =& get_instance();
 	}
 
-
+	/**
+	 *	Create party
+	 */
 	function create_party($uid, $name = 'The best party ever', $locale = 'sv')
 	{
 		// load user model for user check
@@ -46,6 +48,7 @@ class Party_model extends CI_model
 		// if we got this far, something went wrong
 		return false;
 	}
+
 	/**
 	 * return meta info about party
 	 */
@@ -101,6 +104,9 @@ class Party_model extends CI_model
 		return false;
 	}
 
+	/**
+	 * Get the interal id for party from its hash
+	 */
 	function get_party_id_from_hash($hash)
 	{
 		$this->db->select('partyid');
@@ -116,11 +122,14 @@ class Party_model extends CI_model
 		return false;
 	}
 
+	/**
+	 *	Returns playing track at party
+	 */
 	function get_current_track_at_party($partyid)
 	{
 		$this->db->select('*');
 		$this->db->where('partyid', $partyid);
-		$this->db->order_by('playid','desc');
+		$this->db->order_by('time','desc');
 		$this->db->limit(1);
 
 		$query = $this->db->get('nowplaying');
@@ -133,6 +142,9 @@ class Party_model extends CI_model
 		return false;
 	}
 
+	/**
+	 * Get the queue at the party, includes played songs and playing song
+	 */
 	function get_party_queue($partyid)
 	{
 		if(!$this->party_exists($partyid))
@@ -229,7 +241,9 @@ class Party_model extends CI_model
 		}
 		return array('voteid' => 'vote already exists');
 	}
-
+	/**
+	 * Test if the song already exists in the partys queue
+	 */
 	function song_exists($partyid, $song)
 	{
 		// is it the song id or the song uri we get?
@@ -251,6 +265,9 @@ class Party_model extends CI_model
 		return false;
 	}
 
+	/**
+	 * Get internal song id from its uri
+	 */
 	function get_song_id_from_uri($uri, $partyid)
 	{
 		// add criterias, uri = $uri, only one result
@@ -272,6 +289,9 @@ class Party_model extends CI_model
 		return false;
 	}
 
+	/**
+	 * Test if user already has voted on the track
+	 */
 	function vote_exists($uid, $songid)
 	{
 		$this->db->where('uid', $uid);
@@ -346,7 +366,9 @@ class Party_model extends CI_model
 
 		return false;
 	}
-
+	/**
+	 * Returns all users that has voted on the song
+	 */
 	function get_voters_from_song($songid)
 	{
 		$this->db->select('users.email, users.name, users.uid');
@@ -360,6 +382,9 @@ class Party_model extends CI_model
 		return false;
 	}
 
+	/**
+	 * Marks the song as played
+	 */
 	function set_track_as_played($partyid, $trackuri)
 	{
 
@@ -406,11 +431,16 @@ class Party_model extends CI_model
 		$query = $this->db->get();
 
 		if($query && $query->num_rows() == 0)
-			return true;
+			return $query;
 
 		return false;
 	}
 
+	/**
+	 * Sets all songs back to unplayed
+	 	FIXME: Should only reset one at the time, otherwise the whole playlist has to
+	 	be played after a reset before new songs get added
+	 */
 	function reset_playlist($partyid)
 	{
 
@@ -427,6 +457,9 @@ class Party_model extends CI_model
 		return false;
 	}
 
+	/**
+	 * Test if a song has been played
+	 */
 	function is_played_song($partyid, $songid)
 	{
 		$this->db->select('played');
@@ -440,6 +473,48 @@ class Party_model extends CI_model
 		{
 				return true;	
 		}
+		return false;
+	}
+	/**
+	 * Get the number of songs related to the party
+	 */
+	function get_song_count($partyid)
+	{
+		$this->db->select('COUNT(*) as song_count');
+		$this->db->where('partyid', $partyid);
+		$this->db->from('quesong');
+
+		$query = $this->db->get();
+		if($query && $query->num_rows() == 1)
+		{
+			$result = $query->result_array();
+			return $result[0];
+		}
+		return false;
+	}
+
+	/**
+	 *	Set song as by adding it to both nowplaying and marking it as -1 in the queue
+	 */
+	function set_song_as_playing($partyid, $songid)
+	{
+		//Set song 's played as -1
+		$data = array( 'played' => -1);
+		$this->db->where('partyid', $partyid);
+		$this->db->where('songid', $songid);
+
+		$query = $this->db->update('quesong', $data);
+		//create new entry in playedsongs
+		$data = array(
+					'songid' => $songid
+				);
+
+		// insert data!
+		if($this->db->insert('playedsongs', $data))
+			// did it work? return the created id.
+			return $this->db->insert_id();
+
+		// if we got this far, something went wrong
 		return false;
 	}
 }
