@@ -94,6 +94,25 @@ class User_model extends CI_model
 
 		return false;
 	}
+
+	/**
+	 * Create a new subscriber for the newsletter
+	 *
+	 * @return boolean with result
+	 **/
+	function subscribe_user($name, $email)
+	{
+		if(!empty($email) && !empty($name))
+		{
+			$data =array(
+				'email' => $email,
+				'name' => $name);
+			return $this->db->insert('newsletter', $data);
+		}
+
+		return false;
+	}
+
 	/**
 	 * create a new user
 	 */

@@ -225,6 +225,36 @@ class User extends CI_Controller {
 		$this->load->view('templates/footer', $data);
 	}
 
+	public function subscribe()
+	{
+		$data = array();
+
+		$name = $this->input->post('name');
+		$email = $this->input->post('email');
+
+		if($email)
+		{
+			if(valid_email($email) && $this->user_model->subscribe_user($name, $email))
+			{
+				//OK, notify user
+				echo "All right.";
+
+			}
+			else
+			{
+				//something went wrong
+				echo "ajaj";
+				
+			}
+		}
+		else
+		{
+			//no email adress
+		}
+
+
+	}
+
 	public function signUp($method = 'web')
 	{
 		$data = array();
