@@ -37,30 +37,44 @@
 	 */
 	function get_album_art($trackURI)
 	{
+		// $ch = curl_init();
+		// curl_setopt($ch, CURLOPT_URL, "https://embed.spotify.com/oembed/?url=".$trackURI);
+		// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		// curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		// curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+		// curl_setopt($ch, CURLOPT_CAINFO, getcwd(). "\spotifyembedd.crt");
+		// curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+  //   		'Content-Type: application/json',
+  //   		'Accept: application/json'
+		// ));
+		// $data = curl_exec($ch);
+		// $error = curl_error($ch);
+		// curl_close($ch);
+		//$json = json_decode($data, true);
+		// $url = $json['thumbnail_url'];
+		// if($url)
+		// {
+		// 	return $url;
+		// }
+		// else
+		// {
+		// 	return false;
+		// }
+		$ci =& get_instance();
+		$ci->load->helper('phpQuery');
 
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, "https://embed.spotify.com/oembed/?url=".$trackURI);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-		curl_setopt($ch, CURLOPT_CAINFO, getcwd(). "\spotifyembedd.crt");
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-    		'Content-Type: application/json',
-    		'Accept: application/json'
-		));
-		$data = curl_exec($ch);
-		$error = curl_error($ch);
-		curl_close($ch);
-		$json = json_decode($data, true);
-		$url = $json['thumbnail_url'];
-		if($url)
-		{
-			return $url;
-		}
-		else
-		{
-			return false;
-		}
+		$track_id = substr($trackURI, strripos($trackURI, ':')+1);
+
+		// Get the URL to the page for this track
+     	$track_url = 'http://open.spotify.com/track/' . $track_id;
+
+     	$html = fetch_url($track_url);//load album cover info from track
+     	phpQuery::newDocument($html);
+     	$image_url = pq('meta[property=og:image]')->attr('content');
+
+     	$image_url = str_replace(array('image', '}'), array('640', ''), $image_url);
+
+     	return $image_url;
 	}
 
 	/**
@@ -81,4 +95,13 @@
 		return $json->track->name;
 	}
 
-?>
+	function fetch_url($url){
+	     $ch = curl_init();
+	     curl_setopt($ch, CURLOPT_URL, $url);
+	     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	     curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+
+	     $ret_data = curl_exec($ch);
+	     curl_close($ch);
+	     return $ret_data;
+	}

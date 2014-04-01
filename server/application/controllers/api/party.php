@@ -18,6 +18,7 @@ class party extends CI_Controller {
 		$this->load->model('spotify_model');
 
 		$this->load->helper('external_spotify');
+		$this->load->helper('phpQuery');
 	}
 
 	/**
@@ -126,7 +127,7 @@ class party extends CI_Controller {
 				else
 				{
 					$data['status'] = 'error';
-					$data['response'] = 'Error getting song count';					
+					$data['response'] = 'Error getting song count';
 				}
 			}
 			else
